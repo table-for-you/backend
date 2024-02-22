@@ -30,7 +30,6 @@ public class UserController {
     /* 회원가입 과정 */
     @PostMapping("/joinProc")
     public ResponseEntity<String> joinProc(@Valid @RequestBody UserDto.Request dto, Errors errors) {
-        System.out.println("실행");
         if(errors.hasErrors()) {
             Map<String, String> validated = userService.validateHandler(errors);
             log.info("회원가입 실패={}", validated);
