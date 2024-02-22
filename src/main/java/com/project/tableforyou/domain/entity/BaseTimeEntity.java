@@ -17,12 +17,12 @@ import java.time.format.DateTimeFormatter;
 abstract class BaseTimeEntity {
 
     @NotNull
-    @Column(name = "created_date")
+    @Column(name = "created_time")
     @CreatedDate
     private String created_time;
 
     @NotNull
-    @Column(name = "modified_date")
+    @Column(name = "modified_time")
     @LastModifiedDate
     private String modified_time;
 
