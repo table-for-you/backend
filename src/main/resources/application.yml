@@ -1,13 +1,13 @@
 spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://127.0.0.1:3306/board
+    url: jdbc:mariadb://${DATABASE_URL}:${DATABASE_PORT}/board
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
