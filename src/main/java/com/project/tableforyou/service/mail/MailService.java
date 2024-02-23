@@ -29,21 +29,22 @@ public class MailService {
 
     /* 메일 보내기.  */
     @Async  // 비동기 처리.
-    public void sendMail(String to, String code) {
+    public void sendMail(String email, String code) {
 
-        SimpleMailMessage message = getMessage(to, code);
+        SimpleMailMessage message = getMessage(email, code);
         try {
             javaMailSender.send(message);
+            log.info("Successfully sent verification email to {}", email);
         } catch (MailException e) {
             log.error("Failed to send email: {}", e.getMessage());
         }
     }
 
     /* message 만들기. */
-    private SimpleMailMessage getMessage(String to, String code) {
+    private SimpleMailMessage getMessage(String email, String code) {
 
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
+        message.setTo(email);
         message.setSubject(subject);
         message.setText(text + code);
         message.setFrom(emailUsername);

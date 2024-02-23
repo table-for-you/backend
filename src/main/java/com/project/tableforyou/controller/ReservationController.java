@@ -8,6 +8,7 @@ import com.project.tableforyou.domain.entity.User;
 import com.project.tableforyou.service.ReservationService;
 import com.project.tableforyou.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,6 +24,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/restaurant")
+@Slf4j
 public class ReservationController {
 
     private final ReservationService reservationService;
@@ -36,6 +38,7 @@ public class ReservationController {
             reservationService.save(principalDetails.getUser().getId(), restaurant_id);
             return ResponseEntity.ok("예약자 추가 성공.");
         } catch (Exception e) {
+            log.error("Error occurred while creating reservation: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예약자 추가 실패.");
         }
     }
@@ -61,6 +64,7 @@ public class ReservationController {
             User user = reservationService.decreaseBooking(reservations);
             return ResponseEntity.ok(user.getNickname() + "님 입장");
         } catch (Exception e) {
+            log.error("Failed to update reservations: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예약자 업데이트 실패");
         }
     }
@@ -72,13 +76,11 @@ public class ReservationController {
 
         try {
             List<Reservation> decreaseReservation = reservationService.getReservations(restaurant_id, reservation_id, dto);
-
             reservationService.decreaseBooking(decreaseReservation);
-
             reservationService.postponedGuestBooking(reservation_id, dto);
-
             return ResponseEntity.ok("예약자 미루기 + 앞당기기 성공.");
         } catch (Exception e) {
+            log.error("Failed to postpone guest booking: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예약자 미루기 실패.");
         }
     }
@@ -92,6 +94,7 @@ public class ReservationController {
             reservationService.delete(reservation_id);
             return ResponseEntity.ok("예약자 삭제 성공.");
         } catch (Exception e) {
+            log.error("Failed to delete reservation: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예약자 삭제 실패");
         }
     }

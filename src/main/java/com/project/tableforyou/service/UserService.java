@@ -34,17 +34,22 @@ public class UserService {
     /* 회원 추가 */
     @Transactional
     public Long create(UserDto.Request dto) {
+
+        log.info("Creating user with username: {}", dto.getUsername());
         dto.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
         User user = dto.toEntity();
 
         userRepository.save(user);
 
+        log.info("User created with ID: {}", user.getId());
         return user.getId();
     }
 
     /* 회원 불러오기 */
     @Transactional(readOnly = true)
     public UserDto.Response findById(Long id) {
+
+        log.info("Finding user by ID: {}", id);
         User user = userRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("해당 회원이 존재하지 않습니다. id: " + id));
 
@@ -54,6 +59,8 @@ public class UserService {
     /* 전체 회원 불러오기 */
     @Transactional(readOnly = true)
     public Page<UserDto.Response> userPageList(Pageable pageable) {
+
+        log.info("Finding all users");
         Page<User> users = userRepository.findAll(pageable);
         return users.map(UserDto.Response::new);
     }
@@ -62,18 +69,24 @@ public class UserService {
     /* 회원 업데이트 */
     @Transactional
     public void update(Long id, UserDto.Request dto) {
+
+        log.info("Updating user with ID: {}", id);
         User user = userRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("해당 회원이 존재하지 않습니다. id: " + id));
         dto.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
         user.update(dto.getNickname(), dto.getPassword(), dto.getEmail());
+        log.info("User updated successfully with ID: {}", id);
     }
 
     /* 회원 삭제 */
     @Transactional
     public void delete(Long id) {
+
+        log.info("Deleting user with ID: {}", id);
         User user = userRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("해당 회원이 존재하지 않습니다. id: " + id));
         userRepository.delete(user);
+        log.info("User deleted successfully with ID: {}", id);
     }
 
     /* 회원가입 오류 확인 */
@@ -89,11 +102,15 @@ public class UserService {
 
     /* 아이디 중복 확인 */
     public boolean existsByUsername(String username) {
+
+        log.info("Checking if user exists by username: {}", username);
         return userRepository.existsByUsername(username);
     }
 
     /* 닉네임 중복 확인 */
     public boolean existsByNickname(String nickname) {
+
+        log.info("Checking if user exists by nickname: {}", nickname);
         return userRepository.existsByNickname(nickname);
     }
 
@@ -123,8 +140,11 @@ public class UserService {
     public boolean verifiedCode(String email, String authCode) {
         if(codeMap.get(email).equals(authCode)) {
             codeMap.remove(email);      // 인증번호가 맞다면 삭제.
+            log.info("Authentication code verified successfully for email: {}", email);
             return true;
-        } else
+        } else {
+            log.info("Failed to verify authentication code for email: {}", email);
             return false;
+        }
     }
 }

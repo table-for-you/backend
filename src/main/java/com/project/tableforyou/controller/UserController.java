@@ -31,14 +31,19 @@ public class UserController {
     /* 회원가입 과정 */
     @PostMapping("/joinProc")
     public ResponseEntity<String> joinProc(@Valid @RequestBody UserDto.Request dto, Errors errors) {
-        if(errors.hasErrors()) {
-            Map<String, String> validated = userService.validateHandler(errors);
-            log.info("회원가입 실패={}", validated);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원가입 실패" + validated);
+        try {
+            if (errors.hasErrors()) {
+                Map<String, String> validated = userService.validateHandler(errors);
+                log.info("Failed to sign up: {}", validated);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원가입 실패" + validated);
+            }
+            userService.create(dto);
+            return ResponseEntity.ok("회원가입 성공.");
+        } catch (Exception e) {
+            log.error("Error occurred during sign up: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred during sign up");
         }
-        userService.create(dto);
-        log.info("회원가입 성공");
-        return ResponseEntity.ok("회원가입 성공.");
+
     }
 
     /* 회원 불러오기 */
@@ -61,6 +66,7 @@ public class UserController {
             userService.update(principalDetails.getUser().getId(), dto);
             return ResponseEntity.ok("회원 업데이트 성공.");
         } catch (Exception e) {
+            log.error("Error occurred during member update: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 업데이트 실패");
         }
     }
@@ -73,6 +79,7 @@ public class UserController {
             userService.delete(user_id);
             return ResponseEntity.ok("회원 삭제 성공.");
         } catch (Exception e) {
+            log.error("Error occurred during member deletion: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 업데이트 실패");
         }
     }
@@ -83,7 +90,6 @@ public class UserController {
 
         try {
             userService.sendCodeToMail(email);
-            log.info("Successfully sent verification email to {}", email);
             return ResponseEntity.ok("인증메일 보내기 성공.");
         } catch (Exception e) {
             log.error("Failed to send verification email: {}", e.getMessage(), e);
