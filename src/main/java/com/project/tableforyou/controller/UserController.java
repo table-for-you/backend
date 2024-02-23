@@ -101,4 +101,16 @@ public class UserController {
         else
             return "인증 실패";
     }
+
+    /* 아이디 중복 확인 */
+    @GetMapping("/checkUsername")
+    public boolean checkUsernameExists(@RequestParam("username") String username) {
+        return userService.existsByUsername(username);
+    }
+
+    /* 닉네임 중복 확인 */
+    @GetMapping("/checkNickname")
+    public boolean checkNicknameExists(@RequestParam("nickname") String nickname) {
+        return userService.existsByNickname(nickname);
+    }
 }

@@ -87,6 +87,16 @@ public class UserService {
         return validateResult;
     }
 
+    /* 아이디 중복 확인 */
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    /* 닉네임 중복 확인 */
+    public boolean existsByNickname(String nickname) {
+        return userRepository.existsByNickname(nickname);
+    }
+
     /* 인증 메일 보내기 */
     public void sendCodeToMail(String email) {
         String authCode = createCode();
