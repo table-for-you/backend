@@ -8,6 +8,7 @@ import com.project.tableforyou.repository.ReservationRepository;
 import com.project.tableforyou.repository.RestaurantRepository;
 import com.project.tableforyou.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
@@ -27,6 +29,8 @@ public class ReservationService {
     /* 예약자 추가 */
     @Transactional
     public Long save(Long user_id, Long store_id) {
+
+        log.info("Creating Reservation");
         Reservation reservation = new Reservation();
 
         User user = userRepository.findById(user_id).orElseThrow(() ->
@@ -41,15 +45,17 @@ public class ReservationService {
         reservation.setBooking(size+1);
 
         reservationRepository.save(reservation);
-
+        log.info("Reservation created with ID: {}", reservation.getId());
         return reservation.getId();
     }
 
     /* 예약 읽기*/
     @Transactional(readOnly = true)
-    public ReservationDto.Response findById(Long reservation_id) {
-        Reservation reservation = reservationRepository.findById(reservation_id).orElseThrow(() ->
-                new IllegalArgumentException("해당하는 예약번호가 없습니다. id" + reservation_id));
+    public ReservationDto.Response findById(Long id) {
+
+        log.info("Finding Reservation by ID: {}", id);
+        Reservation reservation = reservationRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("해당하는 예약번호가 없습니다. id" + id));
         return new ReservationDto.Response(reservation);
     }
 
@@ -65,6 +71,8 @@ public class ReservationService {
     /* 예약자 줄어 들 때 - 시간 복잡도의 문제가 있겠지만, 모든 예약자들의 번호를 1씩 줄여야 하기 때문에 Controller에서 반복문으로 수행. */
     @Transactional      // List<Reservation> reservations = store.getReservations(); 해서 넘기기. url : /{sotre_id}/~~
     public User decreaseBooking(List<Reservation> reservations) {       // 이렇게 넘기면 잘못되면 rollback까지 됨.
+
+        log.info("Decreasing bookings for reservations");
         User user = null;        // forEach를 사용하여 외부에서 선언된 변수를 내부에서 수정할 때에는 배열이나 컬렉션을 사용하여 값을 전달해야 함. User[] user = new User[1];
         for (Reservation reservation : reservations) {// ReservationDto.Response를 Reservation으로 바꿔서 해야함.
             reservationRepository.decreaseBooking(reservation.getId());
@@ -76,15 +84,19 @@ public class ReservationService {
             if (reservation.getBooking() == 1) {
                 user = reservation.getUser();
                 reservationRepository.delete(reservation);      // 예약번호 1번 지우기
-                System.out.println(reservation.getBooking());
+                log.info("Reservation with ID {} deleted", reservation.getId());
             }
         }
+
+        log.info("Bookings decreased successfully");
         return user;
     }
 
     /* 예약 미루기(미루기할 시 store 예약자 수에 대한 조건 + 뒤에 있던 사람들 앞으로 당기기 - decreaseBooking) */
     @Transactional
     public void postponedGuestBooking(Long reservation_id, ReservationDto.Request dto) {
+
+        log.info("Postponing guest booking for reservation with ID: {}", reservation_id);
         Reservation reservation = reservationRepository.findById(reservation_id).orElseThrow(() ->
                 new IllegalArgumentException("해당하는 예약번호가 없습니다. id" + reservation_id));
         reservation.update(dto.getBooking());
@@ -103,6 +115,8 @@ public class ReservationService {
     /* 해당 가게 예약자 가져오기. 페이징처리 */
     @Transactional(readOnly = true)
     public Page<ReservationDto.Response> findByRestaurantId(Long restaurant_id, Pageable pageable) {
+
+        log.info("Finding reservations by restaurant ID: {}", restaurant_id);
         Page<Reservation> reservations = reservationRepository.findByRestaurantId(restaurant_id, pageable);
         return reservations.map(ReservationDto.Response::new);
     }
@@ -110,9 +124,12 @@ public class ReservationService {
     /* 예약자 삭제(중간사람 삭제 시 뒤에 있던 사람들 앞으로 당기기 - decreaseBooking) */
     @Transactional
     public void delete(Long reservation_id) {
+
+        log.info("Deleting reservation with ID: {}", reservation_id);
         Reservation reservation = reservationRepository.findById(reservation_id).orElseThrow(() ->
                 new IllegalArgumentException("해당하는 예약번호가 없습니다. id" + reservation_id));
         reservationRepository.delete(reservation);
+        log.info("Reservation deleted successfully");
     }
 
     /* 예약자 List를 받기위한 메서드. */

@@ -68,6 +68,7 @@ public class UserDto {
         private final String name;
         private final String username;
         private final String email;
+        private final String nickname;
         private final int age;
         private final String provider;
         private final String providerId;
@@ -84,6 +85,7 @@ public class UserDto {
             this.name = user.getName();
             this.username = user.getUsername();
             this.email = user.getEmail();
+            this.nickname = user.getNickname();
             this.age = user.getAge();
             this.role = user.getRole();
             this.provider = user.getProvider();
