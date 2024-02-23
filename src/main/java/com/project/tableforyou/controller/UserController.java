@@ -4,6 +4,7 @@ import com.project.tableforyou.config.auth.PrincipalDetails;
 import com.project.tableforyou.domain.dto.UserDto;
 import com.project.tableforyou.service.UserService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
@@ -67,11 +68,37 @@ public class UserController {
     /* 회원 삭제 */
     @DeleteMapping("/{user_id}")
     public ResponseEntity<String> delete(@PathVariable Long user_id) {
+
         try {
             userService.delete(user_id);
             return ResponseEntity.ok("회원 삭제 성공.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 업데이트 실패");
         }
+    }
+
+    /* 이메일 인증 번호 보내기 */
+    @PostMapping("/emails/verification-request")
+    public ResponseEntity<String> sendCode(@RequestParam("email") @Valid @Email String email) {
+
+        try {
+            userService.sendCodeToMail(email);
+            log.info("Successfully sent verification email to {}", email);
+            return ResponseEntity.ok("인증메일 보내기 성공.");
+        } catch (Exception e) {
+            log.error("Failed to send verification email: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("인증메일 보내기 실패.");
+        }
+    }
+
+    /* 인증 번호 확인 */
+    @GetMapping("/emails/verification")
+    public String verifyCode(@RequestParam("email") @Valid @Email String email,
+                             @RequestParam("code") String code) {
+
+        if(userService.verifiedCode(email, code))
+            return "인증 성공";
+        else
+            return "인증 실패";
     }
 }

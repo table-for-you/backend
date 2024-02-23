@@ -14,6 +14,24 @@ spring:
     properties:
       default_batch_fetch_size: 100     # N+1문제를 해결하기 위해.
 
+  mail:
+    host: smtp.naver.com
+    port: 465
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        transport:
+          protocol: smtp
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          ssl:
+            enable: true
+            trust: smtp.naver.com
+
   security:
     oauth2:
       client:
