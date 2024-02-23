@@ -28,7 +28,7 @@ public class SecurityConfig {
                 .addFilter(corsFilter)
                 .authorizeHttpRequests(authorize ->
                         authorize
-                                .requestMatchers("/user/**").authenticated()
+                                .requestMatchers("/api/user/**").authenticated()
                                 .requestMatchers("/manager/**").hasAnyRole("manager", "admin")
                                 .requestMatchers("/admin/**").hasAnyRole("admin")
                                 .anyRequest().permitAll())
