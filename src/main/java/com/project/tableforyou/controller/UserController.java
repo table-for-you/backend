@@ -14,6 +14,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,10 +31,10 @@ public class UserController {
 
     /* 회원가입 과정 */
     @PostMapping("/joinProc")
-    public ResponseEntity<String> joinProc(@Valid @RequestBody UserDto.Request dto, Errors errors) {
+    public ResponseEntity<String> joinProc(@Valid @RequestBody UserDto.Request dto, BindingResult bindingResult) {
         try {
-            if (errors.hasErrors()) {
-                Map<String, String> validated = userService.validateHandler(errors);
+            if (bindingResult.hasErrors()) {
+                Map<String, String> validated = userService.validateHandler(bindingResult);
                 log.info("Failed to sign up: {}", validated);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원가입 실패" + validated);
             }
