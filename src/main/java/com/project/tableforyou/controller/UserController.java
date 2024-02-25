@@ -16,8 +16,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -28,15 +30,17 @@ public class UserController {
 
     private final UserService userService;
 
-
     /* 회원가입 과정 */
     @PostMapping("/joinProc")
-    public ResponseEntity<String> joinProc(@Valid @RequestBody UserDto.Request dto, BindingResult bindingResult) {
+    public ResponseEntity<Object> joinProc(@Valid @RequestBody UserDto.Request dto, BindingResult bindingResult) {
         try {
             if (bindingResult.hasErrors()) {
-                Map<String, String> validated = userService.validateHandler(bindingResult);
-                log.info("Failed to sign up: {}", validated);
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원가입 실패" + validated);
+                Map<String, String> errors = new HashMap<>();
+                for (FieldError error : bindingResult.getFieldErrors()) {
+                    errors.put(error.getField(), error.getDefaultMessage());
+                }
+                log.info("Failed to sign up: {}", errors);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errors);
             }
             userService.create(dto);
             return ResponseEntity.ok("회원가입 성공.");
