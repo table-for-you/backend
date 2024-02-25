@@ -94,8 +94,7 @@ public class UserService {
         Map<String, String> validateResult = new HashMap<>();
 
         for (FieldError error: errors.getFieldErrors()) {
-            String validKeyName = "valid_" + error.getField();
-            validateResult.put(validKeyName, error.getDefaultMessage());
+            validateResult.put(error.getField(), error.getDefaultMessage());
         }
         return validateResult;
     }

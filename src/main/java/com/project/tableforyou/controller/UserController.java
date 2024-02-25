@@ -35,10 +35,7 @@ public class UserController {
     public ResponseEntity<Object> joinProc(@Valid @RequestBody UserDto.Request dto, BindingResult bindingResult) {
         try {
             if (bindingResult.hasErrors()) {
-                Map<String, String> errors = new HashMap<>();
-                for (FieldError error : bindingResult.getFieldErrors()) {
-                    errors.put(error.getField(), error.getDefaultMessage());
-                }
+                Map<String, String> errors = userService.validateHandler(bindingResult);
                 log.info("Failed to sign up: {}", errors);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errors);
             }
