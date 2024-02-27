@@ -3,6 +3,7 @@ package com.project.tableforyou.controller;
 import com.project.tableforyou.config.auth.PrincipalDetails;
 import com.project.tableforyou.domain.dto.UserDto;
 import com.project.tableforyou.service.UserService;
+import com.project.tableforyou.service.mail.AuthCodeService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+    private final AuthCodeService authCodeService;
 
     /* 회원가입 과정 */
     @PostMapping("/joinProc")
@@ -91,8 +93,12 @@ public class UserController {
     public ResponseEntity<String> sendCode(@RequestParam("email") @Valid @Email String email) {
 
         try {
-            userService.sendCodeToMail(email);
-            return ResponseEntity.ok("인증메일 보내기 성공.");
+            boolean codeSent = authCodeService.sendCodeToMail(email);
+            if (codeSent) {
+                return ResponseEntity.ok("인증메일 보내기 성공.");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("인증메일 보내기 실패. 1분 후 재전송.");
+            }
         } catch (Exception e) {
             log.error("Failed to send verification email: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("인증메일 보내기 실패.");
@@ -104,7 +110,7 @@ public class UserController {
     public String verifyCode(@RequestParam("email") @Valid @Email String email,
                              @RequestParam("code") String code) {
 
-        if(userService.verifiedCode(email, code))
+        if(authCodeService.verifiedCode(email, code))
             return "인증 성공";
         else
             return "인증 실패";
