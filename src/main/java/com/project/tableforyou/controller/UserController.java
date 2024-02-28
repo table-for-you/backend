@@ -3,6 +3,7 @@ package com.project.tableforyou.controller;
 import com.project.tableforyou.config.auth.PrincipalDetails;
 import com.project.tableforyou.domain.dto.UserDto;
 import com.project.tableforyou.service.UserService;
+import com.project.tableforyou.service.mail.AuthCodeService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +15,12 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -26,16 +30,16 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
-
+    private final AuthCodeService authCodeService;
 
     /* 회원가입 과정 */
     @PostMapping("/joinProc")
-    public ResponseEntity<String> joinProc(@Valid @RequestBody UserDto.Request dto, Errors errors) {
+    public ResponseEntity<Object> joinProc(@Valid @RequestBody UserDto.Request dto, BindingResult bindingResult) {
         try {
-            if (errors.hasErrors()) {
-                Map<String, String> validated = userService.validateHandler(errors);
-                log.info("Failed to sign up: {}", validated);
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원가입 실패" + validated);
+            if (bindingResult.hasErrors()) {
+                Map<String, String> errors = userService.validateHandler(bindingResult);
+                log.info("Failed to sign up: {}", errors);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errors);
             }
             userService.create(dto);
             return ResponseEntity.ok("회원가입 성공.");
@@ -86,26 +90,55 @@ public class UserController {
 
     /* 이메일 인증 번호 보내기 */
     @PostMapping("/emails/verification-request")
-    public ResponseEntity<String> sendCode(@RequestParam("email") @Valid @Email String email) {
+    public ResponseEntity<String> sendCodeToMail(@RequestParam("email") @Valid @Email String email) {
 
         try {
-            userService.sendCodeToMail(email);
-            return ResponseEntity.ok("인증메일 보내기 성공.");
+            boolean codeSent = authCodeService.sendCodeToMail(email);
+            if (codeSent) {
+                return ResponseEntity.ok("인증메일 보내기 성공.");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("인증메일 보내기 실패. 1분 후 재전송.");
+            }
         } catch (Exception e) {
             log.error("Failed to send verification email: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("인증메일 보내기 실패.");
         }
     }
 
-    /* 인증 번호 확인 */
-    @GetMapping("/emails/verification")
-    public String verifyCode(@RequestParam("email") @Valid @Email String email,
-                             @RequestParam("code") String code) {
+    /* 핸드폰 인증 번호 보내기 ( 확인용으로 log에 찍히게 함. ) */
+    @PostMapping("/phone/verification-request")
+    public ResponseEntity<String> sendCodeToPhone(@RequestParam("phone") String phone) {
 
-        if(userService.verifiedCode(email, code))
-            return "인증 성공";
-        else
-            return "인증 실패";
+        try {
+            boolean codeSent = authCodeService.sendCodeToPhone(phone);
+            if (codeSent) {
+                return ResponseEntity.ok("인증번호 보내기 성공.");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("인증번호 보내기 실패. 1분 후 재전송.");
+            }
+        } catch (Exception e) {
+            log.error("Failed to send verification phone: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("인증번호 보내기 실패.");
+        }
+    }
+
+    /* 인증 번호 확인 */
+    @GetMapping("/code-verification")
+    public String verifyCode(@RequestParam(value = "email", required = false) @Valid @Email String email,
+                             @RequestParam(value = "phone", required = false) String phone,
+                             @RequestParam("code") String code) {
+        if(email != null) {
+            if (authCodeService.verifiedCode(email, code))
+                return "인증 성공";
+            else
+                return "인증 실패";
+        }
+        else {
+            if (authCodeService.verifiedCode(phone, code))
+                return "인증 성공";
+            else
+                return "인증 실패";
+        }
     }
 
     /* 아이디 중복 확인 */

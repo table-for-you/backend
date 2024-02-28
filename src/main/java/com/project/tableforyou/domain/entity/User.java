@@ -1,6 +1,7 @@
 package com.project.tableforyou.domain.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -16,22 +17,22 @@ public class User extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
-    @NotNull
+    @NotBlank
     @Column(unique = true)
     private String name;
 
-    @NotNull
+    @NotBlank
     @Column(unique = true, length = 8)
     private String nickname;
 
-    @NotNull
+    @NotBlank
     @Column(unique = true, length = 20)
     private String username;
 
-    @NotNull
+    @NotBlank
     private String password;
 
-    @NotNull
+    @NotBlank
     @Column(unique = true)
     private String email;
 

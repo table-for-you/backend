@@ -94,8 +94,7 @@ public class UserService {
         Map<String, String> validateResult = new HashMap<>();
 
         for (FieldError error: errors.getFieldErrors()) {
-            String validKeyName = "valid_" + error.getField();
-            validateResult.put(validKeyName, error.getDefaultMessage());
+            validateResult.put(error.getField(), error.getDefaultMessage());
         }
         return validateResult;
     }
@@ -112,39 +111,5 @@ public class UserService {
 
         log.info("Checking if user exists by nickname: {}", nickname);
         return userRepository.existsByNickname(nickname);
-    }
-
-    /* 인증 메일 보내기 */
-    public void sendCodeToMail(String email) {
-        String authCode = createCode();
-        mailService.sendMail(email, authCode);
-        codeMap.put(email, authCode);
-    }
-
-    /* 인증 번호 만들기 */
-    private String createCode() {
-        try {
-            Random random = SecureRandom.getInstanceStrong();   // 암호학적으로 안전한 무작위 수를 생성. 인증번호는 보안적으로 중요하기 SecureRandom 사용.
-            StringBuilder sb = new StringBuilder();
-            for(int i = 0; i < 6; i++) {
-                sb.append(random.nextInt(10));
-            }
-            return sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            log.info("Failed to create secure random instance", e);
-            throw new RuntimeException("Failed to generate secure random number", e);
-        }
-    }
-
-    /* 인증 코드 확인 */
-    public boolean verifiedCode(String email, String authCode) {
-        if(codeMap.get(email).equals(authCode)) {
-            codeMap.remove(email);      // 인증번호가 맞다면 삭제.
-            log.info("Authentication code verified successfully for email: {}", email);
-            return true;
-        } else {
-            log.info("Failed to verify authentication code for email: {}", email);
-            return false;
-        }
     }
 }

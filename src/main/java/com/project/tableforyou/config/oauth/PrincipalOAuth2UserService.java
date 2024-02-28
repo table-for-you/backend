@@ -36,15 +36,9 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
 
         switch (registrationId) {
-            case "facebook" :
-                oAuth2UserInfo = new FacebookUserInfo(oAuth2User.getAttributes());
-                break;
-            case "google" :
-                oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
-                break;
-            case "naver" :
-                oAuth2UserInfo = new NaverUserInfo((Map)oAuth2User.getAttributes().get("response"));
-                break;
+            case "facebook" -> oAuth2UserInfo = new FacebookUserInfo(oAuth2User.getAttributes());
+            case "google" -> oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
+            case "naver" -> oAuth2UserInfo = new NaverUserInfo((Map) oAuth2User.getAttributes().get("response"));
         }
         User userEntity = saveOrUpdate(oAuth2UserInfo);
 

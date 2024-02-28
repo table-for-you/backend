@@ -3,6 +3,7 @@ package com.project.tableforyou.domain.dto;
 import com.project.tableforyou.domain.entity.Restaurant;
 import com.project.tableforyou.domain.entity.User;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.List;
@@ -19,10 +20,15 @@ public class RestaurantDto {
         private int totalSeats;
         private int likeCount;
         private double rating;
+        @NotBlank
         private String time;
+        @NotBlank
         private String name;
+        @NotBlank
         private String location;
+        @NotBlank
         private String tel;
+
         private String description;
         private User user;
 
@@ -43,6 +49,22 @@ public class RestaurantDto {
 
             return restaurant;
         }
+    }
+
+    @Getter @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class UpdateRequest {
+        @NotBlank
+        private String time;
+        @NotBlank
+        private String name;
+        @NotBlank
+        private String location;
+        @NotBlank
+        private String tel;
+        @NotBlank
+        private String description;
     }
 
     @Getter
