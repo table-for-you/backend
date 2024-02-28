@@ -52,7 +52,7 @@ public class UserController {
 
     /* 회원 불러오기 */
     @GetMapping("/{user_id}")
-    public UserDto.Response read(@PathVariable Long user_id) {
+    public UserDto.Response read(@PathVariable(name = "user_id") Long user_id) {
         return userService.findById(user_id);
     }
 
@@ -77,7 +77,7 @@ public class UserController {
 
     /* 회원 삭제 */
     @DeleteMapping("/{user_id}")
-    public ResponseEntity<String> delete(@PathVariable Long user_id) {
+    public ResponseEntity<String> delete(@PathVariable(name = "user_id") Long user_id) {
 
         try {
             userService.delete(user_id);

@@ -33,7 +33,7 @@ public class ReservationController {
     /* 예약자 추가 */
     @PostMapping("/{restaurant_id}/reservation/create")
     public ResponseEntity<String> create(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                         @PathVariable Long restaurant_id) {
+                                         @PathVariable(name = "restaurant_id") Long restaurant_id) {
         try {
             reservationService.save(principalDetails.getUser().getId(), restaurant_id);
             return ResponseEntity.ok("예약자 추가 성공.");
@@ -45,20 +45,20 @@ public class ReservationController {
 
     /* 예약자 읽기 */
     @GetMapping("/reservation/{reservation_id}")
-    public ReservationDto.Response read(@PathVariable Long reservation_id) {
+    public ReservationDto.Response read(@PathVariable(name = "reservation_id") Long reservation_id) {
         return reservationService.findById(reservation_id);
     }
 
     /* 해당 가게 예약자 불러오기. 페이징 처리 */
     @GetMapping("/{restaurant_id}/reservation")
     public Page<ReservationDto.Response> readAll(@PageableDefault(size = 50, sort = "booking", direction = Sort.Direction.ASC) Pageable pageable,
-                                                 @PathVariable Long restaurant_id) {
+                                                 @PathVariable(name = "restaurant_id") Long restaurant_id) {
         return reservationService.findByRestaurantId(restaurant_id,pageable);
     }
 
     /* 예약자 앞으로 당기기 */
     @PatchMapping("/{restaurant_id}/reservation/decreaseBooking")
-    public ResponseEntity<String> decreaseBooking(@PathVariable Long restaurant_id) {
+    public ResponseEntity<String> decreaseBooking(@PathVariable(name = "restaurant_id") Long restaurant_id) {
         try {
             List<Reservation> reservations = reservationService.getReservations(restaurant_id, 0L, null);  // 이미 여기서 트랜잭션은 끝나 1차캐시에 없음.
             User user = reservationService.decreaseBooking(reservations);
@@ -71,7 +71,8 @@ public class ReservationController {
 
     /* 예약 순서 미루기 */
     @PutMapping("/{restaurant_id}/reservation/postponedGuestBooking/{reservation_id}")
-    public ResponseEntity<String> postponedGuestBooking(@PathVariable Long restaurant_id, @PathVariable Long reservation_id,
+    public ResponseEntity<String> postponedGuestBooking(@PathVariable(name = "restaurant_id") Long restaurant_id,
+                                                        @PathVariable(name = "reservation_id") Long reservation_id,
                                                         @RequestBody ReservationDto.Request dto) {
 
         try {
@@ -87,7 +88,8 @@ public class ReservationController {
 
     /* 예약자 삭제 */
     @DeleteMapping("/{restaurant_id}/reservation/{reservation_id}")
-    public ResponseEntity<String> delete(@PathVariable Long reservation_id, @PathVariable Long restaurant_id) {
+    public ResponseEntity<String> delete(@PathVariable(name = "reservation_id") Long reservation_id,
+                                         @PathVariable(name = "restaurant_id") Long restaurant_id) {
         try {
             List<Reservation> decreaseReservation = reservationService.getReservations(restaurant_id, reservation_id, null);
             reservationService.decreaseBooking(decreaseReservation);
