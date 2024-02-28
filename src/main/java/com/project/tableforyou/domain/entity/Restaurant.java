@@ -2,6 +2,7 @@ package com.project.tableforyou.domain.entity;
 
 import com.project.tableforyou.domain.dto.RestaurantDto;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -32,14 +33,16 @@ public class Restaurant extends BaseTimeEntity {
     private int rating_num;
 
     // 영업시간
+    @NotBlank
     private String time;
 
-    @NotNull
+    @NotBlank
     private String name;
 
-    @NotNull
+    @NotBlank
     private String location;
 
+    @NotBlank
     private String tel;
 
     @Column(length = 50)
