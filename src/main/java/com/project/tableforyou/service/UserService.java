@@ -68,7 +68,7 @@ public class UserService {
 
     /* 회원 업데이트 */
     @Transactional
-    public void update(Long id, UserDto.Request dto) {
+    public void update(Long id, UserDto.UpdateRequest dto) {
 
         log.info("Updating user with ID: {}", id);
         User user = userRepository.findById(id).orElseThrow(() ->

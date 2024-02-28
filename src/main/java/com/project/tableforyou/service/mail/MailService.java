@@ -19,8 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class MailService {
 
     private final JavaMailSender javaMailSender;
-    private final String subject = "[TableForYou] 인증번호 메일입니다.";
-    private final String text = "[TableForYou] 인증번호 : ";
+    private static final String subject = "[TableForYou] 인증번호 메일입니다.";
+    private static final String text = "[TableForYou] 인증번호 : ";
 
     /* apprication.yml에 지정한 값 들고오기. */
     @Value("${spring.mail.username}")

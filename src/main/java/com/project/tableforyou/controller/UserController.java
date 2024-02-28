@@ -65,7 +65,7 @@ public class UserController {
     /* 회원 업데이트 */
     @PutMapping("/update")
     public ResponseEntity<String> update(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                         @RequestBody UserDto.Request dto) {
+                                         @RequestBody UserDto.UpdateRequest dto) {
         try {
             userService.update(principalDetails.getUser().getId(), dto);
             return ResponseEntity.ok("회원 업데이트 성공.");
