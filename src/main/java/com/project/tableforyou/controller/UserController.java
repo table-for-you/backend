@@ -90,7 +90,7 @@ public class UserController {
 
     /* 이메일 인증 번호 보내기 */
     @PostMapping("/emails/verification-request")
-    public ResponseEntity<String> sendCode(@RequestParam("email") @Valid @Email String email) {
+    public ResponseEntity<String> sendCodeToMail(@RequestParam("email") @Valid @Email String email) {
 
         try {
             boolean codeSent = authCodeService.sendCodeToMail(email);
@@ -105,15 +105,40 @@ public class UserController {
         }
     }
 
-    /* 인증 번호 확인 */
-    @GetMapping("/emails/verification")
-    public String verifyCode(@RequestParam("email") @Valid @Email String email,
-                             @RequestParam("code") String code) {
+    /* 핸드폰 인증 번호 보내기 ( 확인용으로 log에 찍히게 함. ) */
+    @PostMapping("/phone/verification-request")
+    public ResponseEntity<String> sendCodeToPhone(@RequestParam("phone") String phone) {
 
-        if(authCodeService.verifiedCode(email, code))
-            return "인증 성공";
-        else
-            return "인증 실패";
+        try {
+            boolean codeSent = authCodeService.sendCodeToPhone(phone);
+            if (codeSent) {
+                return ResponseEntity.ok("인증번호 보내기 성공.");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("인증번호 보내기 실패. 1분 후 재전송.");
+            }
+        } catch (Exception e) {
+            log.error("Failed to send verification phone: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("인증번호 보내기 실패.");
+        }
+    }
+
+    /* 인증 번호 확인 */
+    @GetMapping("/code-verification")
+    public String verifyCode(@RequestParam(value = "email", required = false) @Valid @Email String email,
+                             @RequestParam(value = "phone", required = false) String phone,
+                             @RequestParam("code") String code) {
+        if(email != null) {
+            if (authCodeService.verifiedCode(email, code))
+                return "인증 성공";
+            else
+                return "인증 실패";
+        }
+        else {
+            if (authCodeService.verifiedCode(phone, code))
+                return "인증 성공";
+            else
+                return "인증 실패";
+        }
     }
 
     /* 아이디 중복 확인 */
