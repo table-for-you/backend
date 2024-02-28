@@ -62,6 +62,20 @@ public class UserDto {
         }
     }
 
+    @Getter @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class UpdateRequest {     // 업데이트 전용 DTO
+
+        @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-zA-Z0-9-_]{2,10}$", message = "닉네임은 특수문자를 제외한 2~10자리여야 합니다.")
+        private String nickname;
+        @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W).{8,16}", message = "비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요.")
+        private String password;
+        @NotBlank(message = "이메일은 필수 입력 값입니다.")
+        private String email;
+        private int age;
+    }
+
     @Getter
     public static class Response {
         private final Long id;

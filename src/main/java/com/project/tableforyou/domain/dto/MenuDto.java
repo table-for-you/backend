@@ -2,16 +2,20 @@ package com.project.tableforyou.domain.dto;
 
 import com.project.tableforyou.domain.entity.Menu;
 import com.project.tableforyou.domain.entity.Restaurant;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-public class  MenuDto {
+public class MenuDto {
 
     @Getter @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
     public static class Request {
+
+        @NotBlank
         private String name;
+        @NotBlank
         private String price;
         private Restaurant restaurant;
 

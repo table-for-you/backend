@@ -70,3 +70,7 @@ server:
   servlet:
     session:
       timeout: 1800
+
+logging:
+  level:
+    org.hibernate.orm.jdbc.bind: debug
