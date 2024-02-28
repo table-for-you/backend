@@ -55,6 +55,7 @@ public class RestaurantDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class UpdateRequest {
+        private int totalSeats;
         @NotBlank
         private String time;
         @NotBlank

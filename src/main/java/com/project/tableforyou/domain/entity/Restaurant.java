@@ -60,6 +60,7 @@ public class Restaurant extends BaseTimeEntity {
     private List<Reservation> reservations;
 
     public void update(RestaurantDto.UpdateRequest dto) {
+        this.totalSeats = dto.getTotalSeats();
         this.time = dto.getTime();
         this.name = dto.getName();
         this.location = dto.getLocation();
