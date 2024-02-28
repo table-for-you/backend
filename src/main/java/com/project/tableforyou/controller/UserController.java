@@ -123,7 +123,7 @@ public class UserController {
     }
 
     /* 인증 번호 확인 */
-    @GetMapping("/code-verification")
+    @PostMapping("/code-verification")
     public String verifyCode(@RequestParam(value = "email", required = false) @Valid @Email String email,
                              @RequestParam(value = "phone", required = false) String phone,
                              @RequestParam("code") String code) {
