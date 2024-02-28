@@ -28,7 +28,7 @@ public class RestaurantDto {
         private String location;
         @NotBlank
         private String tel;
-        @NotBlank
+
         private String description;
         private User user;
 
