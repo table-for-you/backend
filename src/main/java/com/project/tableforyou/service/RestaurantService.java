@@ -112,7 +112,7 @@ public class RestaurantService {
 
     /* 가게 수정 */
     @Transactional
-    public void update(Long id, RestaurantDto.Request dto) {
+    public void update(Long id, RestaurantDto.UpdateRequest dto) {
 
         log.info("Updating Restaurant with ID: {}", id);
         Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(() ->

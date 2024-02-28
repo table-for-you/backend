@@ -59,8 +59,7 @@ public class Restaurant extends BaseTimeEntity {
     @OrderBy("id asc")  // 예약자 순서대로 정렬
     private List<Reservation> reservations;
 
-    public void update(RestaurantDto.Request dto) {
-        this.usedSeats = dto.getUsedSeats();
+    public void update(RestaurantDto.UpdateRequest dto) {
         this.totalSeats = dto.getTotalSeats();
         this.time = dto.getTime();
         this.name = dto.getName();

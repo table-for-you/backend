@@ -22,7 +22,7 @@ public class MenuController {
 
     /* 메뉴 생성 */
     @PostMapping("/{restaurant_id}/menu/create")
-    public ResponseEntity<String> create(@PathVariable Long restaurant_id, @RequestBody MenuDto.Request dto) {
+    public ResponseEntity<String> create(@PathVariable(name = "restaurant_id") Long restaurant_id, @RequestBody MenuDto.Request dto) {
         try {
             menuService.save(restaurant_id, dto);
             return ResponseEntity.ok("메뉴 생성 완료.");
@@ -35,7 +35,8 @@ public class MenuController {
     /* 메뉴 불러오기. 페이징 처리 + 검색 기능 */
     @GetMapping("/{restaurant_id}/menu")
     public Page<MenuDto.Response> readAll(@PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
-                                          @PathVariable Long restaurant_id, @RequestParam(required = false) String searchKeyword) {
+                                          @PathVariable(name = "restaurant_id") Long restaurant_id,
+                                          @RequestParam(required = false) String searchKeyword) {
 
         if(searchKeyword == null)
             return menuService.menuPageList(restaurant_id, pageable);
@@ -45,7 +46,7 @@ public class MenuController {
 
     /* 메뉴 업데이트 */
     @PutMapping("/menu/{menu_id}")
-    public ResponseEntity<String> update(@PathVariable Long menu_id, @RequestBody MenuDto.Request dto) {
+    public ResponseEntity<String> update(@PathVariable(name = "menu_id") Long menu_id, @RequestBody MenuDto.Request dto) {
         try {
             menuService.update(menu_id, dto);
             return ResponseEntity.ok("메뉴 업데이트 완료.");
@@ -57,7 +58,7 @@ public class MenuController {
 
     /* 메뉴 삭제 */
     @DeleteMapping("/menu/{menu_id}")
-    public ResponseEntity<String> delete(@PathVariable Long menu_id) {
+    public ResponseEntity<String> delete(@PathVariable(name = "menu_id") Long menu_id) {
         try {
             menuService.delete(menu_id);
             return ResponseEntity.ok("메뉴 삭제 완료.");
