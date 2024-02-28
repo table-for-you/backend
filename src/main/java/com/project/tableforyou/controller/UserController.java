@@ -14,7 +14,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
@@ -64,10 +66,12 @@ public class UserController {
 
     /* 회원 업데이트 */
     @PutMapping("/update")
-    public ResponseEntity<String> update(@AuthenticationPrincipal PrincipalDetails principalDetails,
+    public ResponseEntity<String> update(Authentication authentication,
                                          @RequestBody UserDto.UpdateRequest dto) {
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         try {
-            userService.update(principalDetails.getUser().getId(), dto);
+            userService.update(userDetails.getUsername(), dto);
             return ResponseEntity.ok("회원 업데이트 성공.");
         } catch (Exception e) {
             log.error("Error occurred during member update: {}", e.getMessage());
@@ -84,7 +88,7 @@ public class UserController {
             return ResponseEntity.ok("회원 삭제 성공.");
         } catch (Exception e) {
             log.error("Error occurred during member deletion: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 업데이트 실패");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 삭제 실패");
         }
     }
 
@@ -93,11 +97,17 @@ public class UserController {
     public ResponseEntity<String> sendCodeToMail(@RequestParam("email") @Valid @Email String email) {
 
         try {
-            boolean codeSent = authCodeService.sendCodeToMail(email);
-            if (codeSent) {
-                return ResponseEntity.ok("인증메일 보내기 성공.");
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("인증메일 보내기 실패. 1분 후 재전송.");
+            if(email != null && !email.equals("")) {
+                boolean codeSent = authCodeService.sendCodeToMail(email);
+                if (codeSent) {
+                    return ResponseEntity.ok("인증메일 보내기 성공.");
+                } else {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("인증메일 보내기 실패. 1분 후 재전송.");
+                }
+            }
+            else {
+                log.error("Invalid email address received from client: {}", email);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이메일을 제대로 입력하세요.");
             }
         } catch (Exception e) {
             log.error("Failed to send verification email: {}", e.getMessage(), e);
@@ -110,11 +120,17 @@ public class UserController {
     public ResponseEntity<String> sendCodeToPhone(@RequestParam("phone") String phone) {
 
         try {
-            boolean codeSent = authCodeService.sendCodeToPhone(phone);
-            if (codeSent) {
-                return ResponseEntity.ok("인증번호 보내기 성공.");
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("인증번호 보내기 실패. 1분 후 재전송.");
+            if(phone != null && !phone.equals("")) {
+                boolean codeSent = authCodeService.sendCodeToPhone(phone);
+                if (codeSent) {
+                    return ResponseEntity.ok("인증번호 보내기 성공.");
+                } else {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("인증번호 보내기 실패. 1분 후 재전송.");
+                }
+            }
+            else {
+                log.error("Invalid phone number received from client: {}", phone);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("휴대전화를 제대로 입력하세요.");
             }
         } catch (Exception e) {
             log.error("Failed to send verification phone: {}", e.getMessage(), e);

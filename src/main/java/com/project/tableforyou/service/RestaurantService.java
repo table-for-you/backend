@@ -101,23 +101,31 @@ public class RestaurantService {
 
     /* 가게 삭제 */
     @Transactional
-    public void delete(Long id) {         // 다른 사용자가 삭제하는 경우 확인해보기. 만약 그런다면 findByUserIdAndId 사용. 그냥 권한 설정 하면 될듯?
+    public void delete(Long id, String username) {         // 다른 사용자가 삭제하는 경우 확인해보기. 만약 그런다면 findByUserIdAndId 사용. 그냥 권한 설정 하면 될듯?
 
         log.info("Deleting Restaurant with ID: {}", id);
         Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("해당 가게가 존재하지 않습니다. id: " + id));
-        restaurantRepository.delete(restaurant);
-        log.info("Restaurant deleted successfully with ID: {}", id);
+        if(!restaurant.getUser().getUsername().equals(username))
+            throw new RuntimeException("권한이 없습니다.");
+        else {
+            restaurantRepository.delete(restaurant);
+            log.info("Restaurant deleted successfully with ID: {}", id);
+        }
     }
 
     /* 가게 수정 */
     @Transactional
-    public void update(Long id, RestaurantDto.UpdateRequest dto) {
+    public void update(Long id, String username, RestaurantDto.UpdateRequest dto) {
 
         log.info("Updating Restaurant with ID: {}", id);
         Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("해당 가게가 존재하지 않습니다. id: " + id));
-        restaurant.update(dto);
-        log.info("Restaurant updated successfully with ID: {}", id);
+        if(!restaurant.getUser().getUsername().equals(username))
+            throw new RuntimeException("권한이 없습니다.");
+        else {
+            restaurant.update(dto);
+            log.info("Restaurant updated successfully with ID: {}", id);
+        }
     }
 }

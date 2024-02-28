@@ -56,6 +56,14 @@ public class UserService {
         return new UserDto.Response(user);
     }
 
+    /* username 으로 회원 불러오기 */
+    @Transactional(readOnly = true)
+    public UserDto.Response findByUsername(String username) {
+        log.info("Finding user by Username: {}", username);
+
+        return new UserDto.Response(userRepository.findByUsername(username));
+    }
+
     /* 전체 회원 불러오기 */
     @Transactional(readOnly = true)
     public Page<UserDto.Response> userPageList(Pageable pageable) {
@@ -68,14 +76,18 @@ public class UserService {
 
     /* 회원 업데이트 */
     @Transactional
-    public void update(Long id, UserDto.UpdateRequest dto) {
+    public void update(String username, UserDto.UpdateRequest dto) {
 
-        log.info("Updating user with ID: {}", id);
-        User user = userRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("해당 회원이 존재하지 않습니다. id: " + id));
+        log.info("Updating user with Username: {}", username);
+        User user = userRepository.findByUsername(username);
         dto.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
-        user.update(dto.getNickname(), dto.getPassword(), dto.getEmail());
-        log.info("User updated successfully with ID: {}", id);
+
+        if(!user.getUsername().equals(username))
+            throw new RuntimeException("권한이 없습니다.");
+        else {
+            user.update(dto.getNickname(), dto.getPassword(), dto.getEmail());
+            log.info("User updated successfully with username: {}", username);
+        }
     }
 
     /* 회원 삭제 */
