@@ -136,20 +136,20 @@ public class UserController {
 
     /* 인증 번호 확인 */
     @PostMapping("/code-verification")
-    public String verifyCode(@RequestParam(value = "email", required = false) @Valid @Email String email,
+    public boolean verifyCode(@RequestParam(value = "email", required = false) @Valid @Email String email,
                              @RequestParam(value = "phone", required = false) String phone,
                              @RequestParam("code") String code) {
         if(email != null) {
             if (authCodeService.verifiedCode(email, code))
-                return "인증 성공";
+                return true;
             else
-                return "인증 실패";
+                return false;
         }
         else {
             if (authCodeService.verifiedCode(phone, code))
-                return "인증 성공";
+                return true;
             else
-                return "인증 실패";
+                return false;
         }
     }
 
