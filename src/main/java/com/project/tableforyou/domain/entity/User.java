@@ -36,7 +36,8 @@ public class User extends BaseTimeEntity {
     @Column(unique = true)
     private String email;
 
-    private int age;
+    @NotBlank
+    private String age;
 
     private String provider;
     private String providerId;

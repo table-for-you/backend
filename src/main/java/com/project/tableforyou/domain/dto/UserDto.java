@@ -28,9 +28,11 @@ public class UserDto {
         private String password;
         @NotBlank(message = "이메일은 필수 입력 값입니다.")
         private String email;
-        private int age;
+        @NotBlank(message = "나이는 필수 입력 값입니다.")
+        private String age;
         private String provider;
         private String providerId;
+        @NotBlank(message = "사용자의 형태를 선택해주세요.")
         private Role role;
 
         /* dto -> Entity */
@@ -42,7 +44,7 @@ public class UserDto {
                     .password(password)
                     .email(email)
                     .age(age)
-                    .role(Role.USER)
+                    .role(role)
                     .build();
 
             return user;
@@ -83,10 +85,9 @@ public class UserDto {
         private final String username;
         private final String email;
         private final String nickname;
-        private final int age;
+        private final String age;
         private final String provider;
         private final String providerId;
-
         private final Role role;
         private final String created_time;
         private final String modified_time;
