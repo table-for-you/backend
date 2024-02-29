@@ -35,7 +35,7 @@ public class ReservationController {
     public ResponseEntity<String> create(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                          @PathVariable(name = "restaurant_id") Long restaurant_id) {
         try {
-            reservationService.save(principalDetails.getUser().getId(), restaurant_id);
+            reservationService.save(principalDetails.getUsername(), restaurant_id);
             return ResponseEntity.ok("예약자 추가 성공.");
         } catch (Exception e) {
             log.error("Error occurred while creating reservation: {}", e.getMessage());

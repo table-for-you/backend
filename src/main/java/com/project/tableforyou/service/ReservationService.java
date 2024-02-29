@@ -28,13 +28,13 @@ public class ReservationService {
 
     /* 예약자 추가 */
     @Transactional
-    public Long save(Long user_id, Long store_id) {
+    public Long save(String username, Long store_id) {
 
         log.info("Creating Reservation");
         Reservation reservation = new Reservation();
 
-        User user = userRepository.findById(user_id).orElseThrow(() ->
-                new IllegalArgumentException("해당 회원이 존재하지 않습니다. id: " + user_id));
+        User user = userRepository.findByUsername(username).orElseThrow(() ->
+                new IllegalArgumentException("해당 회원이 존재하지 않습니다. username: " + username));
         Restaurant restaurant = restaurantRepository.findById(store_id).orElseThrow(() ->
                 new IllegalArgumentException("해당 가게가 존재하지 않습니다. id: " + store_id));
 

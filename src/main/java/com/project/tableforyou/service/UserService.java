@@ -56,14 +56,6 @@ public class UserService {
         return new UserDto.Response(user);
     }
 
-    /* username 으로 회원 불러오기 */
-    @Transactional(readOnly = true)
-    public UserDto.Response findByUsername(String username) {
-        log.info("Finding user by Username: {}", username);
-
-        return new UserDto.Response(userRepository.findByUsername(username));
-    }
-
     /* 전체 회원 불러오기 */
     @Transactional(readOnly = true)
     public Page<UserDto.Response> userPageList(Pageable pageable) {
@@ -78,13 +70,13 @@ public class UserService {
     @Transactional
     public void update(String username, UserDto.UpdateRequest dto) {
 
-        log.info("Updating user with Username: {}", username);
-        User user = userRepository.findByUsername(username);
+        log.info("Updating user with username: {}", username);
+        User user = userRepository.findByUsername(username).orElseThrow(() ->
+                new IllegalArgumentException("해당 회원이 존재하지 않습니다. username: " + username));
         dto.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
-
-        if(!user.getUsername().equals(username))
+        if(!verifyAuthenticationByUsername(username, user.getUsername())) {
             throw new RuntimeException("권한이 없습니다.");
-        else {
+        } else {
             user.update(dto.getNickname(), dto.getPassword(), dto.getEmail());
             log.info("User updated successfully with username: {}", username);
         }
@@ -92,13 +84,18 @@ public class UserService {
 
     /* 회원 삭제 */
     @Transactional
-    public void delete(Long id) {
+    public void delete(String username, Long id) {
 
         log.info("Deleting user with ID: {}", id);
         User user = userRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("해당 회원이 존재하지 않습니다. id: " + id));
-        userRepository.delete(user);
-        log.info("User deleted successfully with ID: {}", id);
+
+        if(!verifyAuthenticationByUsername(username, user.getUsername())) {
+            throw new RuntimeException("권한이 없습니다.");
+        } else {
+            userRepository.delete(user);
+            log.info("User deleted successfully with ID: {}", id);
+        }
     }
 
     /* 회원가입 오류 확인 */
@@ -123,5 +120,10 @@ public class UserService {
 
         log.info("Checking if user exists by nickname: {}", nickname);
         return userRepository.existsByNickname(nickname);
+    }
+
+    /* 자신의 권한인지 확인 */
+    private boolean verifyAuthenticationByUsername(String expectedUsername, String actualUsername) {
+        return actualUsername.equals(expectedUsername);
     }
 }

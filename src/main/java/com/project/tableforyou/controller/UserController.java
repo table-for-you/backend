@@ -14,9 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
@@ -66,12 +64,10 @@ public class UserController {
 
     /* 회원 업데이트 */
     @PutMapping("/update")
-    public ResponseEntity<String> update(Authentication authentication,
+    public ResponseEntity<String> update(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                          @RequestBody UserDto.UpdateRequest dto) {
-
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         try {
-            userService.update(userDetails.getUsername(), dto);
+            userService.update(principalDetails.getUsername(), dto);
             return ResponseEntity.ok("회원 업데이트 성공.");
         } catch (Exception e) {
             log.error("Error occurred during member update: {}", e.getMessage());
@@ -81,14 +77,15 @@ public class UserController {
 
     /* 회원 삭제 */
     @DeleteMapping("/{user_id}")
-    public ResponseEntity<String> delete(@PathVariable(name = "user_id") Long user_id) {
+    public ResponseEntity<String> delete(@PathVariable(name = "user_id") Long user_id,
+                                         @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         try {
-            userService.delete(user_id);
+            userService.delete(principalDetails.getUsername(), user_id);
             return ResponseEntity.ok("회원 삭제 성공.");
         } catch (Exception e) {
             log.error("Error occurred during member deletion: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 삭제 실패");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 업데이트 실패");
         }
     }
 
@@ -97,15 +94,14 @@ public class UserController {
     public ResponseEntity<String> sendCodeToMail(@RequestParam("email") @Valid @Email String email) {
 
         try {
-            if(email != null && !email.equals("")) {
+            if(email != null || !email.equals("")) {
                 boolean codeSent = authCodeService.sendCodeToMail(email);
                 if (codeSent) {
                     return ResponseEntity.ok("인증메일 보내기 성공.");
                 } else {
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("인증메일 보내기 실패. 1분 후 재전송.");
                 }
-            }
-            else {
+            } else {
                 log.error("Invalid email address received from client: {}", email);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이메일을 제대로 입력하세요.");
             }
@@ -140,20 +136,20 @@ public class UserController {
 
     /* 인증 번호 확인 */
     @PostMapping("/code-verification")
-    public String verifyCode(@RequestParam(value = "email", required = false) @Valid @Email String email,
-                             @RequestParam(value = "phone", required = false) String phone,
-                             @RequestParam("code") String code) {
+    public boolean verifyCode(@RequestParam(value = "email", required = false) @Valid @Email String email,
+                              @RequestParam(value = "phone", required = false) String phone,
+                              @RequestParam("code") String code) {
         if(email != null) {
             if (authCodeService.verifiedCode(email, code))
-                return "인증 성공";
+                return true;
             else
-                return "인증 실패";
+                return false;
         }
         else {
             if (authCodeService.verifiedCode(phone, code))
-                return "인증 성공";
+                return true;
             else
-                return "인증 실패";
+                return false;
         }
     }
 

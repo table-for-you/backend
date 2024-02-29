@@ -106,7 +106,8 @@ public class RestaurantService {
         log.info("Deleting Restaurant with ID: {}", id);
         Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("해당 가게가 존재하지 않습니다. id: " + id));
-        if(!restaurant.getUser().getUsername().equals(username))
+
+        if(!verifyAuthenticationByUsername(username, restaurant.getUser().getUsername()))
             throw new RuntimeException("권한이 없습니다.");
         else {
             restaurantRepository.delete(restaurant);
@@ -121,11 +122,16 @@ public class RestaurantService {
         log.info("Updating Restaurant with ID: {}", id);
         Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("해당 가게가 존재하지 않습니다. id: " + id));
-        if(!restaurant.getUser().getUsername().equals(username))
+        if(!verifyAuthenticationByUsername(username, restaurant.getUser().getUsername()))
             throw new RuntimeException("권한이 없습니다.");
         else {
             restaurant.update(dto);
             log.info("Restaurant updated successfully with ID: {}", id);
         }
+    }
+
+    /* 자신의 권한인지 확인 */
+    private boolean verifyAuthenticationByUsername(String expectedUsername, String actualUsername) {
+        return actualUsername.equals(expectedUsername);
     }
 }
