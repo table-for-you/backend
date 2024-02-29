@@ -137,8 +137,8 @@ public class UserController {
     /* 인증 번호 확인 */
     @PostMapping("/code-verification")
     public boolean verifyCode(@RequestParam(value = "email", required = false) @Valid @Email String email,
-                             @RequestParam(value = "phone", required = false) String phone,
-                             @RequestParam("code") String code) {
+                              @RequestParam(value = "phone", required = false) String phone,
+                              @RequestParam("code") String code) {
         if(email != null) {
             if (authCodeService.verifiedCode(email, code))
                 return true;
