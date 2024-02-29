@@ -32,7 +32,6 @@ public class UserDto {
         private String age;
         private String provider;
         private String providerId;
-        @NotBlank(message = "사용자의 형태를 선택해주세요.")
         private Role role;
 
         /* dto -> Entity */
