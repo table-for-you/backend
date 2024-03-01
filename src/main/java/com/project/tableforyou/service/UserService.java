@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -109,17 +111,27 @@ public class UserService {
     }
 
     /* 아이디 중복 확인 */
-    public boolean existsByUsername(String username) {
-
+    public Object existsByUsername(String username) {
         log.info("Checking if user exists by username: {}", username);
+        if(!username.matches("^[ㄱ-ㅎ가-힣a-z0-9-_]{4,20}$")) {
+            return "아이디는 특수문자를 제외한 4~20자리여야 합니다.";
+        }
         return userRepository.existsByUsername(username);
     }
 
     /* 닉네임 중복 확인 */
-    public boolean existsByNickname(String nickname) {
-
+    public Object existsByNickname(String nickname) {
         log.info("Checking if user exists by nickname: {}", nickname);
+        if (!nickname.matches("^[ㄱ-ㅎ가-힣a-zA-Z0-9-_]{2,10}$")) {
+            return "닉네임은 특수문자를 제외한 2~10자리여야 합니다.";
+        }
         return userRepository.existsByNickname(nickname);
+    }
+
+    /* 이메일 중복 확인 */
+    public boolean existsByEmail(String email) {
+        log.info("Checking if user exists by email: {}", email);
+        return userRepository.existsByEmail(email);
     }
 
     /* 자신의 권한인지 확인 */

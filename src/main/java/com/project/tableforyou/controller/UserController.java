@@ -94,7 +94,7 @@ public class UserController {
     public ResponseEntity<String> sendCodeToMail(@RequestParam("email") @Valid @Email String email) {
 
         try {
-            if(email != null || !email.equals("")) {
+            if(email != null && !email.equals("")) {
                 boolean codeSent = authCodeService.sendCodeToMail(email);
                 if (codeSent) {
                     return ResponseEntity.ok("인증메일 보내기 성공.");
@@ -136,12 +136,16 @@ public class UserController {
 
     /* 인증 번호 확인 */
     @PostMapping("/code-verification")
-    public boolean verifyCode(@RequestParam(value = "email", required = false) @Valid @Email String email,
+    public Object verifyCode(@RequestParam(value = "email", required = false) @Valid @Email String email,
                               @RequestParam(value = "phone", required = false) String phone,
                               @RequestParam("code") String code) {
         if(email != null) {
-            if (authCodeService.verifiedCode(email, code))
+            if (authCodeService.verifiedCode(email, code)) {
+                if (userService.existsByEmail(email)) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 가입된 이메일입니다.");
+                }
                 return true;
+            }
             else
                 return false;
         }
@@ -155,13 +159,13 @@ public class UserController {
 
     /* 아이디 중복 확인 */
     @GetMapping("/checkUsername")
-    public boolean checkUsernameExists(@RequestParam("username") String username) {
+    public Object checkUsernameExists(@RequestParam("username") String username) {
         return userService.existsByUsername(username);
     }
 
     /* 닉네임 중복 확인 */
     @GetMapping("/checkNickname")
-    public boolean checkNicknameExists(@RequestParam("nickname") String nickname) {
+    public Object checkNicknameExists(@RequestParam("nickname") String nickname) {
         return userService.existsByNickname(nickname);
     }
 }

@@ -18,7 +18,6 @@ public class User extends BaseTimeEntity {
     private Long Id;
 
     @NotBlank
-    @Column(unique = true)
     private String name;
 
     @NotBlank
