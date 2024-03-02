@@ -28,7 +28,6 @@ import java.util.List;
 public class ReservationController {
 
     private final ReservationService reservationService;
-    private final RestaurantService restaurantService;
 
     /* 예약자 추가 */
     @PostMapping("/{restaurant_id}/reservation/create")

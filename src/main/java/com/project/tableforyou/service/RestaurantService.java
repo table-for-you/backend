@@ -22,11 +22,11 @@ public class RestaurantService {
 
     /* 가게 create */
     @Transactional
-    public Long save(Long user_id, RestaurantDto.Request dto) {
+    public Long save(String username, RestaurantDto.Request dto) {
 
-        log.info("Creating Restaurant by user ID: {}", user_id);
-        User user = userRepository.findById(user_id).orElseThrow(() ->
-                new IllegalArgumentException("해당 회원이 존재하지 않습니다. id: " + user_id));
+        log.info("Creating Restaurant by user username: {}", username);
+        User user = userRepository.findByUsername(username).orElseThrow(() ->
+                new IllegalArgumentException("해당 회원이 존재하지 않습니다. username: " + username));
 
         dto.setUser(user);
         Restaurant restaurant = dto.toEntity();

@@ -76,12 +76,11 @@ public class UserController {
     }
 
     /* 회원 삭제 */
-    @DeleteMapping("/{user_id}")
-    public ResponseEntity<String> delete(@PathVariable(name = "user_id") Long user_id,
-                                         @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> delete(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         try {
-            userService.delete(principalDetails.getUsername(), user_id);
+            userService.delete(principalDetails.getUsername());
             return ResponseEntity.ok("회원 삭제 성공.");
         } catch (Exception e) {
             log.error("Error occurred during member deletion: {}", e.getMessage());
