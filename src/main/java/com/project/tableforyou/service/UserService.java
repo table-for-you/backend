@@ -86,18 +86,14 @@ public class UserService {
 
     /* 회원 삭제 */
     @Transactional
-    public void delete(String username, Long id) {
+    public void delete(String username) {
 
-        log.info("Deleting user with ID: {}", id);
-        User user = userRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("해당 회원이 존재하지 않습니다. id: " + id));
+        log.info("Deleting user with username: {}", username);
+        User user = userRepository.findByUsername(username).orElseThrow(() ->
+                new IllegalArgumentException("해당 회원이 존재하지 않습니다. username: " + username));
 
-        if(!verifyAuthenticationByUsername(username, user.getUsername())) {
-            throw new RuntimeException("권한이 없습니다.");
-        } else {
-            userRepository.delete(user);
-            log.info("User deleted successfully with ID: {}", id);
-        }
+        userRepository.delete(user);
+        log.info("User deleted successfully with username: {}", username);
     }
 
     /* 회원가입 오류 확인 */
