@@ -2,6 +2,7 @@ package com.project.tableforyou.config;
 
 import com.project.tableforyou.config.auth.PrincipalDetailsService;
 import com.project.tableforyou.config.handler.CustomAuthFailureHandler;
+import com.project.tableforyou.config.handler.CustomAuthSuccessHandler;
 import com.project.tableforyou.config.oauth.PrincipalOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +22,9 @@ public class SecurityConfig {
     private final CorsFilter corsFilter;
     private final PrincipalOAuth2UserService principalOAuth2UserService;
     private final PrincipalDetailsService principalDetailsService;
+    private final CustomAuthSuccessHandler customAuthSuccessHandler;
+    private final CustomAuthFailureHandler customAuthFailureHandler;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.
@@ -36,8 +40,8 @@ public class SecurityConfig {
                         formLogin
                                 .loginPage("/login")
                                 .loginProcessingUrl("/loginProc")
-                                .failureHandler(new CustomAuthFailureHandler())
-                                .defaultSuccessUrl("/"))
+                                .successHandler(customAuthSuccessHandler)
+                                .failureHandler(customAuthFailureHandler))
                 .logout(logout ->       // 안해도 logout되긴 함. 추가적인 정보를 위해 넣은 것.
                         logout
                                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
