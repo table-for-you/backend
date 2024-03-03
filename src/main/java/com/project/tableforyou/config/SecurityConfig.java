@@ -50,7 +50,7 @@ public class SecurityConfig {
                                 .deleteCookies("JSESSIONID"))
                 .oauth2Login(oauth2 ->
                         oauth2
-                                .loginPage("/api/login")
+                                .loginPage("/login")
                                 .userInfoEndpoint(endPoint ->
                                         endPoint.userService(principalOAuth2UserService)))
                 .rememberMe(rememberMe ->
