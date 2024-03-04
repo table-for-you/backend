@@ -3,6 +3,7 @@ package com.project.tableforyou.config.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.tableforyou.config.auth.PrincipalDetails;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
@@ -23,9 +24,12 @@ public class CustomAuthSuccessHandler implements AuthenticationSuccessHandler {
             throws IOException, ServletException {
 
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();   // 닉네임을 받아오기 위해.
-
         String nickname = principalDetails.getUser().getNickname();
-
+        System.out.println("=========" + request.getSession().getId());
+        // 세션 ID를 쿠키로 설정
+        Cookie cookie = new Cookie("JSESSIONID", request.getSession().getId());
+        cookie.setPath("/");
+        response.addCookie(cookie);
 
         Map<String, String> userInfo = new HashMap<>();
         userInfo.put("nickname", nickname);
