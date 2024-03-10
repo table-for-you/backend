@@ -1,17 +1,27 @@
 package com.project.tableforyou.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.tableforyou.config.auth.PrincipalDetailsService;
 import com.project.tableforyou.config.handler.CustomAuthFailureHandler;
 import com.project.tableforyou.config.handler.CustomAuthSuccessHandler;
+import com.project.tableforyou.config.handler.CustomLogoutHandler;
 import com.project.tableforyou.config.oauth.PrincipalOAuth2UserService;
+import com.project.tableforyou.jwt.JwtUtil;
+import com.project.tableforyou.jwt.filter.JwtAuthenticationFilter;
+import com.project.tableforyou.jwt.filter.JwtAuthorizationFilter;
+import com.project.tableforyou.jwt.handler.OAuth2SuccessHandler;
+import com.project.tableforyou.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 
 @Configuration
@@ -21,45 +31,59 @@ public class SecurityConfig {
 
     private final CorsFilter corsFilter;
     private final PrincipalOAuth2UserService principalOAuth2UserService;
-    private final PrincipalDetailsService principalDetailsService;
-    private final CustomAuthSuccessHandler customAuthSuccessHandler;
     private final CustomAuthFailureHandler customAuthFailureHandler;
+    private final AuthenticationConfiguration authenticationConfiguration;
+    private final JwtUtil jwtUtil;
+    private final ObjectMapper objectMapper;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+    private final AuthService authService;
+    private final CustomLogoutHandler customLogoutHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.
-                csrf(AbstractHttpConfigurer::disable)
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+
                 .addFilter(corsFilter)
+
+                .formLogin(AbstractHttpConfigurer::disable)
+
+                .httpBasic(AbstractHttpConfigurer::disable)
+
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
                 .authorizeHttpRequests(authorize ->
                         authorize
                                 .requestMatchers("/api/user/**").authenticated()
                                 .requestMatchers("/manager/**").hasAnyRole("manager", "admin")
                                 .requestMatchers("/admin/**").hasAnyRole("admin")
                                 .anyRequest().permitAll())
-                .formLogin(formLogin ->
-                        formLogin
-                                .loginPage("/login")
-                                .loginProcessingUrl("/loginProc")
-                                .successHandler(customAuthSuccessHandler)
-                                .failureHandler(customAuthFailureHandler))
-                .logout(logout ->       // 안해도 logout되긴 함. 추가적인 정보를 위해 넣은 것.
-                        logout
-                                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                                .logoutSuccessUrl("/login")
-                                .invalidateHttpSession(true) // 세션을 무효화
-                                .deleteCookies("JSESSIONID"))
+
+
                 .oauth2Login(oauth2 ->
                         oauth2
-                                .loginPage("/login")
                                 .userInfoEndpoint(endPoint ->
-                                        endPoint.userService(principalOAuth2UserService)))
-                .rememberMe(rememberMe ->
-                        rememberMe
-                                .key("my-secret-key")
-                                .rememberMeParameter("rememberMe")
-                                .tokenValiditySeconds(30*24*60*60)
-                                .userDetailsService(principalDetailsService));
+                                        endPoint.userService(principalOAuth2UserService))
+                                .successHandler(oAuth2SuccessHandler))
+
+                .addFilterAt(new JwtAuthenticationFilter(
+                        authenticationManager(authenticationConfiguration), jwtUtil, customAuthFailureHandler, authService, objectMapper),
+                        UsernamePasswordAuthenticationFilter.class)
+
+                .addFilterBefore(new JwtAuthorizationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+
+                .logout(logout ->
+                        logout.addLogoutHandler(customLogoutHandler));
+
 
         return http.build();
+    }
+
+    //AuthenticationManager Bean 등록
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+
+        return configuration.getAuthenticationManager();
     }
 }

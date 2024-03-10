@@ -4,6 +4,8 @@ import com.project.tableforyou.config.auth.PrincipalDetails;
 import com.project.tableforyou.domain.dto.UserDto;
 import com.project.tableforyou.service.UserService;
 import com.project.tableforyou.service.mail.AuthCodeService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -166,5 +169,23 @@ public class UserController {
     @GetMapping("/checkNickname")
     public Object checkNicknameExists(@RequestParam("nickname") String nickname) {
         return userService.existsByNickname(nickname);
+    }
+
+    @GetMapping("/session")            // 세션 확인용
+    public String sessionInfo(HttpServletRequest req) {
+        HttpSession session = req.getSession(false);
+        if (session == null) {
+            return "세션이 없습니다";
+        }
+        // session.setMaxInactiveInterval(3605);
+
+        log.info("sessionId = {}", session.getId());
+        log.info("getMaxInactiveInterval={}", session.getMaxInactiveInterval());
+        // *참고 :application.yml에서 설정 가능한 최소 시간은 1분이며, 분단위로 설정해야 합니다.
+        log.info("creationTime={}", new Date(session.getCreationTime()));
+        log.info("lastAccessTime={}", new Date(session.getLastAccessedTime()));
+
+        return "세션출력";
+
     }
 }
