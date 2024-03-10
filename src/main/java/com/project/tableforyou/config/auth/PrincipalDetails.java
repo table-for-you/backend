@@ -32,9 +32,9 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> authorize = new ArrayList<>();
-        authorize.add(() -> user.getRole().getValue());
-        return null;
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(() -> user.getRole().getValue());
+        return authorities;
     }
 
     @Override
