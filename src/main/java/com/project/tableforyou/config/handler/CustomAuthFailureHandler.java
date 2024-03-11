@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationCredentialsNotF
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -36,8 +37,10 @@ public class CustomAuthFailureHandler implements AuthenticationFailureHandler {
 
     private static String getErrorMessage(AuthenticationException exception) {
         String errorMessage;
-        if (exception instanceof BadCredentialsException) {
-            errorMessage = "아이디 또는 비밀번호가 맞지 않습니다. 다시 확인해 주세요.";
+        if (exception instanceof UsernameNotFoundException) {       // https://wildeveloperetrain.tistory.com/56
+            errorMessage = "계정이 존재하지 않습니다. 회원가입 진행 후 로그인 해주세요.";
+        } else if (exception instanceof BadCredentialsException) {
+            errorMessage = "올바르지 않은 비밀번호입니다. 다시 확인해 주세요.";
         } else if (exception instanceof InternalAuthenticationServiceException) {
             errorMessage = "내부적으로 발생한 시스템 문제로 인해 요청을 처리할 수 없습니다. 관리자에게 문의하세요.";
         } else if (exception instanceof AuthenticationCredentialsNotFoundException) {
@@ -49,9 +52,8 @@ public class CustomAuthFailureHandler implements AuthenticationFailureHandler {
 
 
         /*  UsernameNotFoundException이거 안뜸. 확인해보기
-        if (exception instanceof UsernameNotFoundException) {       // https://wildeveloperetrain.tistory.com/56
-            errorMessage = "계정이 존재하지 않습니다. 회원가입 진행 후 로그인 해주세요.";
-        }
+
+
          */
     }
 }
