@@ -24,6 +24,8 @@ import org.springframework.util.StreamUtils;
 import javax.swing.*;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.project.tableforyou.jwt.JwtProperties.*;
 
@@ -72,6 +74,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
 
         String refreshUUID = getRefreshUUID(refreshToken, username);
+
+        Map<String, String> userInfo = new HashMap<>();
+        userInfo.put("nickname", principalDetails.getUser().getNickname());     // 프론트에 nickname 보내기
+
+        String userInfoJson = objectMapper.writeValueAsString(userInfo);        // json 형태로 변환.
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(userInfoJson);
 
         response.setHeader(ACCESS_HEADER_VALUE, TOKEN_PREFIX + accessToken);    // 헤더에 access Token 저장.
         response.addCookie(createCookie(REFRESH_COOKIE_VALUE, refreshUUID));         // 쿠키에 refresh Token index 값 저장.
