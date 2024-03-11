@@ -37,7 +37,7 @@ public class CustomAuthFailureHandler implements AuthenticationFailureHandler {
 
     private static String getErrorMessage(AuthenticationException exception) {
         String errorMessage;
-        if (exception instanceof UsernameNotFoundException) {       // https://wildeveloperetrain.tistory.com/56
+        if (exception instanceof UsernameNotFoundException) {
             errorMessage = "계정이 존재하지 않습니다. 회원가입 진행 후 로그인 해주세요.";
         } else if (exception instanceof BadCredentialsException) {
             errorMessage = "올바르지 않은 비밀번호입니다. 다시 확인해 주세요.";
@@ -50,11 +50,6 @@ public class CustomAuthFailureHandler implements AuthenticationFailureHandler {
         }
         return errorMessage;
 
-
-        /*  UsernameNotFoundException이거 안뜸. 확인해보기
-
-
-         */
     }
 }
 
