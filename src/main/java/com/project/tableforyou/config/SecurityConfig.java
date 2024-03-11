@@ -85,10 +85,12 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /* DaoAuthenticationProvider 등록 */
     protected void addAuthenticationProvider(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(daoAuthenticationProvider());
     }
 
+    /* DaoAuthenticationProvider 구성 */
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
 
@@ -96,6 +98,8 @@ public class SecurityConfig {
         authenticationProvider.setUserDetailsService(principalDetailsService);
         authenticationProvider.setPasswordEncoder(bCryptPasswordEncoder);
         authenticationProvider.setHideUserNotFoundExceptions(false);
+        // hideUserNotFoundExceptions을 false하며 UsernameNotFoundException 사용.
+
         return  authenticationProvider;
     }
 
