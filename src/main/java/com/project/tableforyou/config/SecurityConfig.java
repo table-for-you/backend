@@ -3,7 +3,6 @@ package com.project.tableforyou.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.tableforyou.config.auth.PrincipalDetailsService;
 import com.project.tableforyou.config.handler.CustomAuthFailureHandler;
-import com.project.tableforyou.config.handler.CustomAuthSuccessHandler;
 import com.project.tableforyou.config.handler.CustomLogoutHandler;
 import com.project.tableforyou.config.oauth.PrincipalOAuth2UserService;
 import com.project.tableforyou.jwt.JwtUtil;
