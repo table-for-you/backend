@@ -2,7 +2,7 @@ package com.project.tableforyou.jwt.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.tableforyou.config.auth.PrincipalDetails;
-import com.project.tableforyou.config.handler.CustomAuthFailureHandler;
+import com.project.tableforyou.handler.authFailureHandler.CustomAuthFailureHandler;
 import com.project.tableforyou.domain.dto.AuthDto;
 import com.project.tableforyou.domain.dto.LoginDto;
 import com.project.tableforyou.jwt.JwtUtil;
@@ -21,7 +21,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.StreamUtils;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;

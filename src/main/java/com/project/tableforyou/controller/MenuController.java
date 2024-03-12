@@ -23,13 +23,9 @@ public class MenuController {
     /* 메뉴 생성 */
     @PostMapping("/{restaurant_id}/menu/create")
     public ResponseEntity<String> create(@PathVariable(name = "restaurant_id") Long restaurant_id, @RequestBody MenuDto.Request dto) {
-        try {
-            menuService.save(restaurant_id, dto);
-            return ResponseEntity.ok("메뉴 생성 완료.");
-        } catch (Exception e) {
-            log.error("Error occurred while creating menu: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("메뉴 생성 실패.");
-        }
+
+        menuService.save(restaurant_id, dto);
+        return ResponseEntity.ok("메뉴 생성 완료.");
     }
 
     /* 메뉴 불러오기. 페이징 처리 + 검색 기능 */
@@ -47,24 +43,16 @@ public class MenuController {
     /* 메뉴 업데이트 */
     @PutMapping("/menu/{menu_id}")
     public ResponseEntity<String> update(@PathVariable(name = "menu_id") Long menu_id, @RequestBody MenuDto.Request dto) {
-        try {
-            menuService.update(menu_id, dto);
-            return ResponseEntity.ok("메뉴 업데이트 완료.");
-        } catch (Exception e) {
-            log.error("Error occurred while updating menu: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("메뉴 업데이트 실패.");
-        }
+
+        menuService.update(menu_id, dto);
+        return ResponseEntity.ok("메뉴 업데이트 완료.");
     }
 
     /* 메뉴 삭제 */
     @DeleteMapping("/menu/{menu_id}")
     public ResponseEntity<String> delete(@PathVariable(name = "menu_id") Long menu_id) {
-        try {
-            menuService.delete(menu_id);
-            return ResponseEntity.ok("메뉴 삭제 완료.");
-        } catch (Exception e) {
-            log.error("Error occurred while deleting menu: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("메뉴 삭제 실패.");
-        }
+
+        menuService.delete(menu_id);
+        return ResponseEntity.ok("메뉴 삭제 완료.");
     }
 }

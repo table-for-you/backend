@@ -33,13 +33,10 @@ public class ReservationController {
     @PostMapping("/{restaurant_id}/reservation/create")
     public ResponseEntity<String> create(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                          @PathVariable(name = "restaurant_id") Long restaurant_id) {
-        try {
-            reservationService.save(principalDetails.getUsername(), restaurant_id);
-            return ResponseEntity.ok("예약자 추가 성공.");
-        } catch (Exception e) {
-            log.error("Error occurred while creating reservation: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예약자 추가 실패.");
-        }
+
+        reservationService.save(principalDetails.getUsername(), restaurant_id);
+        return ResponseEntity.ok("예약자 추가 성공.");
+
     }
 
     /* 예약자 읽기 */
@@ -74,29 +71,20 @@ public class ReservationController {
                                                         @PathVariable(name = "reservation_id") Long reservation_id,
                                                         @RequestBody ReservationDto.Request dto) {
 
-        try {
-            List<Reservation> decreaseReservation = reservationService.getReservations(restaurant_id, reservation_id, dto);
-            reservationService.decreaseBooking(decreaseReservation);
-            reservationService.postponedGuestBooking(reservation_id, dto);
-            return ResponseEntity.ok("예약자 미루기 + 앞당기기 성공.");
-        } catch (Exception e) {
-            log.error("Failed to postpone guest booking: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예약자 미루기 실패.");
-        }
+        List<Reservation> decreaseReservation = reservationService.getReservations(restaurant_id, reservation_id, dto);
+        reservationService.decreaseBooking(decreaseReservation);
+        reservationService.postponedGuestBooking(reservation_id, dto);
+        return ResponseEntity.ok("예약자 미루기 + 앞당기기 성공.");
     }
 
     /* 예약자 삭제 */
     @DeleteMapping("/{restaurant_id}/reservation/{reservation_id}")
     public ResponseEntity<String> delete(@PathVariable(name = "reservation_id") Long reservation_id,
                                          @PathVariable(name = "restaurant_id") Long restaurant_id) {
-        try {
-            List<Reservation> decreaseReservation = reservationService.getReservations(restaurant_id, reservation_id, null);
-            reservationService.decreaseBooking(decreaseReservation);
-            reservationService.delete(reservation_id);
-            return ResponseEntity.ok("예약자 삭제 성공.");
-        } catch (Exception e) {
-            log.error("Failed to delete reservation: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예약자 삭제 실패");
-        }
+
+        List<Reservation> decreaseReservation = reservationService.getReservations(restaurant_id, reservation_id, null);
+        reservationService.decreaseBooking(decreaseReservation);
+        reservationService.delete(reservation_id);
+        return ResponseEntity.ok("예약자 삭제 성공.");
     }
 }

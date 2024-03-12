@@ -3,6 +3,8 @@ package com.project.tableforyou.service;
 import com.project.tableforyou.domain.dto.RestaurantDto;
 import com.project.tableforyou.domain.entity.Restaurant;
 import com.project.tableforyou.domain.entity.User;
+import com.project.tableforyou.handler.exceptionHandler.ErrorCode;
+import com.project.tableforyou.handler.exceptionHandler.CustomException;
 import com.project.tableforyou.repository.RestaurantRepository;
 import com.project.tableforyou.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +28,7 @@ public class RestaurantService {
 
         log.info("Creating Restaurant by user username: {}", username);
         User user = userRepository.findByUsername(username).orElseThrow(() ->
-                new IllegalArgumentException("해당 회원이 존재하지 않습니다. username: " + username));
+                new CustomException(ErrorCode.USER_NOT_FOUND));
 
         dto.setUser(user);
         Restaurant restaurant = dto.toEntity();
@@ -42,7 +44,7 @@ public class RestaurantService {
 
         log.info("Finding restaurant by ID: {}", id);
         Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("해당 가게가 존재하지 않습니다. id: " + id));
+                new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
         return new RestaurantDto.Response(restaurant);
     }
 
@@ -84,7 +86,7 @@ public class RestaurantService {
     public void updateRating(Long id, double rating) {
 
         Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("해당 가게가 존재하지 않습니다. id: " + id));
+                new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
         double before_rating = restaurant.getRating();
         int now_ratingNum = restaurant.getRating_num() + 1;
 
@@ -105,10 +107,10 @@ public class RestaurantService {
 
         log.info("Deleting Restaurant with ID: {}", id);
         Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("해당 가게가 존재하지 않습니다. id: " + id));
+                new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
         if(!verifyAuthenticationByUsername(username, restaurant.getUser().getUsername()))
-            throw new RuntimeException("권한이 없습니다.");
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
         else {
             restaurantRepository.delete(restaurant);
             log.info("Restaurant deleted successfully with ID: {}", id);
@@ -121,9 +123,9 @@ public class RestaurantService {
 
         log.info("Updating Restaurant with ID: {}", id);
         Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("해당 가게가 존재하지 않습니다. id: " + id));
+                new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
         if(!verifyAuthenticationByUsername(username, restaurant.getUser().getUsername()))
-            throw new RuntimeException("권한이 없습니다.");
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
         else {
             restaurant.update(dto);
             log.info("Restaurant updated successfully with ID: {}", id);

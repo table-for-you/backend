@@ -1,4 +1,4 @@
-package com.project.tableforyou.config.handler;
+package com.project.tableforyou.handler.authFailureHandler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
