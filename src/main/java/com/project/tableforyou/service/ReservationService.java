@@ -4,6 +4,8 @@ import com.project.tableforyou.domain.dto.ReservationDto;
 import com.project.tableforyou.domain.entity.Reservation;
 import com.project.tableforyou.domain.entity.Restaurant;
 import com.project.tableforyou.domain.entity.User;
+import com.project.tableforyou.handler.exceptionHandler.ErrorCode;
+import com.project.tableforyou.handler.exceptionHandler.CustomException;
 import com.project.tableforyou.repository.ReservationRepository;
 import com.project.tableforyou.repository.RestaurantRepository;
 import com.project.tableforyou.repository.UserRepository;
@@ -15,9 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -30,15 +30,15 @@ public class ReservationService {
 
     /* 예약자 추가 */
     @Transactional
-    public Long save(String username, Long store_id) {
+    public Long save(String username, Long restaurant_id) {
 
         log.info("Creating Reservation");
         Reservation reservation = new Reservation();
 
         User user = userRepository.findByUsername(username).orElseThrow(() ->
-                new IllegalArgumentException("해당 회원이 존재하지 않습니다. username: " + username));
-        Restaurant restaurant = restaurantRepository.findById(store_id).orElseThrow(() ->
-                new IllegalArgumentException("해당 가게가 존재하지 않습니다. id: " + store_id));
+                new CustomException(ErrorCode.USER_NOT_FOUND));
+        Restaurant restaurant = restaurantRepository.findById(restaurant_id).orElseThrow(() ->
+                new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
         reservation.setUser(user);
         reservation.setRestaurant(restaurant);
@@ -57,7 +57,7 @@ public class ReservationService {
 
         log.info("Finding Reservation by ID: {}", id);
         Reservation reservation = reservationRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("해당하는 예약번호가 없습니다. id" + id));
+                new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
         return new ReservationDto.Response(reservation);
     }
 
@@ -88,11 +88,11 @@ public class ReservationService {
 
     /* 예약 미루기(미루기할 시 store 예약자 수에 대한 조건 + 뒤에 있던 사람들 앞으로 당기기 - decreaseBooking) */
     @Transactional
-    public void postponedGuestBooking(Long reservation_id, ReservationDto.Request dto) {
+    public void postponedGuestBooking(Long id, ReservationDto.Request dto) {
 
-        log.info("Postponing guest booking for reservation with ID: {}", reservation_id);
-        Reservation reservation = reservationRepository.findById(reservation_id).orElseThrow(() ->
-                new IllegalArgumentException("해당하는 예약번호가 없습니다. id" + reservation_id));
+        log.info("Postponing guest booking for reservation with ID: {}", id);
+        Reservation reservation = reservationRepository.findById(id).orElseThrow(() ->
+                new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
         reservation.update(dto.getBooking());
     }
 
@@ -107,11 +107,11 @@ public class ReservationService {
 
     /* 예약자 삭제(중간사람 삭제 시 뒤에 있던 사람들 앞으로 당기기 - decreaseBooking) */
     @Transactional
-    public void delete(Long reservation_id) {
+    public void delete(Long id) {
 
-        log.info("Deleting reservation with ID: {}", reservation_id);
-        Reservation reservation = reservationRepository.findById(reservation_id).orElseThrow(() ->
-                new IllegalArgumentException("해당하는 예약번호가 없습니다. id" + reservation_id));
+        log.info("Deleting reservation with ID: {}", id);
+        Reservation reservation = reservationRepository.findById(id).orElseThrow(() ->
+                new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
         reservationRepository.delete(reservation);
         log.info("Reservation deleted successfully");
     }
@@ -120,7 +120,7 @@ public class ReservationService {
     public List<Reservation> getReservations(Long restaurant_id, Long reservation_id, ReservationDto.Request dto) {
 
         Restaurant restaurant = restaurantRepository.findById(restaurant_id).orElseThrow(() ->
-                new IllegalArgumentException("해당 가게가 존재하지 않습니다. id: " + restaurant_id));
+                new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
         List<Reservation> reservations = restaurant.getReservations();
 
         if (reservation_id == 0 && dto == null) {    // 일반적인 예약 앞당기기.
@@ -128,7 +128,7 @@ public class ReservationService {
         }
 
         Reservation before_reservation = reservationRepository.findById(reservation_id).orElseThrow(() ->
-                new IllegalArgumentException("해당하는 예약번호가 없습니다. id" + reservation_id));
+                new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
         List<Reservation> decreaseReservation = new ArrayList<>();
 
         if (dto == null) {       // 예약 삭제로 인한 뒷사람 앞당기기.
@@ -140,7 +140,7 @@ public class ReservationService {
         // 예약 미루기로 인한 사이 번호 앞당기기.
         if (dto.getBooking() > restaurant.getReservations().size()
                 || dto.getBooking() <= before_reservation.getBooking())   // 예약 번호가 마지막 예약 사람보다 클 때 or 자신보다 앞의 번호일 때.
-            return null;
+            throw new CustomException(ErrorCode.INVALID_PARAMETER);
         else {
             for (Reservation reservation1 : reservations) {
                 if (reservation1.getBooking() > before_reservation.getBooking() && reservation1.getBooking() <= dto.getBooking())

@@ -1,0 +1,22 @@
+package com.project.tableforyou.handler.exceptionHandler;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+@Slf4j
+@RestControllerAdvice("com.project.tableforyou.controller")     // 해당 패기지만 동작하도록 설정.
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(CustomException.class)
+    protected ResponseEntity customException(CustomException ex) {
+        ErrorCode errorCode = ex.getErrorCode();
+        ErrorDto error = new ErrorDto(errorCode.getStatus(), errorCode.getMessage());
+        log.error("Error occurred: {}", error.getMessage());
+        return new ResponseEntity(error, HttpStatus.valueOf(error.getStatus()));
+    }
+
+
+}

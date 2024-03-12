@@ -2,25 +2,22 @@ package com.project.tableforyou.service;
 
 import com.project.tableforyou.domain.dto.UserDto;
 import com.project.tableforyou.domain.entity.User;
+import com.project.tableforyou.handler.exceptionHandler.ErrorCode;
+import com.project.tableforyou.handler.exceptionHandler.CustomException;
 import com.project.tableforyou.repository.UserRepository;
 import com.project.tableforyou.service.mail.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -49,11 +46,11 @@ public class UserService {
 
     /* 회원 불러오기 */
     @Transactional(readOnly = true)
-    public UserDto.Response findById(Long id) {
+    public UserDto.Response findByUsername(String username) {
 
-        log.info("Finding user by ID: {}", id);
-        User user = userRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("해당 회원이 존재하지 않습니다. id: " + id));
+        log.info("Finding user by username: {}", username);
+        User user = userRepository.findByUsername(username).orElseThrow(() ->
+                new CustomException(ErrorCode.USER_NOT_FOUND));
 
         return new UserDto.Response(user);
     }
@@ -74,10 +71,10 @@ public class UserService {
 
         log.info("Updating user with username: {}", username);
         User user = userRepository.findByUsername(username).orElseThrow(() ->
-                new IllegalArgumentException("해당 회원이 존재하지 않습니다. username: " + username));
+                new CustomException(ErrorCode.USER_NOT_FOUND));
         dto.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
         if(!verifyAuthenticationByUsername(username, user.getUsername())) {
-            throw new RuntimeException("권한이 없습니다.");
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
         } else {
             user.update(dto.getNickname(), dto.getPassword(), dto.getEmail());
             log.info("User updated successfully with username: {}", username);
@@ -90,7 +87,7 @@ public class UserService {
 
         log.info("Deleting user with username: {}", username);
         User user = userRepository.findByUsername(username).orElseThrow(() ->
-                new IllegalArgumentException("해당 회원이 존재하지 않습니다. username: " + username));
+                new CustomException(ErrorCode.USER_NOT_FOUND));
 
         userRepository.delete(user);
         log.info("User deleted successfully with username: {}", username);

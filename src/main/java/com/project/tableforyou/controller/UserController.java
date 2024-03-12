@@ -54,9 +54,9 @@ public class UserController {
     }
 
     /* 회원 불러오기 */
-    @GetMapping("/{user_id}")
-    public UserDto.Response read(@PathVariable(name = "user_id") Long user_id) {
-        return userService.findById(user_id);
+    @GetMapping("/{username}")
+    public UserDto.Response read(@PathVariable(name = "username") String username) {
+        return userService.findByUsername(username);
     }
 
     /* 회원 전체 불러오기, 페이징 처리 */
@@ -69,26 +69,18 @@ public class UserController {
     @PutMapping("/update")
     public ResponseEntity<String> update(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                          @RequestBody UserDto.UpdateRequest dto) {
-        try {
-            userService.update(principalDetails.getUsername(), dto);
-            return ResponseEntity.ok("회원 업데이트 성공.");
-        } catch (Exception e) {
-            log.error("Error occurred during member update: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 업데이트 실패");
-        }
+
+        userService.update(principalDetails.getUsername(), dto);
+        return ResponseEntity.ok("회원 업데이트 성공.");
+
     }
 
     /* 회원 삭제 */
     @DeleteMapping("/delete")
     public ResponseEntity<String> delete(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        try {
-            userService.delete(principalDetails.getUsername());
-            return ResponseEntity.ok("회원 삭제 성공.");
-        } catch (Exception e) {
-            log.error("Error occurred during member deletion: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원 업데이트 실패");
-        }
+        userService.delete(principalDetails.getUsername());
+        return ResponseEntity.ok("회원 삭제 성공.");
     }
 
     /* 이메일 인증 번호 보내기 */
