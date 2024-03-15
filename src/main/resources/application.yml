@@ -69,7 +69,8 @@ spring:
 server:
   servlet:
     session:
-      timeout: 1800
+      cookie:
+        same-site: None
 
 logging:
   level:
