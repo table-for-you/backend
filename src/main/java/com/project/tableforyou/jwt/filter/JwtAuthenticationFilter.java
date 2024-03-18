@@ -2,7 +2,7 @@ package com.project.tableforyou.jwt.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.tableforyou.config.auth.PrincipalDetails;
-import com.project.tableforyou.config.handler.CustomAuthFailureHandler;
+import com.project.tableforyou.handler.authFailureHandler.CustomAuthFailureHandler;
 import com.project.tableforyou.domain.dto.AuthDto;
 import com.project.tableforyou.domain.dto.LoginDto;
 import com.project.tableforyou.jwt.JwtUtil;
@@ -10,10 +10,10 @@ import com.project.tableforyou.service.AuthService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletInputStream;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,7 +21,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.StreamUtils;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -85,7 +84,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.getWriter().write(userInfoJson);
 
         response.setHeader(ACCESS_HEADER_VALUE, TOKEN_PREFIX + accessToken);    // 헤더에 access Token 저장.
-        response.addCookie(createCookie(REFRESH_COOKIE_VALUE, refreshUUID));         // 쿠키에 refresh Token index 값 저장.
+        response.addHeader("Set-Cookie", createCookie(REFRESH_COOKIE_VALUE, refreshUUID).toString());         // 쿠키에 refresh Token index 값 저장.
         response.setStatus(HttpServletResponse.SC_OK);      // 상태 코드 200
     }
 
@@ -100,13 +99,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     /* 쿠키 생성 메서드 */
-    private Cookie createCookie(String key, String value) {
+    private ResponseCookie createCookie(String key, String value) {
 
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24*60*60);
-        //cookie.setSecure(true);
-        //cookie.setPath("/");
-        cookie.setHttpOnly(true);
+        ResponseCookie cookie = ResponseCookie.from(key, value)
+                .path("/")
+                .httpOnly(true)
+                .maxAge(24*60*60)
+                .secure(true)
+                .sameSite("None")
+                .build();
 
         return cookie;
     }

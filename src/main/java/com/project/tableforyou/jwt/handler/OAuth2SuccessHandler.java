@@ -9,6 +9,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -41,7 +42,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String refreshUUID = getRefreshUUID(refreshToken, username);
 
         response.addHeader(ACCESS_HEADER_VALUE, TOKEN_PREFIX + accessToken);    // 헤더에 access Token 추가
-        response.addCookie(createCookie(REFRESH_COOKIE_VALUE, refreshUUID));        // 쿠키에 refresh Token Index 값 추가.
+        response.addHeader("Set-Cookie", createCookie(REFRESH_COOKIE_VALUE, refreshUUID).toString());         // 쿠키에 refresh Token index 값 저장.
         response.setStatus(HttpServletResponse.SC_OK);
 
     }
@@ -55,13 +56,16 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         return authService.save(authDTO);
     }
 
-    /* 쿠키 생성 */
-    private Cookie createCookie(String key, String value) {
-        Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24*60*60);
-        //cookie.setSecure(true);
-        //cookie.setPath("/");
-        cookie.setHttpOnly(true);
+    /* 쿠키 생성 메서드 */
+    private ResponseCookie createCookie(String key, String value) {
+
+        ResponseCookie cookie = ResponseCookie.from(key, value)
+                .path("/")
+                .httpOnly(true)
+                .maxAge(24*60*60)
+                .secure(true)
+                .sameSite("None")
+                .build();
 
         return cookie;
     }

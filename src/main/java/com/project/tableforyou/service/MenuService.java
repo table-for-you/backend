@@ -3,6 +3,8 @@ package com.project.tableforyou.service;
 import com.project.tableforyou.domain.dto.MenuDto;
 import com.project.tableforyou.domain.entity.Menu;
 import com.project.tableforyou.domain.entity.Restaurant;
+import com.project.tableforyou.handler.exceptionHandler.ErrorCode;
+import com.project.tableforyou.handler.exceptionHandler.CustomException;
 import com.project.tableforyou.repository.MenuRepository;
 import com.project.tableforyou.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +24,11 @@ public class MenuService {
 
     /* 메뉴 추가 */
     @Transactional
-    public Long save(Long reservation_id, MenuDto.Request dto) {
+    public Long save(Long restaurant_id, MenuDto.Request dto) {
 
         log.info("Creating menu");
-        Restaurant restaurant = restaurantRepository.findById(reservation_id).orElseThrow(() ->
-                new IllegalArgumentException("해당 가게가 존재하지 않습니다. id: " + reservation_id));
+        Restaurant restaurant = restaurantRepository.findById(restaurant_id).orElseThrow(() ->
+                new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
         dto.setRestaurant(restaurant);
         Menu menu = dto.toEntity();
@@ -60,7 +62,7 @@ public class MenuService {
 
         log.info("Updating menu with ID: {}", id);
         Menu menu = menuRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("해당 메뉴가 존재하지 않습니다. id: " + id));
+                new CustomException(ErrorCode.MENU_NOT_FOUND));
         menu.update(dto.getName(), dto.getPrice());
         log.info("Menu updated successfully");
     }
@@ -71,7 +73,7 @@ public class MenuService {
 
         log.info("Deleting menu with ID: {}", id);
         Menu menu = menuRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("해당 메뉴가 존재하지 않습니다. id: " + id));
+                new CustomException(ErrorCode.MENU_NOT_FOUND));
         menuRepository.delete(menu);
         log.info("Menu deleted successfully");
     }

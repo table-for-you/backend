@@ -1,4 +1,4 @@
-package com.project.tableforyou.config.handler;
+package com.project.tableforyou.handler.authFailureHandler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,6 +36,7 @@ public class CustomAuthFailureHandler implements AuthenticationFailureHandler {
     }
 
     private static String getErrorMessage(AuthenticationException exception) {
+
         String errorMessage;
         if (exception instanceof UsernameNotFoundException) {
             errorMessage = "계정이 존재하지 않습니다. 회원가입 진행 후 로그인 해주세요.";
@@ -49,7 +50,10 @@ public class CustomAuthFailureHandler implements AuthenticationFailureHandler {
             errorMessage = "알 수 없는 이유로 로그인에 실패하였습니다 관리자에게 문의하세요.";
         }
         return errorMessage;
+<<<<<<< HEAD:src/main/java/com/project/tableforyou/config/handler/CustomAuthFailureHandler.java
 
+=======
+>>>>>>> 077c36cc4397a69ced60ff7da3325d22e719dec9:src/main/java/com/project/tableforyou/handler/authFailureHandler/CustomAuthFailureHandler.java
     }
 }
 

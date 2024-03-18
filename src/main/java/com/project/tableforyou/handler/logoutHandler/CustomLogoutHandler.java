@@ -1,4 +1,4 @@
-package com.project.tableforyou.config.handler;
+package com.project.tableforyou.handler.logoutHandler;
 
 import com.project.tableforyou.service.AuthService;
 import jakarta.servlet.http.Cookie;

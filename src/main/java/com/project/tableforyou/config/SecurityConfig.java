@@ -2,9 +2,8 @@ package com.project.tableforyou.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.tableforyou.config.auth.PrincipalDetailsService;
-import com.project.tableforyou.config.handler.CustomAuthFailureHandler;
-import com.project.tableforyou.config.handler.CustomAuthSuccessHandler;
-import com.project.tableforyou.config.handler.CustomLogoutHandler;
+import com.project.tableforyou.handler.authFailureHandler.CustomAuthFailureHandler;
+import com.project.tableforyou.handler.logoutHandler.CustomLogoutHandler;
 import com.project.tableforyou.config.oauth.PrincipalOAuth2UserService;
 import com.project.tableforyou.jwt.JwtUtil;
 import com.project.tableforyou.jwt.filter.JwtAuthenticationFilter;
@@ -85,11 +84,16 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /* DaoAuthenticationProvider 등록 */
     protected void addAuthenticationProvider(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(daoAuthenticationProvider());
     }
 
+<<<<<<< HEAD
     /* daoAuthenticationProvider 구성 */
+=======
+    /* DaoAuthenticationProvider 구성 */
+>>>>>>> 077c36cc4397a69ced60ff7da3325d22e719dec9
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
 
@@ -97,7 +101,12 @@ public class SecurityConfig {
         authenticationProvider.setUserDetailsService(principalDetailsService);
         authenticationProvider.setPasswordEncoder(bCryptPasswordEncoder);
         authenticationProvider.setHideUserNotFoundExceptions(false);
+<<<<<<< HEAD
         // hideUserNotFoundExceptions를 false하며 UsernameNotFoundException 활성화
+=======
+        // hideUserNotFoundExceptions을 false하며 UsernameNotFoundException 사용.
+
+>>>>>>> 077c36cc4397a69ced60ff7da3325d22e719dec9
         return  authenticationProvider;
     }
 
