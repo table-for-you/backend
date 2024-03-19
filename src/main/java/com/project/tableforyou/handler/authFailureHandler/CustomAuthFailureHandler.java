@@ -50,10 +50,6 @@ public class CustomAuthFailureHandler implements AuthenticationFailureHandler {
             errorMessage = "알 수 없는 이유로 로그인에 실패하였습니다 관리자에게 문의하세요.";
         }
         return errorMessage;
-<<<<<<< HEAD:src/main/java/com/project/tableforyou/config/handler/CustomAuthFailureHandler.java
-
-=======
->>>>>>> 077c36cc4397a69ced60ff7da3325d22e719dec9:src/main/java/com/project/tableforyou/handler/authFailureHandler/CustomAuthFailureHandler.java
     }
 }
 
