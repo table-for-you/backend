@@ -2,11 +2,11 @@ package com.project.tableforyou.jwt.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.tableforyou.config.auth.PrincipalDetails;
-import com.project.tableforyou.handler.authFailureHandler.CustomAuthFailureHandler;
-import com.project.tableforyou.domain.dto.AuthDto;
 import com.project.tableforyou.domain.dto.LoginDto;
+import com.project.tableforyou.handler.authFailureHandler.CustomAuthFailureHandler;
 import com.project.tableforyou.jwt.JwtUtil;
-import com.project.tableforyou.service.AuthService;
+import com.project.tableforyou.redis.domain.RefreshTokenDto;
+import com.project.tableforyou.redis.service.RefreshTokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletInputStream;
@@ -18,12 +18,15 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import static com.project.tableforyou.jwt.JwtProperties.*;
@@ -34,7 +37,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final CustomAuthFailureHandler customAuthFailureHandler;
-    private final AuthService authService;
+    private final RefreshTokenService refreshTokenService;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -63,16 +66,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
 
-        String accessToken = jwtUtil.generateAccessToken(principalDetails);     // access Token 발급
-        String refreshToken = jwtUtil.generateRefreshToken(principalDetails);   // refresh Token 발급
+        Collection<? extends GrantedAuthority> authorities = principalDetails.getAuthorities();
+        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
+        String role = iterator.next().getAuthority();
+        role = role.split("_")[1];      // ROLE_ 접두사 빼기 위해.
 
         String username = principalDetails.getUsername();
 
-        if (authService.existsByUsername(username)) {
-            authService.delete(username);
-        }
+        String accessToken = jwtUtil.generateAccessToken(role, username);     // access Token 발급
+        String refreshToken = jwtUtil.generateRefreshToken(role, username);   // refresh Token 발급
 
-        String refreshUUID = getRefreshUUID(refreshToken, username);
 
         Map<String, String> userInfo = new HashMap<>();
         userInfo.put("nickname", principalDetails.getUser().getNickname());     // 프론트에 nickname 보내기
@@ -83,33 +86,32 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(userInfoJson);
 
+        saveRefreshToken(username, refreshToken);               // refreshToken redis에 저장.
+
         response.setHeader(ACCESS_HEADER_VALUE, TOKEN_PREFIX + accessToken);    // 헤더에 access Token 저장.
-        response.addHeader("Set-Cookie", createCookie(REFRESH_COOKIE_VALUE, refreshUUID).toString());         // 쿠키에 refresh Token index 값 저장.
+        response.addHeader("Set-Cookie", createCookie(REFRESH_COOKIE_VALUE, refreshToken).toString());         // 쿠키에 refresh Token값 저장.
         response.setStatus(HttpServletResponse.SC_OK);      // 상태 코드 200
     }
 
-    /* Refresh Token db저장 및 key값 가져오기 */
-    private String getRefreshUUID(String refreshToken, String username) {
-        AuthDto authDTO = AuthDto.builder()
-                .token(refreshToken)
+    /* redis에 refreshToken 저장 */
+    private void saveRefreshToken(String username, String refreshToken) {
+        RefreshTokenDto saveRefreshToken = RefreshTokenDto.builder()
                 .username(username)
+                .refreshToken(refreshToken)
                 .build();
-
-        return authService.save(authDTO);
+        refreshTokenService.save(saveRefreshToken);
     }
 
     /* 쿠키 생성 메서드 */
     private ResponseCookie createCookie(String key, String value) {
 
-        ResponseCookie cookie = ResponseCookie.from(key, value)
+        return ResponseCookie.from(key, value)
                 .path("/")
                 .httpOnly(true)
                 .maxAge(24*60*60)
                 .secure(true)
                 .sameSite("None")
                 .build();
-
-        return cookie;
     }
 
     @Override

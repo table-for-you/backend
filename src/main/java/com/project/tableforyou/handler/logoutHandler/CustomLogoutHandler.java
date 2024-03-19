@@ -1,6 +1,8 @@
 package com.project.tableforyou.handler.logoutHandler;
 
-import com.project.tableforyou.service.AuthService;
+import com.project.tableforyou.handler.exceptionHandler.CustomException;
+import com.project.tableforyou.handler.exceptionHandler.ErrorCode;
+import com.project.tableforyou.redis.service.RefreshTokenService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,26 +11,33 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 @RequiredArgsConstructor
 @Component
 public class CustomLogoutHandler implements LogoutHandler {
 
-    private final AuthService authService;
+    private final RefreshTokenService refreshTokenService;
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
 
-        UUID refresh = null;
+        String refreshToken = getRefreshToken(request);
+
+        if (refreshToken == null) {
+            throw new CustomException(ErrorCode.REFRESHTOKEN_NOT_FOUND);
+        }
+
+        refreshTokenService.delete(refreshToken);       // 로그아웃 시 redis에서 refreshToken 삭제
+    }
+
+    private String getRefreshToken(HttpServletRequest request) {
+        String refreshToken = null;
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
 
             if (cookie.getName().equals("refresh")) {
 
-                refresh = UUID.fromString(cookie.getValue());
+                refreshToken = cookie.getValue();
             }
         }
-
-        authService.revokedRefreshByLogout(refresh);
+        return refreshToken;
     }
 }
