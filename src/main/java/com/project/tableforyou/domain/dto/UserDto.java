@@ -36,7 +36,7 @@ public class UserDto {
 
         /* dto -> Entity */
         public User toEntity() {
-            User user = User.builder()
+            return User.builder()
                     .name(name)
                     .nickname(nickname)
                     .username(username)
@@ -45,12 +45,10 @@ public class UserDto {
                     .age(age)
                     .role(role)
                     .build();
-
-            return user;
         }
 
         public User toEntity(OAuth2UserInfo oAuth2UserInfo, BCryptPasswordEncoder bCryptPasswordEncoder) {
-            User user = User.builder()
+            return User.builder()
                     .name(oAuth2UserInfo.getName())
                     .nickname(oAuth2UserInfo.getNickname())
                     .username(oAuth2UserInfo.getUsername())
@@ -58,8 +56,6 @@ public class UserDto {
                     .email(oAuth2UserInfo.getEmail())
                     .role(Role.USER)
                     .build();
-
-            return user;
         }
     }
 

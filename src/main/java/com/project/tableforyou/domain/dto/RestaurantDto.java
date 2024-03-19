@@ -34,7 +34,7 @@ public class RestaurantDto {
 
         /* dto -> Entity */
         public Restaurant toEntity() {
-            Restaurant restaurant = Restaurant.builder()
+            return Restaurant.builder()
                     .usedSeats(usedSeats)
                     .totalSeats(totalSeats)
                     .likeCount(likeCount)
@@ -46,8 +46,6 @@ public class RestaurantDto {
                     .description(description)
                     .user(user)
                     .build();
-
-            return restaurant;
         }
     }
 

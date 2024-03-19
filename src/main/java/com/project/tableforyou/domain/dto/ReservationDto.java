@@ -18,12 +18,11 @@ public class ReservationDto {
 
         /* dto -> Entity */
         public Reservation toEntity() {
-            Reservation reservation = Reservation.builder()
+            return Reservation.builder()
                     .booking(booking)
                     .user(user)
                     .restaurant(restaurant)
                     .build();
-            return reservation;
         }
     }
 
