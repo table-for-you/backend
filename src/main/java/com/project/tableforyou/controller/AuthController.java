@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,9 +44,26 @@ public class AuthController {
 
         String accessTokenReIssue = jwtUtil.generateAccessToken(role, username);      // 재발급
 
+        refreshTokenReIssue(response, refreshToken, username, role);        // Refresh token rotation(RTR) 사용
+
         response.setHeader(ACCESS_HEADER_VALUE, TOKEN_PREFIX + accessTokenReIssue);
 
         return ResponseEntity.ok("Access Token reIssue");
+    }
+
+    /* Refresh token rotation(RTR) 사용 */
+    private void refreshTokenReIssue(HttpServletResponse response, RefreshTokenDto refreshToken, String username, String role) {
+        refreshTokenService.delete(refreshToken.getRefreshToken());
+
+        String refreshTokenReIssue = jwtUtil.generateRefreshToken(role, username);
+        RefreshTokenDto refreshTokenReIssueDto = RefreshTokenDto.builder()
+                .username(username)
+                .refreshToken(refreshTokenReIssue)
+                .build();
+
+        refreshTokenService.save(refreshTokenReIssueDto);
+        response.addHeader("Set-Cookie", createCookie(REFRESH_COOKIE_VALUE, refreshTokenReIssue).toString());         // 쿠키에 refresh Token값 저장.
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     /* 쿠키 값에서 Refresh Token 가져오기 */
@@ -59,5 +77,17 @@ public class AuthController {
                 refreshToken = cookie.getValue();
         }
         return refreshToken;
+    }
+
+    /* 쿠키 생성 메서드 */
+    private ResponseCookie createCookie(String key, String value) {
+
+        return ResponseCookie.from(key, value)
+                .path("/")
+                .httpOnly(true)
+                .maxAge(24*60*60)
+                .secure(true)
+                .sameSite("None")
+                .build();
     }
 }
