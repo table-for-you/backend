@@ -5,6 +5,10 @@ spring:
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
 
+  redis:
+    host: localhost
+    port: 6379
+
   jpa:
     hibernate:
       ddl-auto: none

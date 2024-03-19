@@ -1,4 +1,4 @@
-package com.project.tableforyou.redis;
+package com.project.tableforyou.redis.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
