@@ -6,5 +6,5 @@ public interface JwtProperties {
     String SECRET_KEY = "vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb";    // 임의로 만든 암호화 변수 키
     String TOKEN_PREFIX = "Bearer ";
     String ACCESS_HEADER_VALUE = "Authorization";
-    String REFRESH_COOKIE_VALUE = "refresh";
+    String REFRESH_COOKIE_VALUE = "RefreshToken";
 }
