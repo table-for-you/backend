@@ -11,19 +11,16 @@ import com.project.tableforyou.repository.RestaurantRepository;
 import com.project.tableforyou.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class RedisReservationService {      // 아래 redisTemplate부분 따로 나누기
+public class ReservationService {      // 아래 redisTemplate부분 따로 나누기
 
     private final UserRepository userRepository;
     private final RestaurantRepository restaurantRepository;
@@ -43,10 +40,11 @@ public class RedisReservationService {      // 아래 redisTemplate부분 따로
         reservation.setUsername(user.getUsername());
         reservation.setRestaurant(restaurant.getName());
 
-        int size = redisUtil.getReservationSizeFromRedis(restaurant.getName());
+        String key = redisUtil.generateRedisKey(restaurant.getName());
+        int size = redisUtil.getReservationSizeFromRedis(key); // redis 사이즈를 통해 예약 번호 지정
         reservation.setBooking(size+1);
 
-        redisUtil.saveReservationToRedis(redisUtil.generateRedisKey(restaurant.getName()), reservation);
+        redisUtil.saveReservationToRedis(key, reservation);
         log.info("Reservation created with username: {}", user.getUsername());
     }
 
@@ -90,16 +88,16 @@ public class RedisReservationService {      // 아래 redisTemplate부분 따로
 
         String key = redisUtil.generateRedisKey(restaurant);
 
-        // Redis에서 예약 정보를 가져옵니다.
+        // Redis에서 예약 정보를 가져오기.
         Reservation reservation = redisUtil.getReservationFromRedis(key, username);
         if (reservation == null) {
             throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
         }
 
-        // 예약 정보를 업데이트합니다.
+        // 예약 정보를 업데이트.
         reservation.update(dto.getBooking());
 
-        // 업데이트된 예약 정보를 다시 Redis에 저장합니다.
+        // 업데이트된 예약 정보를 다시 Redis에 저장.
         redisUtil.saveReservationToRedis(key, reservation);
     }
 
