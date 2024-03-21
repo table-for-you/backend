@@ -33,7 +33,7 @@ public class CustomLogoutHandler implements LogoutHandler {
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
 
-            if (cookie.getName().equals("refresh")) {
+            if (cookie.getName().equals("RefreshToken")) {
 
                 refreshToken = cookie.getValue();
             }
