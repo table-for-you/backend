@@ -55,10 +55,6 @@ public class Restaurant extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "restaurant", fetch = FetchType.EAGER)
-    @OrderBy("id asc")  // 예약자 순서대로 정렬
-    private List<Reservation> reservations;
-
     public void update(RestaurantDto.UpdateRequest dto) {
         this.totalSeats = dto.getTotalSeats();
         this.time = dto.getTime();

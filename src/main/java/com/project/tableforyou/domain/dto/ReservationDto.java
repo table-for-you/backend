@@ -1,8 +1,6 @@
 package com.project.tableforyou.domain.dto;
 
 import com.project.tableforyou.domain.entity.Reservation;
-import com.project.tableforyou.domain.entity.Restaurant;
-import com.project.tableforyou.domain.entity.User;
 import lombok.*;
 
 public class ReservationDto {
@@ -13,35 +11,30 @@ public class ReservationDto {
     @Builder
     public static class Request {
         private int booking;
-        private User user;
-        private Restaurant restaurant;
+        private String username;
+        private String restaurant;
 
         /* dto -> Entity */
         public Reservation toEntity() {
             return Reservation.builder()
                     .booking(booking)
-                    .user(user)
+                    .username(username)
                     .restaurant(restaurant)
                     .build();
         }
     }
 
-
     @Getter
     public static class Response {
         private final int booking;
-        private final Long user_id;
-        private final Long store_id;
-        private final String created_time;
-        private final String modified_time;
+        private final String username;
+        private final String restaurant;
 
         /* Entity -> dto */
         public Response(Reservation reservation) {
             this.booking = reservation.getBooking();
-            this.user_id = reservation.getUser().getId();
-            this.store_id = reservation.getRestaurant().getId();
-            this.created_time = reservation.getCreated_time();
-            this.modified_time = reservation.getModified_time();
+            this.username = reservation.getUsername();
+            this.restaurant = reservation.getRestaurant();
         }
     }
 }
