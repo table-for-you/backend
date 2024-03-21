@@ -8,16 +8,20 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
     Page<Restaurant> findByNameContainingOrDescriptionContaining(String searchKeyword1, String searchKeyword2, Pageable pageable);
 
-    @Modifying
-    @Query("update Restaurant r set r.usedSeats = r.usedSeats + :value where r.id = :id")
-    void updateUsedSeats(@Param("id") Long id, @Param("value") int value); // JPQL의 id와 매핑하기 위해.
+    Optional<Restaurant> findByName(String name);
 
     @Modifying
-    @Query("update Restaurant r set r.likeCount = r.likeCount + :value where r.id = :id")
-    void updateLikeCount(@Param("id") Long id, @Param("value") int value);
+    @Query("update Restaurant r set r.usedSeats = r.usedSeats + :value where r.name = :name")
+    void updateUsedSeats(@Param("name") String name, @Param("value") int value); // JPQL의 id와 매핑하기 위해.
+
+    @Modifying
+    @Query("update Restaurant r set r.likeCount = r.likeCount + :value where r.name = :name")
+    void updateLikeCount(@Param("name") String name, @Param("value") int value);
 
 }
