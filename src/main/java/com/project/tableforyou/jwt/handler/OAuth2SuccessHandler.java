@@ -2,8 +2,8 @@ package com.project.tableforyou.jwt.handler;
 
 import com.project.tableforyou.config.auth.PrincipalDetails;
 import com.project.tableforyou.jwt.JwtUtil;
-import com.project.tableforyou.redis.domain.RefreshTokenDto;
-import com.project.tableforyou.redis.service.RefreshTokenService;
+import com.project.tableforyou.domain.dto.RefreshTokenDto;
+import com.project.tableforyou.service.RefreshTokenService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

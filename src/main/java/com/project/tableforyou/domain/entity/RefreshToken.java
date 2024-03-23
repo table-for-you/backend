@@ -1,4 +1,4 @@
-package com.project.tableforyou.redis.domain;
+package com.project.tableforyou.domain.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,8 +1,8 @@
 package com.project.tableforyou.controller;
 
 import com.project.tableforyou.jwt.JwtUtil;
-import com.project.tableforyou.redis.domain.RefreshTokenDto;
-import com.project.tableforyou.redis.service.RefreshTokenService;
+import com.project.tableforyou.domain.dto.RefreshTokenDto;
+import com.project.tableforyou.service.RefreshTokenService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

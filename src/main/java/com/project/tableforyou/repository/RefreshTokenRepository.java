@@ -1,6 +1,6 @@
-package com.project.tableforyou.redis.repository;
+package com.project.tableforyou.repository;
 
-import com.project.tableforyou.redis.domain.RefreshToken;
+import com.project.tableforyou.domain.entity.RefreshToken;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;

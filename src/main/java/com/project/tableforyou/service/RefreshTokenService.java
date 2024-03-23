@@ -1,10 +1,10 @@
-package com.project.tableforyou.redis.service;
+package com.project.tableforyou.service;
 
 import com.project.tableforyou.handler.exceptionHandler.CustomException;
 import com.project.tableforyou.handler.exceptionHandler.ErrorCode;
-import com.project.tableforyou.redis.domain.RefreshToken;
-import com.project.tableforyou.redis.domain.RefreshTokenDto;
-import com.project.tableforyou.redis.repository.RefreshTokenRepository;
+import com.project.tableforyou.domain.entity.RefreshToken;
+import com.project.tableforyou.domain.dto.RefreshTokenDto;
+import com.project.tableforyou.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

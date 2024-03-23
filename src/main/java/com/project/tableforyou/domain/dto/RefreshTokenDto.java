@@ -1,5 +1,6 @@
-package com.project.tableforyou.redis.domain;
+package com.project.tableforyou.domain.dto;
 
+import com.project.tableforyou.domain.entity.RefreshToken;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

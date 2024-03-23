@@ -9,7 +9,7 @@ import com.project.tableforyou.jwt.JwtUtil;
 import com.project.tableforyou.jwt.filter.JwtAuthenticationFilter;
 import com.project.tableforyou.jwt.filter.JwtAuthorizationFilter;
 import com.project.tableforyou.jwt.handler.OAuth2SuccessHandler;
-import com.project.tableforyou.redis.service.RefreshTokenService;
+import com.project.tableforyou.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

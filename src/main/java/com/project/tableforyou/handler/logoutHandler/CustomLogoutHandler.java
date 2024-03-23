@@ -2,7 +2,7 @@ package com.project.tableforyou.handler.logoutHandler;
 
 import com.project.tableforyou.handler.exceptionHandler.CustomException;
 import com.project.tableforyou.handler.exceptionHandler.ErrorCode;
-import com.project.tableforyou.redis.service.RefreshTokenService;
+import com.project.tableforyou.service.RefreshTokenService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
