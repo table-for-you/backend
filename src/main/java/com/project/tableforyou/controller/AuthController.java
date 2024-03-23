@@ -39,32 +39,19 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("refresh expired");
         }
 
-        String username = jwtUtil.getUsername(refreshToken.getRefreshToken());
-        String role = jwtUtil.getRole(refreshToken.getRefreshToken());
 
-        String accessTokenReIssue = jwtUtil.generateAccessToken(role, username);      // 재발급
+        String accessTokenReIssue = refreshTokenService.accessTokenReIssue(refreshToken.getRefreshToken());
 
-        refreshTokenReIssue(response, refreshToken, username, role);        // Refresh token rotation(RTR) 사용
+        // Refresh token rotation(RTR) 사용
+        String refreshTokenReIssue = refreshTokenService.refreshTokenReIssue(response, refreshToken, refreshToken.getRefreshToken());
 
         response.setHeader(ACCESS_HEADER_VALUE, TOKEN_PREFIX + accessTokenReIssue);
+        response.addHeader("Set-Cookie", createCookie(REFRESH_COOKIE_VALUE, refreshTokenReIssue).toString());         // 쿠키에 refresh Token값 저장.
+        response.setStatus(HttpServletResponse.SC_OK);
 
         return ResponseEntity.ok("Access Token reIssue");
     }
 
-    /* Refresh token rotation(RTR) 사용 */
-    private void refreshTokenReIssue(HttpServletResponse response, RefreshTokenDto refreshToken, String username, String role) {
-        refreshTokenService.delete(refreshToken.getRefreshToken());
-
-        String refreshTokenReIssue = jwtUtil.generateRefreshToken(role, username);
-        RefreshTokenDto refreshTokenReIssueDto = RefreshTokenDto.builder()
-                .username(username)
-                .refreshToken(refreshTokenReIssue)
-                .build();
-
-        refreshTokenService.save(refreshTokenReIssueDto);
-        response.addHeader("Set-Cookie", createCookie(REFRESH_COOKIE_VALUE, refreshTokenReIssue).toString());         // 쿠키에 refresh Token값 저장.
-        response.setStatus(HttpServletResponse.SC_OK);
-    }
 
     /* 쿠키 값에서 Refresh Token 가져오기 */
     private String getRefreshToken(HttpServletRequest request) {
