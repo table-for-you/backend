@@ -38,5 +38,6 @@ out/
 # Ignore .env file
 .env
 docker-compose.yml
-redis/
+redis/conf
+redis/data
 database/
