@@ -35,3 +35,8 @@ out/
 
 ### VS Code ###
 .vscode/
+# Ignore .env file
+.env
+docker-compose.yml
+redis/
+database/
