@@ -1,22 +1,25 @@
 spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://${DATABASE_URL}:${DATABASE_PORT}/board
+    url: jdbc:mariadb://${DATABASE_URL}:${DATABASE_PORT}/${DATABASE_TABLE}
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
 
-  redis:
-    host: localhost
-    port: 6379
-
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
   jpa:
     hibernate:
       ddl-auto: none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    database-platform: org.hibernate.dialect.MySQL8Dialect # 수정
     show-sql: true
     properties:
-      default_batch_fetch_size: 100     # N+1문제를 해결하기 위해.
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        default_batch_fetch_size: 1000     # N+1문제를 해결하기 위해.
 
   mail:
     host: smtp.naver.com
