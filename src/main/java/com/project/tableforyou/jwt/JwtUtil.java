@@ -3,6 +3,7 @@ package com.project.tableforyou.jwt;
 import com.project.tableforyou.config.auth.PrincipalDetails;
 import com.project.tableforyou.config.auth.PrincipalDetailsService;
 import io.jsonwebtoken.Jwts;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +19,10 @@ public class JwtUtil {
 
     private final SecretKey secretKey;
 
-    public JwtUtil() {
+    private final String SECRET_KEY;
+
+    public JwtUtil(@Value("${spring.jwt.secret}") String SECRET_KEY) {
+        this.SECRET_KEY = SECRET_KEY;
         secretKey = new SecretKeySpec(SECRET_KEY.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
