@@ -2,14 +2,14 @@ package com.project.tableforyou.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.tableforyou.config.auth.PrincipalDetailsService;
+import com.project.tableforyou.config.oauth.PrincipalOAuth2UserService;
 import com.project.tableforyou.handler.authFailureHandler.CustomAuthFailureHandler;
 import com.project.tableforyou.handler.logoutHandler.CustomLogoutHandler;
-import com.project.tableforyou.config.oauth.PrincipalOAuth2UserService;
 import com.project.tableforyou.jwt.JwtUtil;
 import com.project.tableforyou.jwt.filter.JwtAuthenticationFilter;
 import com.project.tableforyou.jwt.filter.JwtAuthorizationFilter;
 import com.project.tableforyou.jwt.handler.OAuth2SuccessHandler;
-import com.project.tableforyou.service.AuthService;
+import com.project.tableforyou.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,7 +38,7 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final ObjectMapper objectMapper;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
-    private final AuthService authService;
+    private final RefreshTokenService refreshTokenService;
     private final CustomLogoutHandler customLogoutHandler;
     private final PrincipalDetailsService principalDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -72,7 +72,7 @@ public class SecurityConfig {
                                 .successHandler(oAuth2SuccessHandler))
 
                 .addFilterAt(new JwtAuthenticationFilter(
-                        authenticationManager(authenticationConfiguration), jwtUtil, customAuthFailureHandler, authService, objectMapper),
+                        authenticationManager(authenticationConfiguration), jwtUtil, customAuthFailureHandler, refreshTokenService, objectMapper),
                         UsernamePasswordAuthenticationFilter.class)
 
                 .addFilterBefore(new JwtAuthorizationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
@@ -97,8 +97,7 @@ public class SecurityConfig {
         authenticationProvider.setUserDetailsService(principalDetailsService);
         authenticationProvider.setPasswordEncoder(bCryptPasswordEncoder);
         authenticationProvider.setHideUserNotFoundExceptions(false);
-        // hideUserNotFoundExceptions을 false하며 UsernameNotFoundException 사용.
-
+        // hideUserNotFoundExceptions를 false하며 UsernameNotFoundException 활성화
         return  authenticationProvider;
     }
 

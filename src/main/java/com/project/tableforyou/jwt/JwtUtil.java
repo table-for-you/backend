@@ -3,6 +3,7 @@ package com.project.tableforyou.jwt;
 import com.project.tableforyou.config.auth.PrincipalDetails;
 import com.project.tableforyou.config.auth.PrincipalDetailsService;
 import io.jsonwebtoken.Jwts;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
@@ -17,11 +18,12 @@ import static com.project.tableforyou.jwt.JwtProperties.*;
 public class JwtUtil {
 
     private final SecretKey secretKey;
-    private final PrincipalDetailsService principalDetailsService;
 
-    public JwtUtil(PrincipalDetailsService principalDetailsService) {
+    private final String SECRET_KEY;
+
+    public JwtUtil(@Value("${spring.jwt.secret}") String SECRET_KEY) {
+        this.SECRET_KEY = SECRET_KEY;
         secretKey = new SecretKeySpec(SECRET_KEY.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
-        this.principalDetailsService = principalDetailsService;
     }
 
     /* 토큰(claim)에서 username 가져오기 */
@@ -44,45 +46,24 @@ public class JwtUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
     }
 
-    /* 사용자 정보 조회 메서드 */
-    public PrincipalDetails getUserDetails(String username) {
-        return (PrincipalDetails) principalDetailsService.loadUserByUsername(username);
-    }
-
-    /* 토큰 유효성 검사 메서드 */
-    public Boolean validateToken(String token, PrincipalDetails principalDetails) {
-        String username = getUsername(token);
-        return (username.equals(principalDetails.getUsername()) && !isExpired(token));
-    }
-
     /* access Token 발급 */
-    public String generateAccessToken(PrincipalDetails principalDetails) {
-
-        Collection<? extends GrantedAuthority> authorities = principalDetails.getAuthorities();
-        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-        String role = iterator.next().getAuthority();
-        role = role.split("_")[1];      // ROLE_ 접두사 빼기 위해.
+    public String generateAccessToken(String role, String username) {
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("category", "access");
         claims.put("role", role);
 
-        return createJwt(claims, principalDetails.getUsername(), ACCESS_EXPIRATION_TIME);
+        return createJwt(claims, username, ACCESS_EXPIRATION_TIME);
     }
 
     /* refresh Token 발급 */
-    public String generateRefreshToken(PrincipalDetails principalDetails) {
-
-        Collection<? extends GrantedAuthority> authorities = principalDetails.getAuthorities();
-        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-        String role = iterator.next().getAuthority();
-        role = role.split("_")[1];      // ROLE_ 접두사 빼기 위해.
+    public String generateRefreshToken(String role, String username) {
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("category", "refresh");
         claims.put("role", role);
 
-        return createJwt(claims, principalDetails.getUsername(), REFRESH_EXPIRATION_TIME);
+        return createJwt(claims, username, REFRESH_EXPIRATION_TIME);
     }
 
     /* 토큰 생성 */

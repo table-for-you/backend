@@ -8,9 +8,6 @@ import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class UserDto {
 
     @Getter @Setter
@@ -36,7 +33,7 @@ public class UserDto {
 
         /* dto -> Entity */
         public User toEntity() {
-            User user = User.builder()
+            return User.builder()
                     .name(name)
                     .nickname(nickname)
                     .username(username)
@@ -45,12 +42,10 @@ public class UserDto {
                     .age(age)
                     .role(role)
                     .build();
-
-            return user;
         }
 
         public User toEntity(OAuth2UserInfo oAuth2UserInfo, BCryptPasswordEncoder bCryptPasswordEncoder) {
-            User user = User.builder()
+            return User.builder()
                     .name(oAuth2UserInfo.getName())
                     .nickname(oAuth2UserInfo.getNickname())
                     .username(oAuth2UserInfo.getUsername())
@@ -58,8 +53,6 @@ public class UserDto {
                     .email(oAuth2UserInfo.getEmail())
                     .role(Role.USER)
                     .build();
-
-            return user;
         }
     }
 
@@ -90,7 +83,6 @@ public class UserDto {
         private final Role role;
         private final String created_time;
         private final String modified_time;
-        private final Long reservation_id;
         //private final List<RestaurantDto.Response> stores;
 
         /* Entity -> dto */
@@ -106,7 +98,6 @@ public class UserDto {
             this.providerId = user.getProviderId();
             this.created_time = user.getCreated_time();
             this.modified_time = user.getModified_time();
-            this.reservation_id = (user.getReservation() != null) ? user.getReservation().getId() : null;
             //this.stores = user.getRestaurants().stream().map(RestaurantDto.Response::new).collect(Collectors.toList());
         }
     }

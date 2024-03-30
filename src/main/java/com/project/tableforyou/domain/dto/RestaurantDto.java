@@ -2,12 +2,8 @@ package com.project.tableforyou.domain.dto;
 
 import com.project.tableforyou.domain.entity.Restaurant;
 import com.project.tableforyou.domain.entity.User;
-
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class RestaurantDto {
 
@@ -34,7 +30,7 @@ public class RestaurantDto {
 
         /* dto -> Entity */
         public Restaurant toEntity() {
-            Restaurant restaurant = Restaurant.builder()
+            return Restaurant.builder()
                     .usedSeats(usedSeats)
                     .totalSeats(totalSeats)
                     .likeCount(likeCount)
@@ -46,8 +42,6 @@ public class RestaurantDto {
                     .description(description)
                     .user(user)
                     .build();
-
-            return restaurant;
         }
     }
 
@@ -83,7 +77,6 @@ public class RestaurantDto {
         private final Long user_id;
         private final String created_time;
         private final String modified_time;
-        private final int reservationSize;
         //private final List<ReservationDto.Response> reservations;
         //private final List<MenuDto.Response> menus;
 
@@ -102,7 +95,6 @@ public class RestaurantDto {
             this.user_id = restaurant.getUser().getId();
             this.created_time = restaurant.getCreated_time();
             this.modified_time = restaurant.getModified_time();
-            this.reservationSize = restaurant.getReservations().size();
             //this.reservations = restaurant.getReservations().stream().map(ReservationDto.Response::new).collect(Collectors.toList());
             //this.menus = restaurant.getMenus().stream().map(MenuDto.Response::new).collect(Collectors.toList());
         }

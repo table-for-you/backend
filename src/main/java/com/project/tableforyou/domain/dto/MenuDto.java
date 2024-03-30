@@ -21,13 +21,11 @@ public class MenuDto {
 
         /* dto -> Entity */
         public Menu toEntity() {
-            Menu menu = Menu.builder()
+            return Menu.builder()
                     .name(name)
                     .price(price)
                     .restaurant(restaurant)
                     .build();
-
-            return menu;
         }
     }
 

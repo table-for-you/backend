@@ -2,23 +2,14 @@ package com.project.tableforyou.controller;
 
 import com.project.tableforyou.config.auth.PrincipalDetails;
 import com.project.tableforyou.domain.dto.ReservationDto;
-import com.project.tableforyou.domain.entity.Reservation;
-import com.project.tableforyou.domain.entity.Restaurant;
-import com.project.tableforyou.domain.entity.User;
 import com.project.tableforyou.service.ReservationService;
-import com.project.tableforyou.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -30,61 +21,61 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     /* 예약자 추가 */
-    @PostMapping("/{restaurant_id}/reservation/create")
+    @PostMapping("/{restaurant}/reservation/create")
     public ResponseEntity<String> create(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                         @PathVariable(name = "restaurant_id") Long restaurant_id) {
+                                         @PathVariable(name = "restaurant") String restaurant) {
 
-        reservationService.save(principalDetails.getUsername(), restaurant_id);
+        reservationService.save(principalDetails.getUsername(), restaurant);
         return ResponseEntity.ok("예약자 추가 성공.");
 
     }
 
     /* 예약자 읽기 */
-    @GetMapping("/reservation/{reservation_id}")
-    public ReservationDto.Response read(@PathVariable(name = "reservation_id") Long reservation_id) {
-        return reservationService.findById(reservation_id);
+    @GetMapping("/{restaurant}/reservation/{username}")
+    public ReservationDto.Response read(@PathVariable(name = "restaurant") String restaurant,
+                                        @PathVariable(name = "username") String username) {
+        return reservationService.findByBooking(restaurant, username);
     }
 
-    /* 해당 가게 예약자 불러오기. 페이징 처리 */
-    @GetMapping("/{restaurant_id}/reservation")
-    public Page<ReservationDto.Response> readAll(@PageableDefault(size = 50, sort = "booking", direction = Sort.Direction.ASC) Pageable pageable,
-                                                 @PathVariable(name = "restaurant_id") Long restaurant_id) {
-        return reservationService.findByRestaurantId(restaurant_id,pageable);
+    /* 해당 가게 예약자 불러오기. */
+    @GetMapping("/{restaurant}/reservation")
+    public List<ReservationDto.Response> readAll(@PathVariable(name = "restaurant") String restaurant) {
+        return reservationService.findAllReservation(restaurant);
     }
 
     /* 예약자 앞으로 당기기 */
-    @PatchMapping("/{restaurant_id}/reservation/decreaseBooking")
-    public ResponseEntity<String> decreaseBooking(@PathVariable(name = "restaurant_id") Long restaurant_id) {
+    @PatchMapping("/{restaurant}/reservation/decreaseBooking")
+    public ResponseEntity<String> decreaseBooking(@PathVariable(name = "restaurant") String restaurant) {
         try {
-            List<Reservation> reservations = reservationService.getReservations(restaurant_id, 0L, null);  // 이미 여기서 트랜잭션은 끝나 1차캐시에 없음.
-            User user = reservationService.decreaseBooking(reservations);
-            return ResponseEntity.ok(user.getNickname() + "님 입장");
+            List<ReservationDto.Response> reservations = reservationService.getReservations(restaurant, null, null);  // 이미 여기서 트랜잭션은 끝나 1차캐시에 없음.
+            String user = reservationService.decreaseBooking(reservations);
+            return ResponseEntity.ok(user + "님 입장");
         } catch (Exception e) {
             log.error("Failed to update reservations: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예약자 업데이트 실패");
         }
     }
 
-    /* 예약 순서 미루기 */
-    @PutMapping("/{restaurant_id}/reservation/postponedGuestBooking/{reservation_id}")
-    public ResponseEntity<String> postponedGuestBooking(@PathVariable(name = "restaurant_id") Long restaurant_id,
-                                                        @PathVariable(name = "reservation_id") Long reservation_id,
+    /* 예약 순서 미루기 */ // restaurant_id 에서 이름을 가져오기. reservation_id에서 booking 가져오기
+    @PutMapping("/{restaurant}/reservation/postponedGuestBooking/{username}")
+    public ResponseEntity<String> postponedGuestBooking(@PathVariable(name = "restaurant") String restaurant,
+                                                        @PathVariable(name = "username") String username,
                                                         @RequestBody ReservationDto.Request dto) {
 
-        List<Reservation> decreaseReservation = reservationService.getReservations(restaurant_id, reservation_id, dto);
+        List<ReservationDto.Response> decreaseReservation = reservationService.getReservations(restaurant, username, dto);
         reservationService.decreaseBooking(decreaseReservation);
-        reservationService.postponedGuestBooking(reservation_id, dto);
+        reservationService.postponedGuestBooking(restaurant, username, dto);
         return ResponseEntity.ok("예약자 미루기 + 앞당기기 성공.");
     }
 
     /* 예약자 삭제 */
-    @DeleteMapping("/{restaurant_id}/reservation/{reservation_id}")
-    public ResponseEntity<String> delete(@PathVariable(name = "reservation_id") Long reservation_id,
-                                         @PathVariable(name = "restaurant_id") Long restaurant_id) {
+    @DeleteMapping("/{restaurant}/reservation/{username}")
+    public ResponseEntity<String> delete(@PathVariable(name = "restaurant") String restaurant,
+                                         @PathVariable(name = "username") String username) {
 
-        List<Reservation> decreaseReservation = reservationService.getReservations(restaurant_id, reservation_id, null);
+        List<ReservationDto.Response> decreaseReservation = reservationService.getReservations(restaurant, username, null);
         reservationService.decreaseBooking(decreaseReservation);
-        reservationService.delete(reservation_id);
+        reservationService.delete(restaurant, username);
         return ResponseEntity.ok("예약자 삭제 성공.");
     }
 }

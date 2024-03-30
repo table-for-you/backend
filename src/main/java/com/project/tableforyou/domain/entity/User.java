@@ -2,7 +2,6 @@ package com.project.tableforyou.domain.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
@@ -47,8 +46,6 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user")
     private List<Restaurant> restaurants;
 
-    @OneToOne(mappedBy = "user")       // 예약순서는 바로 불러옴. 그래서 EAGER
-    private Reservation reservation;
 
     public void update(String nickname, String password, String email) {
         this.nickname = nickname;
