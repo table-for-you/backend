@@ -1,5 +1,7 @@
 package com.project.tableforyou.domain.user.service;
 
+import com.project.tableforyou.domain.Role;
+import com.project.tableforyou.domain.restaurant.dto.RestaurantResponseDto;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
 import com.project.tableforyou.domain.user.dto.UserResponseDto;
@@ -39,6 +41,17 @@ public class AdminService {
                 new CustomException(ErrorCode.USER_NOT_FOUND));
 
         userRepository.delete(user);
+    }
+
+    /* 등록 처리 중인 가게 불러오기 */
+    @Transactional(readOnly = true)
+    public Page<RestaurantResponseDto> handleRestaurantList(Pageable pageable) {
+
+        User user = userRepository.findByRole(Role.ADMIN).orElseThrow(() ->         // ADMIN 계정
+                new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        Page<Restaurant> restaurants = restaurantRepository.findByUser(user, pageable);
+        return restaurants.map(RestaurantResponseDto::new);
     }
 
     /* 가게 사용자 권한 USER로 변경하기 */

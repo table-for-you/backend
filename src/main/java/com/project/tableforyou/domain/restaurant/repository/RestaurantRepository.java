@@ -15,6 +15,7 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
     Page<Restaurant> findByNameContainingOrDescriptionContaining(String searchKeyword1, String searchKeyword2, Pageable pageable);
     Page<Restaurant> findByUserNot(User user, Pageable pageable);
+    Page<Restaurant> findByUser(User user, Pageable pageable);
     Optional<Restaurant> findByName(String name);
 
     @Modifying

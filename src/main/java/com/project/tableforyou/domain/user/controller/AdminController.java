@@ -1,5 +1,6 @@
 package com.project.tableforyou.domain.user.controller;
 
+import com.project.tableforyou.domain.restaurant.dto.RestaurantResponseDto;
 import com.project.tableforyou.domain.user.dto.UserResponseDto;
 import com.project.tableforyou.domain.user.service.AdminService;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,14 @@ public class AdminController {
 
         adminService.deleteUser(user_id);
         return ResponseEntity.ok("회원 삭제 성공.");
+    }
+
+    /* 등록 처리 중인 가게 불러오기 */
+    @GetMapping("/restaurants")
+    public Page<RestaurantResponseDto> handlerRestaurant(
+            @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+
+        return adminService.handleRestaurantList(pageable);
     }
 
     /* 가게 추가 요청 승인 (가게 주인 ADMIN -> USER) */
