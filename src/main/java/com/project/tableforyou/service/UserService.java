@@ -55,16 +55,6 @@ public class UserService {
         return new UserDto.Response(user);
     }
 
-    /* 전체 회원 불러오기 */
-    @Transactional(readOnly = true)
-    public Page<UserDto.Response> userPageList(Pageable pageable) {
-
-        log.info("Finding all users");
-        Page<User> users = userRepository.findAll(pageable);
-        return users.map(UserDto.Response::new);
-    }
-
-
     /* 회원 업데이트 */
     @Transactional
     public void update(String username, UserDto.UpdateRequest dto) {
@@ -73,7 +63,7 @@ public class UserService {
         User user = userRepository.findByUsername(username).orElseThrow(() ->
                 new CustomException(ErrorCode.USER_NOT_FOUND));
         dto.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
-        if(!verifyAuthenticationByUsername(username, user.getUsername())) {
+        if(!verifyAuthenticationByUsername(username, dto.getUsername())) {
             throw new CustomException(ErrorCode.UNAUTHORIZED);
         } else {
             user.update(dto.getNickname(), dto.getPassword(), dto.getEmail());
