@@ -59,12 +59,6 @@ public class UserController {
         return userService.findByUsername(username);
     }
 
-    /* 회원 전체 불러오기, 페이징 처리 */
-    @GetMapping
-    public Page<UserDto.Response> readAll(@PageableDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
-        return userService.userPageList(pageable);
-    }
-
     /* 회원 업데이트 */
     @PutMapping("/update")
     public ResponseEntity<String> update(@AuthenticationPrincipal PrincipalDetails principalDetails,

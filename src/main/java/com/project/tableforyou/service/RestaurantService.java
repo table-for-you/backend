@@ -2,6 +2,7 @@ package com.project.tableforyou.service;
 
 import com.project.tableforyou.domain.dto.RestaurantDto;
 import com.project.tableforyou.domain.entity.Restaurant;
+import com.project.tableforyou.domain.entity.Role;
 import com.project.tableforyou.domain.entity.User;
 import com.project.tableforyou.handler.exceptionHandler.CustomException;
 import com.project.tableforyou.handler.exceptionHandler.ErrorCode;
@@ -22,15 +23,16 @@ public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final UserRepository userRepository;
 
-    /* 가게 create */
+    /* 가게 create. ADMIN을 주인으로 생성. ADMIN이 선별하여 주인 변경 예정 */
     @Transactional
     public Long save(String username, RestaurantDto.Request dto) {
 
         log.info("Creating Restaurant by user username: {}", username);
-        User user = userRepository.findByUsername(username).orElseThrow(() ->
+        User user = userRepository.findByRole(Role.ADMIN).orElseThrow(() ->
                 new CustomException(ErrorCode.USER_NOT_FOUND));
 
         dto.setUser(user);
+        dto.setUsername(username);
         Restaurant restaurant = dto.toEntity();
         restaurantRepository.save(restaurant);
 
