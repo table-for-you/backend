@@ -1,15 +1,15 @@
 package com.project.tableforyou.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.tableforyou.config.auth.PrincipalDetailsService;
-import com.project.tableforyou.config.oauth.PrincipalOAuth2UserService;
 import com.project.tableforyou.handler.authFailureHandler.CustomAuthFailureHandler;
 import com.project.tableforyou.handler.logoutHandler.CustomLogoutHandler;
-import com.project.tableforyou.jwt.JwtUtil;
 import com.project.tableforyou.jwt.filter.JwtAuthenticationFilter;
 import com.project.tableforyou.jwt.filter.JwtAuthorizationFilter;
 import com.project.tableforyou.jwt.handler.OAuth2SuccessHandler;
-import com.project.tableforyou.service.RefreshTokenService;
+import com.project.tableforyou.jwt.util.JwtUtil;
+import com.project.tableforyou.refreshToken.service.RefreshTokenService;
+import com.project.tableforyou.security.auth.PrincipalDetailsService;
+import com.project.tableforyou.security.oauth.PrincipalOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

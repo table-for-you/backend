@@ -1,9 +1,9 @@
 package com.project.tableforyou.jwt.filter;
 
-import com.project.tableforyou.config.auth.PrincipalDetails;
-import com.project.tableforyou.domain.entity.Role;
-import com.project.tableforyou.domain.entity.User;
-import com.project.tableforyou.jwt.JwtUtil;
+import com.project.tableforyou.domain.Role;
+import com.project.tableforyou.domain.user.entity.User;
+import com.project.tableforyou.jwt.util.JwtUtil;
+import com.project.tableforyou.security.auth.PrincipalDetails;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,7 +18,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-import static com.project.tableforyou.jwt.JwtProperties.*;
+import static com.project.tableforyou.jwt.util.JwtProperties.ACCESS_HEADER_VALUE;
+import static com.project.tableforyou.jwt.util.JwtProperties.TOKEN_PREFIX;
 
 @Slf4j
 @RequiredArgsConstructor

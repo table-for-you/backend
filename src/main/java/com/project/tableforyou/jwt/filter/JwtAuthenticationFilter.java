@@ -1,12 +1,12 @@
 package com.project.tableforyou.jwt.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.tableforyou.config.auth.PrincipalDetails;
-import com.project.tableforyou.domain.dto.LoginDto;
+import com.project.tableforyou.domain.user.dto.LoginDto;
 import com.project.tableforyou.handler.authFailureHandler.CustomAuthFailureHandler;
-import com.project.tableforyou.jwt.JwtUtil;
-import com.project.tableforyou.domain.dto.RefreshTokenDto;
-import com.project.tableforyou.service.RefreshTokenService;
+import com.project.tableforyou.jwt.util.JwtUtil;
+import com.project.tableforyou.refreshToken.dto.RefreshTokenDto;
+import com.project.tableforyou.refreshToken.service.RefreshTokenService;
+import com.project.tableforyou.security.auth.PrincipalDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletInputStream;
@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import static com.project.tableforyou.jwt.JwtProperties.*;
+import static com.project.tableforyou.jwt.util.JwtProperties.*;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {

@@ -1,7 +1,7 @@
 package com.project.tableforyou.redis;
 
-import com.project.tableforyou.domain.dto.ReservationDto;
-import com.project.tableforyou.domain.entity.Reservation;
+import com.project.tableforyou.domain.reservation.dto.ReservationDto;
+import com.project.tableforyou.domain.reservation.entity.Reservation;
 import com.project.tableforyou.handler.exceptionHandler.CustomException;
 import com.project.tableforyou.handler.exceptionHandler.ErrorCode;
 import lombok.RequiredArgsConstructor;

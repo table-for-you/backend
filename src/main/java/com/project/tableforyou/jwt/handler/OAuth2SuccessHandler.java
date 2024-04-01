@@ -1,9 +1,9 @@
 package com.project.tableforyou.jwt.handler;
 
-import com.project.tableforyou.config.auth.PrincipalDetails;
-import com.project.tableforyou.jwt.JwtUtil;
-import com.project.tableforyou.domain.dto.RefreshTokenDto;
-import com.project.tableforyou.service.RefreshTokenService;
+import com.project.tableforyou.jwt.util.JwtUtil;
+import com.project.tableforyou.refreshToken.dto.RefreshTokenDto;
+import com.project.tableforyou.refreshToken.service.RefreshTokenService;
+import com.project.tableforyou.security.auth.PrincipalDetails;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 
-import static com.project.tableforyou.jwt.JwtProperties.*;
+import static com.project.tableforyou.jwt.util.JwtProperties.*;
 
 @Component
 @RequiredArgsConstructor
