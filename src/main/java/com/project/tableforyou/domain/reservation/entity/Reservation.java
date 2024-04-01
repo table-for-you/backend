@@ -1,7 +1,7 @@
 package com.project.tableforyou.domain.reservation.entity;
 
 
-import com.project.tableforyou.domain.reservation.dto.ReservationDto;
+import com.project.tableforyou.domain.reservation.dto.ReservationResponseDto;
 import lombok.*;
 
 @Getter @Setter
@@ -18,7 +18,7 @@ public class Reservation {
 
     private String restaurant;
 
-    public Reservation(ReservationDto.Response dto) {
+    public Reservation(ReservationResponseDto dto) {
         this.booking = dto.getBooking();
     }
 

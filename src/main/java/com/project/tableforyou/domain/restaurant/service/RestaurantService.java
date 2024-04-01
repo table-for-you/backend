@@ -1,7 +1,9 @@
 package com.project.tableforyou.domain.restaurant.service;
 
 import com.project.tableforyou.domain.Role;
-import com.project.tableforyou.domain.restaurant.dto.RestaurantDto;
+import com.project.tableforyou.domain.restaurant.dto.RestaurantRequestDto;
+import com.project.tableforyou.domain.restaurant.dto.RestaurantResponseDto;
+import com.project.tableforyou.domain.restaurant.dto.RestaurantUpdateDto;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
 import com.project.tableforyou.domain.user.entity.User;
@@ -25,7 +27,7 @@ public class RestaurantService {
 
     /* 가게 create. ADMIN을 주인으로 생성. ADMIN이 선별하여 주인 변경 예정 */
     @Transactional
-    public Long save(String username, RestaurantDto.Request dto) {
+    public Long save(String username, RestaurantRequestDto dto) {
 
         log.info("Creating Restaurant by user username: {}", username);
         User user = userRepository.findByRole(Role.ADMIN).orElseThrow(() ->
@@ -42,31 +44,31 @@ public class RestaurantService {
 
     /* 가게 읽기 */
     @Transactional(readOnly = true)
-    public RestaurantDto.Response findByName(String name) {
+    public RestaurantResponseDto findByName(String name) {
 
         log.info("Finding restaurant by name: {}", name);
         Restaurant restaurant = restaurantRepository.findByName(name).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
-        return new RestaurantDto.Response(restaurant);
+        return new RestaurantResponseDto(restaurant);
     }
 
 
     /* 가게 리스트 페이징 */
     @Transactional(readOnly = true)
-    public Page<RestaurantDto.Response> RestaurantPageList(Pageable pageable) {
+    public Page<RestaurantResponseDto> RestaurantPageList(Pageable pageable) {
 
         log.info("Finding all restaurants");
-        Page<Restaurant> stores = restaurantRepository.findAll(pageable);
-        return stores.map(RestaurantDto.Response::new);
+        Page<Restaurant> restaurants = restaurantRepository.findAll(pageable);
+        return restaurants.map(RestaurantResponseDto::new);
     }
 
     /* 가게 검색 || 가게 소개 검색 페이징 */
     @Transactional(readOnly = true)
-    public Page<RestaurantDto.Response> RestaurantPageSearchList(String searchKeyword1, String searchKeyword2, Pageable pageable) {
+    public Page<RestaurantResponseDto> RestaurantPageSearchList(String searchKeyword1, String searchKeyword2, Pageable pageable) {
 
         log.info("Finding all restaurants with searchKeyword: {}", searchKeyword1);
-        Page<Restaurant> stores = restaurantRepository.findByNameContainingOrDescriptionContaining(searchKeyword1, searchKeyword2, pageable);
-        return stores.map(RestaurantDto.Response::new);
+        Page<Restaurant> restaurants = restaurantRepository.findByNameContainingOrDescriptionContaining(searchKeyword1, searchKeyword2, pageable);
+        return restaurants.map(RestaurantResponseDto::new);
     }
 
     /* 가게 좌석 업데이트 */
@@ -121,7 +123,7 @@ public class RestaurantService {
 
     /* 가게 수정 */
     @Transactional
-    public void update(String name, String username, RestaurantDto.UpdateRequest dto) {
+    public void update(String name, String username, RestaurantUpdateDto dto) {
 
         log.info("Updating Restaurant with name: {}", name);
         Restaurant restaurant = restaurantRepository.findByName(name).orElseThrow(() ->

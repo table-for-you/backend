@@ -1,6 +1,7 @@
 package com.project.tableforyou.domain.reservation.controller;
 
-import com.project.tableforyou.domain.reservation.dto.ReservationDto;
+import com.project.tableforyou.domain.reservation.dto.ReservationRequestDto;
+import com.project.tableforyou.domain.reservation.dto.ReservationResponseDto;
 import com.project.tableforyou.domain.reservation.service.ReservationService;
 import com.project.tableforyou.security.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -32,14 +33,14 @@ public class ReservationController {
 
     /* 예약자 읽기 */
     @GetMapping("/{restaurant}/reservation/{username}")
-    public ReservationDto.Response read(@PathVariable(name = "restaurant") String restaurant,
-                                        @PathVariable(name = "username") String username) {
+    public ReservationResponseDto read(@PathVariable(name = "restaurant") String restaurant,
+                                       @PathVariable(name = "username") String username) {
         return reservationService.findByBooking(restaurant, username);
     }
 
     /* 해당 가게 예약자 불러오기. */
     @GetMapping("/{restaurant}/reservation")
-    public List<ReservationDto.Response> readAll(@PathVariable(name = "restaurant") String restaurant) {
+    public List<ReservationResponseDto> readAll(@PathVariable(name = "restaurant") String restaurant) {
         return reservationService.findAllReservation(restaurant);
     }
 
@@ -47,7 +48,7 @@ public class ReservationController {
     @PatchMapping("/{restaurant}/reservation/decreaseBooking")
     public ResponseEntity<String> decreaseBooking(@PathVariable(name = "restaurant") String restaurant) {
         try {
-            List<ReservationDto.Response> reservations = reservationService.getReservations(restaurant, null, null);  // 이미 여기서 트랜잭션은 끝나 1차캐시에 없음.
+            List<ReservationResponseDto> reservations = reservationService.getReservations(restaurant, null, null);  // 이미 여기서 트랜잭션은 끝나 1차캐시에 없음.
             String user = reservationService.decreaseBooking(reservations);
             return ResponseEntity.ok(user + "님 입장");
         } catch (Exception e) {
@@ -60,9 +61,9 @@ public class ReservationController {
     @PutMapping("/{restaurant}/reservation/postponedGuestBooking/{username}")
     public ResponseEntity<String> postponedGuestBooking(@PathVariable(name = "restaurant") String restaurant,
                                                         @PathVariable(name = "username") String username,
-                                                        @RequestBody ReservationDto.Request dto) {
+                                                        @RequestBody ReservationRequestDto dto) {
 
-        List<ReservationDto.Response> decreaseReservation = reservationService.getReservations(restaurant, username, dto);
+        List<ReservationResponseDto> decreaseReservation = reservationService.getReservations(restaurant, username, dto);
         reservationService.decreaseBooking(decreaseReservation);
         reservationService.postponedGuestBooking(restaurant, username, dto);
         return ResponseEntity.ok("예약자 미루기 + 앞당기기 성공.");
@@ -73,7 +74,7 @@ public class ReservationController {
     public ResponseEntity<String> delete(@PathVariable(name = "restaurant") String restaurant,
                                          @PathVariable(name = "username") String username) {
 
-        List<ReservationDto.Response> decreaseReservation = reservationService.getReservations(restaurant, username, null);
+        List<ReservationResponseDto> decreaseReservation = reservationService.getReservations(restaurant, username, null);
         reservationService.decreaseBooking(decreaseReservation);
         reservationService.delete(restaurant, username);
         return ResponseEntity.ok("예약자 삭제 성공.");

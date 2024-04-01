@@ -1,6 +1,6 @@
 package com.project.tableforyou.redis;
 
-import com.project.tableforyou.domain.reservation.dto.ReservationDto;
+import com.project.tableforyou.domain.reservation.dto.ReservationResponseDto;
 import com.project.tableforyou.domain.reservation.entity.Reservation;
 import com.project.tableforyou.handler.exceptionHandler.CustomException;
 import com.project.tableforyou.handler.exceptionHandler.ErrorCode;
@@ -49,14 +49,14 @@ public class RedisUtil {
         return restaurant + "_reservation";
     }
 
-    public List<ReservationDto.Response> getEntries(String key) {
+    public List<ReservationResponseDto> getEntries(String key) {
         // Redis에서 모든 예약 정보 가져오기
         Map<Object, Object> entries = redisTemplate.opsForHash().entries(key);
 
         // 예약 정보를 DTO로 변환하여 반환
         return entries.values().stream()
                 .map(entry -> (Reservation) entry)
-                .map(ReservationDto.Response::new)
+                .map(ReservationResponseDto::new)
                 .collect(Collectors.toList());
     }
 }

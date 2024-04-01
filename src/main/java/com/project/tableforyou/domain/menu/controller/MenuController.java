@@ -1,6 +1,7 @@
 package com.project.tableforyou.domain.menu.controller;
 
-import com.project.tableforyou.domain.menu.dto.MenuDto;
+import com.project.tableforyou.domain.menu.dto.MenuRequestDto;
+import com.project.tableforyou.domain.menu.dto.MenuResponseDto;
 import com.project.tableforyou.domain.menu.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,7 @@ public class MenuController {
 
     /* 메뉴 생성 */
     @PostMapping("/{restaurant}/menu/create")
-    public ResponseEntity<String> create(@PathVariable(name = "restaurant") String restaurant, @RequestBody MenuDto.Request dto) {
+    public ResponseEntity<String> create(@PathVariable(name = "restaurant") String restaurant, @RequestBody MenuRequestDto dto) {
 
         menuService.save(restaurant, dto);
         return ResponseEntity.ok("메뉴 생성 완료.");
@@ -29,9 +30,9 @@ public class MenuController {
 
     /* 메뉴 불러오기. 페이징 처리 + 검색 기능 */
     @GetMapping("/{restaurant}/menu")
-    public Page<MenuDto.Response> readAll(@PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
-                                          @PathVariable(name = "restaurant") String restaurant,
-                                          @RequestParam(required = false) String searchKeyword) {
+    public Page<MenuResponseDto> readAll(@PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
+                                         @PathVariable(name = "restaurant") String restaurant,
+                                         @RequestParam(required = false) String searchKeyword) {
 
         if(searchKeyword == null)
             return menuService.menuPageList(restaurant, pageable);
@@ -42,7 +43,7 @@ public class MenuController {
     /* 메뉴 업데이트 */
     @PutMapping("/{restaurant}/menu/{menu_id}")
     public ResponseEntity<String> update(@PathVariable(name = "restaurant") String restaurant,
-                                         @PathVariable(name = "menu_id") Long menu_id, @RequestBody MenuDto.Request dto) {
+                                         @PathVariable(name = "menu_id") Long menu_id, @RequestBody MenuRequestDto dto) {
 
         menuService.update(restaurant, menu_id, dto);
         return ResponseEntity.ok("메뉴 업데이트 완료.");

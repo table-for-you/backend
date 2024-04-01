@@ -2,7 +2,7 @@ package com.project.tableforyou.domain.user.service;
 
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
-import com.project.tableforyou.domain.user.dto.UserDto;
+import com.project.tableforyou.domain.user.dto.UserResponseDto;
 import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.domain.user.repository.UserRepository;
 import com.project.tableforyou.handler.exceptionHandler.CustomException;
@@ -24,11 +24,11 @@ public class AdminService {
 
     /* 전체 회원 불러오기 */
     @Transactional(readOnly = true)
-    public Page<UserDto.Response> userPageList(Pageable pageable) {
+    public Page<UserResponseDto> userPageList(Pageable pageable) {
 
         log.info("Finding all users");
         Page<User> users = userRepository.findAll(pageable);
-        return users.map(UserDto.Response::new);
+        return users.map(UserResponseDto::new);
     }
 
     /* 회원 삭제하기 */

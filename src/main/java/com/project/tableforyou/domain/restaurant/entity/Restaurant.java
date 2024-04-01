@@ -2,7 +2,7 @@ package com.project.tableforyou.domain.restaurant.entity;
 
 import com.project.tableforyou.domain.BaseTimeEntity;
 import com.project.tableforyou.domain.menu.entity.Menu;
-import com.project.tableforyou.domain.restaurant.dto.RestaurantDto;
+import com.project.tableforyou.domain.restaurant.dto.RestaurantUpdateDto;
 import com.project.tableforyou.domain.user.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -61,7 +61,7 @@ public class Restaurant extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public void update(RestaurantDto.UpdateRequest dto) {
+    public void update(RestaurantUpdateDto dto) {
         this.totalSeats = dto.getTotalSeats();
         this.time = dto.getTime();
         this.name = dto.getName();

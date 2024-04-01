@@ -1,6 +1,8 @@
 package com.project.tableforyou.domain.user.controller;
 
-import com.project.tableforyou.domain.user.dto.UserDto;
+import com.project.tableforyou.domain.user.dto.UserRequestDto;
+import com.project.tableforyou.domain.user.dto.UserResponseDto;
+import com.project.tableforyou.domain.user.dto.UserUpdateDto;
 import com.project.tableforyou.domain.user.service.UserService;
 import com.project.tableforyou.mail.service.CodeService;
 import com.project.tableforyou.security.auth.PrincipalDetails;
@@ -30,7 +32,7 @@ public class UserController {
 
     /* 회원가입 과정 */
     @PostMapping("/joinProc")
-    public ResponseEntity<Object> joinProc(@Valid @RequestBody UserDto.Request dto, BindingResult bindingResult) {
+    public ResponseEntity<Object> joinProc(@Valid @RequestBody UserRequestDto dto, BindingResult bindingResult) {
         try {
             if (bindingResult.hasErrors()) {
                 Map<String, String> errors = userService.validateHandler(bindingResult);
@@ -48,14 +50,14 @@ public class UserController {
 
     /* 회원 불러오기 */
     @GetMapping("/{username}")
-    public UserDto.Response read(@PathVariable(name = "username") String username) {
+    public UserResponseDto read(@PathVariable(name = "username") String username) {
         return userService.findByUsername(username);
     }
 
     /* 회원 업데이트 */
     @PutMapping("/update")
     public ResponseEntity<String> update(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                         @RequestBody UserDto.UpdateRequest dto) {
+                                         @RequestBody UserUpdateDto dto) {
 
         userService.update(principalDetails.getUsername(), dto);
         return ResponseEntity.ok("회원 업데이트 성공.");

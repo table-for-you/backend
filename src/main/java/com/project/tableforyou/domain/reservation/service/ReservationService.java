@@ -1,6 +1,7 @@
 package com.project.tableforyou.domain.reservation.service;
 
-import com.project.tableforyou.domain.reservation.dto.ReservationDto;
+import com.project.tableforyou.domain.reservation.dto.ReservationRequestDto;
+import com.project.tableforyou.domain.reservation.dto.ReservationResponseDto;
 import com.project.tableforyou.domain.reservation.entity.Reservation;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
@@ -49,18 +50,18 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
     }
 
     /* 예약 읽기 */
-    public ReservationDto.Response findByBooking(String restaurant, String username) {
+    public ReservationResponseDto findByBooking(String restaurant, String username) {
 
-        return new ReservationDto.Response(redisUtil.getReservationFromRedis(redisUtil.generateRedisKey(restaurant), username));
+        return new ReservationResponseDto(redisUtil.getReservationFromRedis(redisUtil.generateRedisKey(restaurant), username));
     }
 
     /* 예약자 줄어들 때. */
-    public String decreaseBooking(List<ReservationDto.Response> reservations) {
+    public String decreaseBooking(List<ReservationResponseDto> reservations) {
 
         log.info("Decreasing bookings for reservations");
         String user = null;
 
-        for (ReservationDto.Response reservation: reservations) {
+        for (ReservationResponseDto reservation: reservations) {
             String key = redisUtil.generateRedisKey(reservation.getRestaurant());
             Reservation storedReservation = redisUtil.getReservationFromRedis(key, reservation.getUsername());
 
@@ -82,7 +83,7 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
     }
 
     /* 예약 미루기(미루기할 시 store 예약자 수에 대한 조건 + 뒤에 있던 사람들 앞으로 당기기 - decreaseBooking) */
-    public void postponedGuestBooking(String restaurant, String username, ReservationDto.Request dto) {
+    public void postponedGuestBooking(String restaurant, String username, ReservationRequestDto dto) {
 
         log.info("Postponing guest booking for reservation with username: {}", username);
 
@@ -102,7 +103,7 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
     }
 
     /* 해당 가게의 모든 예약자 가져오기 */
-    public List<ReservationDto.Response> findAllReservation(String restaurant) {
+    public List<ReservationResponseDto> findAllReservation(String restaurant) {
 
         log.info("Finding all reservations by restaurant: {}", restaurant);
         String key = redisUtil.generateRedisKey(restaurant);
@@ -129,17 +130,17 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
     }
 
     /* 예약자 List를 받기위한 메서드. */
-    public List<ReservationDto.Response> getReservations(String restaurant, String username, ReservationDto.Request dto) {
+    public List<ReservationResponseDto> getReservations(String restaurant, String username, ReservationRequestDto dto) {
         String key = redisUtil.generateRedisKey(restaurant);
 
-        List<ReservationDto.Response> reservations = redisUtil.getEntries(key);
+        List<ReservationResponseDto> reservations = redisUtil.getEntries(key);
 
         // 예약 번호에 따라 필터링
         if (username == null && dto == null) {
             return reservations; // 예약 앞당기기
         } else {
             Reservation beforeReservation = redisUtil.getReservationFromRedis(key, username);
-            List<ReservationDto.Response> decreaseReservation = new ArrayList<>();
+            List<ReservationResponseDto> decreaseReservation = new ArrayList<>();
 
             if (dto == null) { // 예약 삭제로 인한 뒷사람 앞당기기
                 decreaseReservation = reservations.stream()

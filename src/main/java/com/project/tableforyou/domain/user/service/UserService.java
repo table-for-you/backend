@@ -1,6 +1,8 @@
 package com.project.tableforyou.domain.user.service;
 
-import com.project.tableforyou.domain.user.dto.UserDto;
+import com.project.tableforyou.domain.user.dto.UserRequestDto;
+import com.project.tableforyou.domain.user.dto.UserResponseDto;
+import com.project.tableforyou.domain.user.dto.UserUpdateDto;
 import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.domain.user.repository.UserRepository;
 import com.project.tableforyou.handler.exceptionHandler.CustomException;
@@ -28,7 +30,7 @@ public class UserService {
 
     /* 회원 추가 */
     @Transactional
-    public Long create(UserDto.Request dto) {
+    public Long create(UserRequestDto dto) {
 
         log.info("Creating user with username: {}", dto.getUsername());
         dto.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
@@ -42,18 +44,18 @@ public class UserService {
 
     /* 회원 불러오기 */
     @Transactional(readOnly = true)
-    public UserDto.Response findByUsername(String username) {
+    public UserResponseDto findByUsername(String username) {
 
         log.info("Finding user by username: {}", username);
         User user = userRepository.findByUsername(username).orElseThrow(() ->
                 new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        return new UserDto.Response(user);
+        return new UserResponseDto(user);
     }
 
     /* 회원 업데이트 */
     @Transactional
-    public void update(String username, UserDto.UpdateRequest dto) {
+    public void update(String username, UserUpdateDto dto) {
 
         log.info("Updating user with username: {}", username);
         User user = userRepository.findByUsername(username).orElseThrow(() ->
