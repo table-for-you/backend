@@ -37,7 +37,7 @@ public class UserController {
             if (bindingResult.hasErrors()) {
                 Map<String, String> errors = userService.validateHandler(bindingResult);
                 log.info("Failed to sign up: {}", errors);
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errors);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
             }
             userService.create(dto);
             return ResponseEntity.ok("회원가입 성공.");
