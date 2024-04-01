@@ -53,12 +53,15 @@ public class RestaurantService {
     }
 
 
-    /* 가게 리스트 페이징 */
+    /* 가게 리스트 페이징. 등록된 가게만 들고오기 */
     @Transactional(readOnly = true)
     public Page<RestaurantResponseDto> RestaurantPageList(Pageable pageable) {
 
         log.info("Finding all restaurants");
-        Page<Restaurant> restaurants = restaurantRepository.findAll(pageable);
+        User user = userRepository.findByRole(Role.ADMIN).orElseThrow(() ->         // ADMIN 계정
+                new CustomException(ErrorCode.USER_NOT_FOUND));
+        // ADMIN 계정으로 등록되어 있는(아직 등록처리 안된) 가게를 제외한 가게 불러오기.
+        Page<Restaurant> restaurants = restaurantRepository.findByUserNot(user, pageable);
         return restaurants.map(RestaurantResponseDto::new);
     }
 
