@@ -19,6 +19,8 @@ public class RestaurantDto {
         @NotBlank
         private String time;
         @NotBlank
+        private String username;
+        @NotBlank
         private String name;
         @NotBlank
         private String location;
@@ -36,6 +38,7 @@ public class RestaurantDto {
                     .likeCount(likeCount)
                     .rating(rating)
                     .time(time)
+                    .username(username)
                     .name(name)
                     .location(location)
                     .tel(tel)
@@ -70,6 +73,7 @@ public class RestaurantDto {
         private final int likeCount;
         private final double rating;
         private final String time;
+        private final String username;
         private final String name;
         private final String location;
         private final String tel;
@@ -88,6 +92,7 @@ public class RestaurantDto {
             this.likeCount = restaurant.getLikeCount();
             this.rating = restaurant.getRating();
             this.time = restaurant.getTime();
+            this.username = restaurant.getUsername();
             this.name = restaurant.getName();
             this.location = restaurant.getLocation();
             this.tel = restaurant.getTel();

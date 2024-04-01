@@ -36,6 +36,9 @@ public class Restaurant extends BaseTimeEntity {
     @NotBlank
     private String time;
 
+    // 가게 주인 변경을 위해. (ADMIN -> 가게 신청한 USER)
+    private String username;
+
     @NotBlank
     private String name;
 
@@ -62,6 +65,11 @@ public class Restaurant extends BaseTimeEntity {
         this.location = dto.getLocation();
         this.tel = dto.getTel();
         this.description = dto.getDescription();
+    }
+
+    /* 가게 주인 ADMIN -> USER로 변경 (가게 생성) */
+    public void userUpdate(User user) {
+        this.user = user;
     }
 
     public void updateRating(double rating, int rating_num) {
