@@ -48,7 +48,6 @@ public class Restaurant extends BaseTimeEntity {
     @NotBlank
     private String location;
 
-    @NotBlank
     private String tel;
 
     @Column(length = 50)

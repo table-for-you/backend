@@ -16,6 +16,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -137,6 +142,16 @@ public class RestaurantService {
             restaurant.update(dto);
             log.info("Restaurant updated successfully with name: {}", name);
         }
+    }
+
+    /* 가게 등록 오류 확인 */
+    public Map<String, String> validateHandler(Errors errors) {
+        Map<String, String> validateResult = new HashMap<>();
+
+        for (FieldError error: errors.getFieldErrors()) {
+            validateResult.put(error.getField(), error.getDefaultMessage());
+        }
+        return validateResult;
     }
 
     /* 자신의 권한인지 확인 */

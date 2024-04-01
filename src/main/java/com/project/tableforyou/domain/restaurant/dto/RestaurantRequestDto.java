@@ -11,26 +11,21 @@ import lombok.*;
 @Builder
 public class RestaurantRequestDto {
 
-    private int usedSeats;
     private int totalSeats;
-    @NotBlank
+    @NotBlank(message = "영업 시간은 필수 입력 값입니다.")
     private String time;
-    @NotBlank
     private String username;
-    @NotBlank
+    @NotBlank(message = "가게 이름은 필수 입력 값입니다.")
     private String name;
-    @NotBlank
+    @NotBlank(message = "위치 정보는 필수 입력 값입니다.")
     private String location;
-    @NotBlank
     private String tel;
-
     private String description;
     private User user;
 
     /* dto -> Entity */
     public Restaurant toEntity() {
         return Restaurant.builder()
-                .usedSeats(usedSeats)
                 .totalSeats(totalSeats)
                 .time(time)
                 .username(username)
