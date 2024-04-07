@@ -1,4 +1,4 @@
-package com.project.tableforyou.redis;
+package com.project.tableforyou.utils.redis;
 
 import com.project.tableforyou.domain.reservation.dto.ReservationResponseDto;
 import com.project.tableforyou.domain.reservation.entity.Reservation;
