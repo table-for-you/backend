@@ -2,6 +2,7 @@ package com.project.tableforyou.domain.user.controller;
 
 import com.project.tableforyou.handler.exceptionHandler.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.RefreshTokenException;
+import com.project.tableforyou.utils.cookie.CookieUtil;
 import com.project.tableforyou.utils.jwt.JwtUtil;
 import com.project.tableforyou.refreshToken.dto.RefreshTokenDto;
 import com.project.tableforyou.refreshToken.service.RefreshTokenService;
@@ -23,12 +24,13 @@ import static com.project.tableforyou.utils.jwt.JwtProperties.*;
 public class AuthController {
     
     private final JwtUtil jwtUtil;
+    private final CookieUtil cookieUtil;
     private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/reissue")
     public ResponseEntity<?> accessTokenReissue(HttpServletRequest request, HttpServletResponse response) {
 
-        String refreshTokenInCookie = getRefreshToken(request);
+        String refreshTokenInCookie = cookieUtil.getCookie(REFRESH_COOKIE_VALUE, request);
 
         if (refreshTokenInCookie == null) {     // 쿠키에 Refresh Token이 없다면
             throw new RefreshTokenException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
@@ -47,35 +49,9 @@ public class AuthController {
         String refreshTokenReIssue = refreshTokenService.refreshTokenReIssue(response, refreshToken, refreshToken.getRefreshToken());
 
         response.setHeader(ACCESS_HEADER_VALUE, TOKEN_PREFIX + accessTokenReIssue);
-        response.addHeader("Set-Cookie", createCookie(REFRESH_COOKIE_VALUE, refreshTokenReIssue).toString());         // 쿠키에 refresh Token값 저장.
+        response.addHeader("Set-Cookie", cookieUtil.createCookie(REFRESH_COOKIE_VALUE, refreshTokenReIssue).toString());         // 쿠키에 refresh Token값 저장.
         response.setStatus(HttpServletResponse.SC_OK);
 
         return ResponseEntity.ok("Access Token reIssue");
-    }
-
-
-    /* 쿠키 값에서 Refresh Token 가져오기 */
-    private String getRefreshToken(HttpServletRequest request) {
-
-        Cookie[] cookies = request.getCookies();
-
-        String refreshToken = null;
-        for(Cookie cookie: cookies) {
-            if(cookie.getName().equals(REFRESH_COOKIE_VALUE))
-                refreshToken = cookie.getValue();
-        }
-        return refreshToken;
-    }
-
-    /* 쿠키 생성 메서드 */
-    private ResponseCookie createCookie(String key, String value) {
-
-        return ResponseCookie.from(key, value)
-                .path("/")
-                .httpOnly(true)
-                .maxAge(24*60*60)
-                .secure(true)
-                .sameSite("None")
-                .build();
     }
 }

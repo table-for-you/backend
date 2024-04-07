@@ -6,6 +6,7 @@ import com.project.tableforyou.handler.logoutHandler.CustomLogoutHandler;
 import com.project.tableforyou.jwt.filter.JwtAuthenticationFilter;
 import com.project.tableforyou.jwt.filter.JwtAuthorizationFilter;
 import com.project.tableforyou.jwt.handler.OAuth2SuccessHandler;
+import com.project.tableforyou.utils.cookie.CookieUtil;
 import com.project.tableforyou.utils.jwt.JwtUtil;
 import com.project.tableforyou.refreshToken.service.RefreshTokenService;
 import com.project.tableforyou.security.auth.PrincipalDetailsService;
@@ -36,6 +37,7 @@ public class SecurityConfig {
     private final CustomAuthFailureHandler customAuthFailureHandler;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtUtil jwtUtil;
+    private final CookieUtil cookieUtil;
     private final ObjectMapper objectMapper;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final RefreshTokenService refreshTokenService;
@@ -72,7 +74,7 @@ public class SecurityConfig {
                                 .successHandler(oAuth2SuccessHandler))
 
                 .addFilterAt(new JwtAuthenticationFilter(
-                        authenticationManager(authenticationConfiguration), jwtUtil, customAuthFailureHandler, refreshTokenService, objectMapper),
+                        authenticationManager(authenticationConfiguration), jwtUtil, cookieUtil, customAuthFailureHandler, refreshTokenService, objectMapper),
                         UsernamePasswordAuthenticationFilter.class)
 
                 .addFilterBefore(new JwtAuthorizationFilter(jwtUtil, objectMapper), UsernamePasswordAuthenticationFilter.class)

@@ -1,5 +1,6 @@
 package com.project.tableforyou.jwt.handler;
 
+import com.project.tableforyou.utils.cookie.CookieUtil;
 import com.project.tableforyou.utils.jwt.JwtUtil;
 import com.project.tableforyou.refreshToken.dto.RefreshTokenDto;
 import com.project.tableforyou.refreshToken.service.RefreshTokenService;
@@ -25,6 +26,7 @@ import static com.project.tableforyou.utils.jwt.JwtProperties.*;
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JwtUtil jwtUtil;
+    private final CookieUtil cookieUtil;
     private final RefreshTokenService refreshTokenService;
 
     @Override
@@ -45,7 +47,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         saveRefreshToken(username, refreshToken);
 
         response.addHeader(ACCESS_HEADER_VALUE, TOKEN_PREFIX + accessToken);    // 헤더에 access Token 추가
-        response.addHeader("Set-Cookie", createCookie(REFRESH_COOKIE_VALUE, refreshToken).toString());         // 쿠키에 refresh Token 값 저장.
+        response.addHeader("Set-Cookie", cookieUtil.createCookie(REFRESH_COOKIE_VALUE, refreshToken).toString());         // 쿠키에 refresh Token 값 저장.
         response.setStatus(HttpServletResponse.SC_OK);
 
     }
@@ -57,19 +59,5 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .refreshToken(refreshToken)
                 .build();
         refreshTokenService.save(saveRefreshToken);
-    }
-
-    /* 쿠키 생성 메서드 */
-    private ResponseCookie createCookie(String key, String value) {
-
-        ResponseCookie cookie = ResponseCookie.from(key, value)
-                .path("/")
-                .httpOnly(true)
-                .maxAge(24*60*60)
-                .secure(true)
-                .sameSite("None")
-                .build();
-
-        return cookie;
     }
 }

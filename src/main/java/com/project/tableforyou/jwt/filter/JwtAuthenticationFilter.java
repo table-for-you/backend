@@ -3,6 +3,7 @@ package com.project.tableforyou.jwt.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.tableforyou.domain.user.dto.LoginDto;
 import com.project.tableforyou.handler.authFailureHandler.CustomAuthFailureHandler;
+import com.project.tableforyou.utils.cookie.CookieUtil;
 import com.project.tableforyou.utils.jwt.JwtUtil;
 import com.project.tableforyou.refreshToken.dto.RefreshTokenDto;
 import com.project.tableforyou.refreshToken.service.RefreshTokenService;
@@ -36,6 +37,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private final CookieUtil cookieUtil;
     private final CustomAuthFailureHandler customAuthFailureHandler;
     private final RefreshTokenService refreshTokenService;
     private final ObjectMapper objectMapper;
@@ -89,7 +91,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         saveRefreshToken(username, refreshToken);               // refreshToken redis에 저장.
 
         response.setHeader(ACCESS_HEADER_VALUE, TOKEN_PREFIX + accessToken);    // 헤더에 access Token 저장.
-        response.addHeader("Set-Cookie", createCookie(REFRESH_COOKIE_VALUE, refreshToken).toString());         // 쿠키에 refresh Token값 저장.
+        response.addHeader("Set-Cookie", cookieUtil.createCookie(REFRESH_COOKIE_VALUE, refreshToken).toString());         // 쿠키에 refresh Token값 저장.
         response.setStatus(HttpServletResponse.SC_OK);      // 상태 코드 200
     }
 
@@ -100,18 +102,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .refreshToken(refreshToken)
                 .build();
         refreshTokenService.save(saveRefreshToken);
-    }
-
-    /* 쿠키 생성 메서드 */
-    private ResponseCookie createCookie(String key, String value) {
-
-        return ResponseCookie.from(key, value)
-                .path("/")
-                .httpOnly(true)
-                .maxAge(24*60*60)
-                .secure(true)
-                .sameSite("None")
-                .build();
     }
 
     @Override
