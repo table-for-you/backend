@@ -2,6 +2,7 @@ package com.project.tableforyou.handler.logoutHandler;
 
 import com.project.tableforyou.handler.exceptionHandler.CustomException;
 import com.project.tableforyou.handler.exceptionHandler.ErrorCode;
+import com.project.tableforyou.handler.exceptionHandler.RefreshTokenException;
 import com.project.tableforyou.refreshToken.service.RefreshTokenService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +23,7 @@ public class CustomLogoutHandler implements LogoutHandler {
         String refreshToken = getRefreshToken(request);
 
         if (refreshToken == null) {
-            throw new CustomException(ErrorCode.REFRESHTOKEN_NOT_FOUND);
+            throw new RefreshTokenException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
 
         refreshTokenService.delete(refreshToken);       // 로그아웃 시 redis에서 refreshToken 삭제

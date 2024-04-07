@@ -14,14 +14,16 @@ public enum ErrorCode {
     UNAUTHORIZED(401, "접근 권한이 없습니다."),
     ACCESS_TOKEN_EXPIRED(401, "Access Token이 만료되었습니다."),
     INVALID_ACCESS_TOKEN(401, "Access Token이 잘못되었습니다."),
-    NULL_TOKEN(401, "Access Token이 존재하지 않습니다."),
+
+    // RefreshToken 인증 중 오류
+    REFRESH_TOKEN_NOT_FOUND(404, "RefreshToken이 존재하지 않습니다."),
+    REFRESG_TOKEN_EXPIRED(404, "RefreshToken이 만료되었습니다."),
 
     // 존재하지 않는 값을 보낼 때.
     USER_NOT_FOUND(404, "존재하지 않는 회원입니다."),
     RESTAURANT_NOT_FOUND(404, "존재하지 않는 가게입니다."),
     RESERVATION_NOT_FOUND(404, "해당하는 예약번호가 없습니다."),
     MENU_NOT_FOUND(404, "존재하지 않는 메뉴입니다."),
-    REFRESHTOKEN_NOT_FOUND(404, "RefreshToken이 존재하지 않습니다."),
 
     // 서버 에러
     INTERNAL_SERVER_ERROR(500, "서버 에러입니다. 서버 팀에 연락주세요.");

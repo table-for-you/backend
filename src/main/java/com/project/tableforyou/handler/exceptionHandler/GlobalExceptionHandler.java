@@ -20,6 +20,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity(error, HttpStatus.valueOf(error.getStatus()));
     }
 
+    @ExceptionHandler(RefreshTokenException.class)
+    protected ResponseEntity refreshTokenException(RefreshTokenException ex) {
+        ErrorCode errorCode = ex.getErrorCode();
+        ErrorDto error = new ErrorDto(errorCode.getStatus(), errorCode.getMessage());
+        log.error("Error occurred: {}", error.getMessage());
+        return new ResponseEntity(error, HttpStatus.valueOf(error.getStatus()));
+    }
+
     @ExceptionHandler
     protected ResponseEntity customServerException(Exception ex) {
         ErrorDto error = new ErrorDto(INTERNAL_SERVER_ERROR.getStatus(), INTERNAL_SERVER_ERROR.getMessage());

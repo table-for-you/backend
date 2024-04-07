@@ -2,6 +2,7 @@ package com.project.tableforyou.refreshToken.service;
 
 import com.project.tableforyou.handler.exceptionHandler.CustomException;
 import com.project.tableforyou.handler.exceptionHandler.ErrorCode;
+import com.project.tableforyou.handler.exceptionHandler.RefreshTokenException;
 import com.project.tableforyou.refreshToken.entity.RefreshToken;
 import com.project.tableforyou.refreshToken.dto.RefreshTokenDto;
 import com.project.tableforyou.jwt.util.JwtUtil;
@@ -31,7 +32,7 @@ public class RefreshTokenService {
     public RefreshTokenDto findByRefreshToken(String refreshToken) {
 
         RefreshToken findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken).orElseThrow(() ->
-                new CustomException(ErrorCode.REFRESHTOKEN_NOT_FOUND));
+                new RefreshTokenException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
 
         RefreshTokenDto refreshTokenDto = RefreshTokenDto.builder()
                 .username(findRefreshToken.getUsername())
@@ -44,7 +45,7 @@ public class RefreshTokenService {
     @Transactional
     public void delete(String refreshToken) {
         RefreshToken findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken).orElseThrow(() ->
-                new CustomException(ErrorCode.REFRESHTOKEN_NOT_FOUND));
+                new RefreshTokenException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
 
         refreshTokenRepository.delete(findRefreshToken);
     }

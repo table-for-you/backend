@@ -1,5 +1,7 @@
 package com.project.tableforyou.domain.user.controller;
 
+import com.project.tableforyou.handler.exceptionHandler.ErrorCode;
+import com.project.tableforyou.handler.exceptionHandler.RefreshTokenException;
 import com.project.tableforyou.jwt.util.JwtUtil;
 import com.project.tableforyou.refreshToken.dto.RefreshTokenDto;
 import com.project.tableforyou.refreshToken.service.RefreshTokenService;
@@ -30,13 +32,13 @@ public class AuthController {
         String refreshTokenInCookie = getRefreshToken(request);
 
         if (refreshTokenInCookie == null) {     // 쿠키에 Refresh Token이 없다면
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("refresh token null");
+            throw new RefreshTokenException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
 
         RefreshTokenDto refreshToken = refreshTokenService.findByRefreshToken(refreshTokenInCookie);
 
         if (jwtUtil.isExpired(refreshToken.getRefreshToken())) {    // refresh token 만료
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("refresh expired");
+            throw new RefreshTokenException(ErrorCode.REFRESG_TOKEN_EXPIRED);
         }
 
 
