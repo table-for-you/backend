@@ -46,7 +46,7 @@ public class AuthController {
         String accessTokenReIssue = refreshTokenService.accessTokenReIssue(refreshToken.getRefreshToken());
 
         // Refresh token rotation(RTR) 사용
-        String refreshTokenReIssue = refreshTokenService.refreshTokenReIssue(response, refreshToken, refreshToken.getRefreshToken());
+        String refreshTokenReIssue = refreshTokenService.refreshTokenReIssue(refreshToken, refreshToken.getRefreshToken());
 
         response.setHeader(ACCESS_HEADER_VALUE, TOKEN_PREFIX + accessTokenReIssue);
         response.addHeader("Set-Cookie", cookieUtil.createCookie(REFRESH_COOKIE_VALUE, refreshTokenReIssue).toString());         // 쿠키에 refresh Token값 저장.

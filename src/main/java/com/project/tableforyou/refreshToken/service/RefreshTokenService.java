@@ -59,7 +59,7 @@ public class RefreshTokenService {
     }
 
     /* Refresh token rotation(RTR) 사용 */
-    public String refreshTokenReIssue(HttpServletResponse response, RefreshTokenDto refreshTokenDto, String refreshToken) {
+    public String refreshTokenReIssue(RefreshTokenDto refreshTokenDto, String refreshToken) {
 
         this.delete(refreshTokenDto.getRefreshToken());
 
