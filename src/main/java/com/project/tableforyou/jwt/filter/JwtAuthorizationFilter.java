@@ -1,7 +1,10 @@
 package com.project.tableforyou.jwt.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.tableforyou.domain.Role;
 import com.project.tableforyou.domain.user.entity.User;
+import com.project.tableforyou.handler.exceptionHandler.ErrorCode;
+import com.project.tableforyou.handler.exceptionHandler.ErrorDto;
 import com.project.tableforyou.jwt.util.JwtUtil;
 import com.project.tableforyou.security.auth.PrincipalDetails;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -26,6 +29,7 @@ import static com.project.tableforyou.jwt.util.JwtProperties.TOKEN_PREFIX;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private final ObjectMapper objectMapper;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -58,14 +62,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         try {
             jwtUtil.isExpired(accessToken);      // 만료되었는지
         } catch (ExpiredJwtException e) {
-            handleExpiredToken(response);
+            handleExceptionToken(response, ErrorCode.ACCESS_TOKEN_EXPIRED);
             return;
         }
 
         String accessCategory = jwtUtil.getCategory(accessToken);
 
         if (!"access".equals(accessCategory)) {         // jwt에 담긴 category를 통해 access 가 맞는지 확인.
-            handleInvalidToken(response);
+            handleExceptionToken(response, ErrorCode.INVALID_ACCESS_TOKEN);
             return;
         }
 
@@ -91,15 +95,17 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         return authToken;
     }
 
-    private void handleExpiredToken(HttpServletResponse response) throws IOException {
-        log.info("Access token expired");
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getWriter().write("Access token expired");
-    }
+    /* 예외 처리 */
+    private void handleExceptionToken(HttpServletResponse response, ErrorCode errorCode) throws IOException {
 
-    private void handleInvalidToken(HttpServletResponse response) throws IOException {
-        log.info("Invalid access token");
+        ErrorDto error = new ErrorDto(errorCode.getStatus(), errorCode.getMessage());
+        String messageBody = objectMapper.writeValueAsString(error);
+
+        log.error("Error occurred: {}", error.getMessage());
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getWriter().write("Invalid access token");
+        response.getWriter().write(messageBody);
     }
 }

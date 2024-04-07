@@ -12,6 +12,9 @@ public enum ErrorCode {
 
     // 인증이 되어 있지 않을 때.
     UNAUTHORIZED(401, "접근 권한이 없습니다."),
+    ACCESS_TOKEN_EXPIRED(401, "Access Token이 만료되었습니다."),
+    INVALID_ACCESS_TOKEN(401, "Access Token이 잘못되었습니다."),
+    NULL_TOKEN(401, "Access Token이 존재하지 않습니다."),
 
     // 존재하지 않는 값을 보낼 때.
     USER_NOT_FOUND(404, "존재하지 않는 회원입니다."),

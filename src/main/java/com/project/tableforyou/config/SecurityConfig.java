@@ -75,7 +75,7 @@ public class SecurityConfig {
                         authenticationManager(authenticationConfiguration), jwtUtil, customAuthFailureHandler, refreshTokenService, objectMapper),
                         UsernamePasswordAuthenticationFilter.class)
 
-                .addFilterBefore(new JwtAuthorizationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthorizationFilter(jwtUtil, objectMapper), UsernamePasswordAuthenticationFilter.class)
 
                 .logout(logout ->
                         logout.addLogoutHandler(customLogoutHandler));

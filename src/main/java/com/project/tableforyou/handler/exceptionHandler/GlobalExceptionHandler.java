@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import static com.project.tableforyou.handler.exceptionHandler.ErrorCode.INTERNAL_SERVER_ERROR;
 
 @Slf4j
-@RestControllerAdvice("com.project.tableforyou.controller")     // 해당 패기지만 동작하도록 설정.
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
