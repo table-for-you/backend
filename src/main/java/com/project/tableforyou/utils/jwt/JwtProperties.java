@@ -1,4 +1,4 @@
-package com.project.tableforyou.jwt.util;
+package com.project.tableforyou.utils.jwt;
 
 public interface JwtProperties {
     Long ACCESS_EXPIRATION_TIME = 30*60*1000L;  // 30분

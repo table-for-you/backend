@@ -1,4 +1,4 @@
-package com.project.tableforyou.jwt.util;
+package com.project.tableforyou.utils.jwt;
 
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,8 +11,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.project.tableforyou.jwt.util.JwtProperties.ACCESS_EXPIRATION_TIME;
-import static com.project.tableforyou.jwt.util.JwtProperties.REFRESH_EXPIRATION_TIME;
+import static com.project.tableforyou.utils.jwt.JwtProperties.ACCESS_EXPIRATION_TIME;
+import static com.project.tableforyou.utils.jwt.JwtProperties.REFRESH_EXPIRATION_TIME;
 
 @Component
 public class JwtUtil {

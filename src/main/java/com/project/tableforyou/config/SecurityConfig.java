@@ -6,7 +6,7 @@ import com.project.tableforyou.handler.logoutHandler.CustomLogoutHandler;
 import com.project.tableforyou.jwt.filter.JwtAuthenticationFilter;
 import com.project.tableforyou.jwt.filter.JwtAuthorizationFilter;
 import com.project.tableforyou.jwt.handler.OAuth2SuccessHandler;
-import com.project.tableforyou.jwt.util.JwtUtil;
+import com.project.tableforyou.utils.jwt.JwtUtil;
 import com.project.tableforyou.refreshToken.service.RefreshTokenService;
 import com.project.tableforyou.security.auth.PrincipalDetailsService;
 import com.project.tableforyou.security.oauth.PrincipalOAuth2UserService;

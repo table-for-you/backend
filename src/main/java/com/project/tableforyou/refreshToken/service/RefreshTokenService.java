@@ -1,11 +1,10 @@
 package com.project.tableforyou.refreshToken.service;
 
-import com.project.tableforyou.handler.exceptionHandler.CustomException;
 import com.project.tableforyou.handler.exceptionHandler.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.RefreshTokenException;
 import com.project.tableforyou.refreshToken.entity.RefreshToken;
 import com.project.tableforyou.refreshToken.dto.RefreshTokenDto;
-import com.project.tableforyou.jwt.util.JwtUtil;
+import com.project.tableforyou.utils.jwt.JwtUtil;
 import com.project.tableforyou.refreshToken.repository.RefreshTokenRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

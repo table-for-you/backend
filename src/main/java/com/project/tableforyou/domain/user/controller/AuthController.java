@@ -2,7 +2,7 @@ package com.project.tableforyou.domain.user.controller;
 
 import com.project.tableforyou.handler.exceptionHandler.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.RefreshTokenException;
-import com.project.tableforyou.jwt.util.JwtUtil;
+import com.project.tableforyou.utils.jwt.JwtUtil;
 import com.project.tableforyou.refreshToken.dto.RefreshTokenDto;
 import com.project.tableforyou.refreshToken.service.RefreshTokenService;
 import jakarta.servlet.http.Cookie;
@@ -10,13 +10,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.project.tableforyou.jwt.util.JwtProperties.*;
+import static com.project.tableforyou.utils.jwt.JwtProperties.*;
 
 @Slf4j
 @RequiredArgsConstructor

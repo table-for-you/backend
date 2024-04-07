@@ -3,7 +3,7 @@ package com.project.tableforyou.jwt.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.tableforyou.domain.user.dto.LoginDto;
 import com.project.tableforyou.handler.authFailureHandler.CustomAuthFailureHandler;
-import com.project.tableforyou.jwt.util.JwtUtil;
+import com.project.tableforyou.utils.jwt.JwtUtil;
 import com.project.tableforyou.refreshToken.dto.RefreshTokenDto;
 import com.project.tableforyou.refreshToken.service.RefreshTokenService;
 import com.project.tableforyou.security.auth.PrincipalDetails;
@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import static com.project.tableforyou.jwt.util.JwtProperties.*;
+import static com.project.tableforyou.utils.jwt.JwtProperties.*;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {

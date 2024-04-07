@@ -5,7 +5,7 @@ import com.project.tableforyou.domain.Role;
 import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.handler.exceptionHandler.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.ErrorDto;
-import com.project.tableforyou.jwt.util.JwtUtil;
+import com.project.tableforyou.utils.jwt.JwtUtil;
 import com.project.tableforyou.security.auth.PrincipalDetails;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -21,8 +21,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-import static com.project.tableforyou.jwt.util.JwtProperties.ACCESS_HEADER_VALUE;
-import static com.project.tableforyou.jwt.util.JwtProperties.TOKEN_PREFIX;
+import static com.project.tableforyou.utils.jwt.JwtProperties.ACCESS_HEADER_VALUE;
+import static com.project.tableforyou.utils.jwt.JwtProperties.TOKEN_PREFIX;
 
 @Slf4j
 @RequiredArgsConstructor
