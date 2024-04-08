@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class RedisUtil {
 
     private final RedisTemplate<String, Object> redisTemplate;
+    private final static String KEY_NAME = "_reservation";
 
     /* Redis에 예약 정보 저장하기 */
     public void saveReservationToRedis(String key, Reservation reservation) {
@@ -46,7 +47,7 @@ public class RedisUtil {
 
 
     public String generateRedisKey(String restaurant) {
-        return restaurant + "_reservation";
+        return restaurant + KEY_NAME;
     }
 
     public List<ReservationResponseDto> getEntries(String key) {
