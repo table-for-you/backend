@@ -1,7 +1,7 @@
 package com.project.tableforyou.jwt.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.tableforyou.domain.user.dto.LoginDto;
+import com.project.tableforyou.auth.dto.LoginDto;
 import com.project.tableforyou.handler.authFailureHandler.CustomAuthFailureHandler;
 import com.project.tableforyou.utils.cookie.CookieUtil;
 import com.project.tableforyou.utils.jwt.JwtUtil;
@@ -14,7 +14,6 @@ import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

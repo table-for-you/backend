@@ -1,4 +1,4 @@
-package com.project.tableforyou.domain.user.dto;
+package com.project.tableforyou.auth.dto;
 
 import lombok.Getter;
 import lombok.Setter;

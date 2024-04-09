@@ -1,5 +1,7 @@
-package com.project.tableforyou.domain.user.controller;
+package com.project.tableforyou.auth.controller;
 
+import com.project.tableforyou.auth.dto.LoginDto;
+import com.project.tableforyou.auth.service.AuthService;
 import com.project.tableforyou.handler.exceptionHandler.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.RefreshTokenException;
 import com.project.tableforyou.utils.cookie.CookieUtil;
@@ -14,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.project.tableforyou.utils.jwt.JwtProperties.*;
@@ -21,11 +25,19 @@ import static com.project.tableforyou.utils.jwt.JwtProperties.*;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/api")
 public class AuthController {
     
     private final JwtUtil jwtUtil;
     private final CookieUtil cookieUtil;
     private final RefreshTokenService refreshTokenService;
+    private final AuthService authService;
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginDto loginDto, HttpServletResponse response) {
+
+        return;
+    }
 
     @PostMapping("/reissue")
     public ResponseEntity<?> accessTokenReissue(HttpServletRequest request, HttpServletResponse response) {
