@@ -2,7 +2,8 @@ package com.project.tableforyou.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.tableforyou.handler.logoutHandler.CustomLogoutHandler;
-import com.project.tableforyou.jwt.filter.JwtAuthorizationFilter;
+import com.project.tableforyou.jwt.filter.JwtAuthenticationFilter;
+import com.project.tableforyou.jwt.filter.JwtExceptionFilter;
 import com.project.tableforyou.jwt.handler.OAuth2SuccessHandler;
 import com.project.tableforyou.security.auth.PrincipalDetailsService;
 import com.project.tableforyou.security.oauth.PrincipalOAuth2UserService;
@@ -64,7 +65,9 @@ public class SecurityConfig {
                                         endPoint.userService(principalOAuth2UserService))
                                 .successHandler(oAuth2SuccessHandler))
 
-                .addFilterBefore(new JwtAuthorizationFilter(jwtUtil, objectMapper), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, objectMapper), UsernamePasswordAuthenticationFilter.class)
+
+                .addFilterBefore(new JwtExceptionFilter(objectMapper), JwtAuthenticationFilter.class)
 
                 .logout(logout ->
                         logout.addLogoutHandler(customLogoutHandler));
