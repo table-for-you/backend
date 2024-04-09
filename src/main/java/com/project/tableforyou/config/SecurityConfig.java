@@ -1,22 +1,17 @@
 package com.project.tableforyou.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.tableforyou.handler.authFailureHandler.CustomAuthFailureHandler;
 import com.project.tableforyou.handler.logoutHandler.CustomLogoutHandler;
-import com.project.tableforyou.jwt.filter.JwtAuthenticationFilter;
 import com.project.tableforyou.jwt.filter.JwtAuthorizationFilter;
 import com.project.tableforyou.jwt.handler.OAuth2SuccessHandler;
-import com.project.tableforyou.utils.cookie.CookieUtil;
-import com.project.tableforyou.utils.jwt.JwtUtil;
-import com.project.tableforyou.refreshToken.service.RefreshTokenService;
 import com.project.tableforyou.security.auth.PrincipalDetailsService;
 import com.project.tableforyou.security.oauth.PrincipalOAuth2UserService;
+import com.project.tableforyou.utils.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -34,13 +29,9 @@ public class SecurityConfig {
 
     private final CorsFilter corsFilter;
     private final PrincipalOAuth2UserService principalOAuth2UserService;
-    private final CustomAuthFailureHandler customAuthFailureHandler;
-    private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtUtil jwtUtil;
-    private final CookieUtil cookieUtil;
     private final ObjectMapper objectMapper;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
-    private final RefreshTokenService refreshTokenService;
     private final CustomLogoutHandler customLogoutHandler;
     private final PrincipalDetailsService principalDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -73,10 +64,6 @@ public class SecurityConfig {
                                         endPoint.userService(principalOAuth2UserService))
                                 .successHandler(oAuth2SuccessHandler))
 
-                .addFilterAt(new JwtAuthenticationFilter(
-                        authenticationManager(authenticationConfiguration), jwtUtil, cookieUtil, customAuthFailureHandler, refreshTokenService, objectMapper),
-                        UsernamePasswordAuthenticationFilter.class)
-
                 .addFilterBefore(new JwtAuthorizationFilter(jwtUtil, objectMapper), UsernamePasswordAuthenticationFilter.class)
 
                 .logout(logout ->
@@ -84,11 +71,6 @@ public class SecurityConfig {
 
 
         return http.build();
-    }
-
-    /* DaoAuthenticationProvider 등록 */
-    protected void addAuthenticationProvider(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(daoAuthenticationProvider());
     }
 
     /* DaoAuthenticationProvider 구성 */
