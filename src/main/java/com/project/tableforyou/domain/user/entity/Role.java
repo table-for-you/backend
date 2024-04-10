@@ -1,4 +1,4 @@
-package com.project.tableforyou.domain;
+package com.project.tableforyou.domain.user.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

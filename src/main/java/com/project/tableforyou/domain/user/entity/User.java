@@ -1,7 +1,6 @@
 package com.project.tableforyou.domain.user.entity;
 
 import com.project.tableforyou.domain.BaseTimeEntity;
-import com.project.tableforyou.domain.Role;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

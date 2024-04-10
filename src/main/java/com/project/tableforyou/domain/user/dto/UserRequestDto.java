@@ -1,6 +1,6 @@
 package com.project.tableforyou.domain.user.dto;
 
-import com.project.tableforyou.domain.Role;
+import com.project.tableforyou.domain.user.entity.Role;
 import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.security.oauth.provider.OAuth2UserInfo;
 import jakarta.validation.constraints.NotBlank;

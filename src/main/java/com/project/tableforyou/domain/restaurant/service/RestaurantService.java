@@ -1,6 +1,6 @@
 package com.project.tableforyou.domain.restaurant.service;
 
-import com.project.tableforyou.domain.Role;
+import com.project.tableforyou.domain.user.entity.Role;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantRequestDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantResponseDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantUpdateDto;
