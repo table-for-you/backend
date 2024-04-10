@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter @Setter
@@ -49,6 +50,10 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user")
     private List<Restaurant> restaurants;
 
+    /* 계정 잠금을 위한 필드 */
+    private int loginAttempt;
+    private LocalDateTime lockTime;
+
 
     public void update(String nickname, String password, String email) {
         this.nickname = nickname;
@@ -60,6 +65,21 @@ public class User extends BaseTimeEntity {
     public User updateModifiedDateIfUserExists() {
         this.onPreUpdate();
         return this;
+    }
+
+    /* 로그인 실패 횟수 초기화 */
+    public void resetLoginAttempt() {
+        this.loginAttempt = 0;
+    }
+
+    /* 잠긴 시간 저장 */
+    public void updateLockTime() {
+        this.lockTime = LocalDateTime.now();
+    }
+
+    /* 로그인 잠금 해제 */
+    public void acceptLogin() {
+        this.lockTime = null;
     }
 }
 
