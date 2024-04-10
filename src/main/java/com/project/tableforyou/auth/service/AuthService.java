@@ -19,6 +19,8 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    /* 로그인 메서드 */
     public User login(LoginDto dto) {
 
         User findUser = userRepository.findByUsername(dto.getUsername()).orElseThrow(() ->
@@ -31,6 +33,7 @@ public class AuthService {
         return findUser;
     }
 
+    /* 비밀번호 확인 */
     private boolean checkPassword(String actual, String expect) {
 
         return bCryptPasswordEncoder.matches(actual, expect);
