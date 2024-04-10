@@ -53,7 +53,7 @@ public class JwtUtil {
         claims.put("category", "access");
         claims.put("role", role);
 
-        return createJwt(claims, username, 60*1000L);
+        return createJwt(claims, username, ACCESS_EXPIRATION_TIME);
     }
 
     /* refresh Token 발급 */
