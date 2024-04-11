@@ -17,6 +17,7 @@ public class RestaurantResponseDto {
     private final String tel;
     private final String description;
     private final Long user_id;
+    private final int likeCount;
     private final String created_time;
     private final String modified_time;
 
@@ -33,6 +34,7 @@ public class RestaurantResponseDto {
         this.tel = restaurant.getTel();
         this.description = restaurant.getDescription();
         this.user_id = restaurant.getUser().getId();
+        this.likeCount = restaurant.getLikes().size();
         this.created_time = restaurant.getCreated_time();
         this.modified_time = restaurant.getModified_time();
     }

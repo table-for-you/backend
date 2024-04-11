@@ -1,6 +1,7 @@
 package com.project.tableforyou.domain.restaurant.entity;
 
 import com.project.tableforyou.domain.BaseTimeEntity;
+import com.project.tableforyou.domain.like.entity.Like;
 import com.project.tableforyou.domain.menu.entity.Menu;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantUpdateDto;
 import com.project.tableforyou.domain.user.entity.User;
@@ -56,6 +57,9 @@ public class Restaurant extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "restaurant")
+    private List<Like> likes;
 
     public void update(RestaurantUpdateDto dto) {
         this.totalSeats = dto.getTotalSeats();
