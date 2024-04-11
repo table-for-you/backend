@@ -2,6 +2,8 @@ package com.project.tableforyou.domain.like.service;
 
 import com.project.tableforyou.domain.like.entity.Like;
 import com.project.tableforyou.domain.like.repository.LikeRepository;
+import com.project.tableforyou.domain.restaurant.dto.RestaurantNameDto;
+import com.project.tableforyou.domain.restaurant.dto.RestaurantRequestDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantResponseDto;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
@@ -63,14 +65,14 @@ public class LikeService {
     }
 
     @Transactional(readOnly = true)
-    public List<RestaurantResponseDto> getLikeRestaurants(String username) {
+    public List<RestaurantNameDto> getLikeRestaurants(String username) {
 
         User user = userRepository.findByUsername(username).orElseThrow(() ->
                 new CustomException(ErrorCode.USER_NOT_FOUND));
 
         return user.getLikes()
                 .stream()
-                .map(like -> new RestaurantResponseDto(like.getRestaurant()))
+                .map(like -> new RestaurantNameDto(like.getRestaurant()))
                 .collect(Collectors.toList());
     }
 }

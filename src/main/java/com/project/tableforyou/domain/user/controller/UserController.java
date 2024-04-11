@@ -1,6 +1,7 @@
 package com.project.tableforyou.domain.user.controller;
 
 import com.project.tableforyou.domain.like.service.LikeService;
+import com.project.tableforyou.domain.restaurant.dto.RestaurantNameDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantResponseDto;
 import com.project.tableforyou.domain.user.dto.UserRequestDto;
 import com.project.tableforyou.domain.user.dto.UserResponseDto;
@@ -84,7 +85,7 @@ public class UserController {
 
     /* 좋아요한 가게 불러오기 */
     @GetMapping("/likeRestaurants")
-    public List<RestaurantResponseDto> likeRestaurants(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public List<RestaurantNameDto> likeRestaurants(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         return likeService.getLikeRestaurants(principalDetails.getUsername());
     }
