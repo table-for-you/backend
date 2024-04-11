@@ -9,7 +9,6 @@ public class RestaurantResponseDto {
     private final Long id;
     private final int usedSeats;
     private final int totalSeats;
-    private final int likeCount;
     private final double rating;
     private final String time;
     private final String username;
@@ -26,7 +25,6 @@ public class RestaurantResponseDto {
         this.id = restaurant.getId();
         this.usedSeats = restaurant.getUsedSeats();
         this.totalSeats = restaurant.getTotalSeats();
-        this.likeCount = restaurant.getLikeCount();
         this.rating = restaurant.getRating();
         this.time = restaurant.getTime();
         this.username = restaurant.getUsername();

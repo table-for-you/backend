@@ -28,9 +28,6 @@ public class Restaurant extends BaseTimeEntity {
     private int totalSeats;
 
     @NotNull
-    private int likeCount;
-
-    @NotNull
     private double rating;
 
     private int rating_num;
