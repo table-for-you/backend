@@ -1,5 +1,7 @@
 package com.project.tableforyou.domain.user.controller;
 
+import com.project.tableforyou.domain.like.service.LikeService;
+import com.project.tableforyou.domain.restaurant.dto.RestaurantResponseDto;
 import com.project.tableforyou.domain.user.dto.UserRequestDto;
 import com.project.tableforyou.domain.user.dto.UserResponseDto;
 import com.project.tableforyou.domain.user.dto.UserUpdateDto;
@@ -14,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -23,6 +26,7 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+    private final LikeService likeService;
 
     /* 회원가입 과정 */
     @PostMapping("/joinProc")
@@ -76,5 +80,12 @@ public class UserController {
     @GetMapping("/checkNickname")
     public Object checkNicknameExists(@RequestParam("nickname") String nickname) {
         return userService.existsByNickname(nickname);
+    }
+
+    /* 좋아요한 가게 불러오기 */
+    @GetMapping("/likeRestaurants")
+    public List<RestaurantResponseDto> likeRestaurants(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        return likeService.getLikeRestaurants(principalDetails.getUsername());
     }
 }

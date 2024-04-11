@@ -2,6 +2,7 @@ package com.project.tableforyou.domain.user.entity;
 
 import com.project.tableforyou.domain.BaseTimeEntity;
 import com.project.tableforyou.domain.Role;
+import com.project.tableforyou.domain.like.entity.Like;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -49,6 +50,9 @@ public class User extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "user")
     private List<Restaurant> restaurants;
+
+    @OneToMany(mappedBy = "user")
+    private List<Like> likes;
 
     /* 계정 잠금을 위한 필드 */
     private int loginAttempt;
