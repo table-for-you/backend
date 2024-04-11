@@ -25,6 +25,7 @@ public enum ErrorCode {
     RESERVATION_NOT_FOUND(404, "해당하는 예약번호가 없습니다."),
     MENU_NOT_FOUND(404, "존재하지 않는 메뉴입니다."),
     USER_INVALID_PASSWORD(404, "잘못된 비밀번호입니다."),
+    LIKE_NOT_FOUND(404, "해당 가게에 좋아요를 누른 적이 없습니다."),
 
     // 계정관련 오류
     USER_LOCKED(404, "계정이 잠겨있습니다. 5분 후 다시 시도해 주세요."),
