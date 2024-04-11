@@ -86,13 +86,6 @@ public class RestaurantService {
         log.info("Restaurant usedSeat updated successfully with restaurant: {}", restaurant);
     }
 
-    /* 좋아요 업데이트 */
-    @Transactional
-    public void updateLikeCount(String restaurant, int value) {
-        restaurantRepository.updateLikeCount(restaurant, value);
-        log.info("Restaurant likeCount updated successfully with restaurant: {}", restaurant);
-    }
-
     /* 평점 업데이트 */
     @Transactional
     public void updateRating(String name, double rating) {

@@ -22,8 +22,4 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     @Query("update Restaurant r set r.usedSeats = r.usedSeats + :value where r.name = :name")
     void updateUsedSeats(@Param("name") String name, @Param("value") int value); // JPQL의 id와 매핑하기 위해.
 
-    @Modifying
-    @Query("update Restaurant r set r.likeCount = r.likeCount + :value where r.name = :name")
-    void updateLikeCount(@Param("name") String name, @Param("value") int value);
-
 }

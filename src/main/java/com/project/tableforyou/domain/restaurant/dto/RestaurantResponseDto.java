@@ -9,7 +9,6 @@ public class RestaurantResponseDto {
     private final Long id;
     private final int usedSeats;
     private final int totalSeats;
-    private final int likeCount;
     private final double rating;
     private final String time;
     private final String username;
@@ -18,6 +17,7 @@ public class RestaurantResponseDto {
     private final String tel;
     private final String description;
     private final Long user_id;
+    private final int likeCount;
     private final String created_time;
     private final String modified_time;
 
@@ -26,7 +26,6 @@ public class RestaurantResponseDto {
         this.id = restaurant.getId();
         this.usedSeats = restaurant.getUsedSeats();
         this.totalSeats = restaurant.getTotalSeats();
-        this.likeCount = restaurant.getLikeCount();
         this.rating = restaurant.getRating();
         this.time = restaurant.getTime();
         this.username = restaurant.getUsername();
@@ -35,6 +34,7 @@ public class RestaurantResponseDto {
         this.tel = restaurant.getTel();
         this.description = restaurant.getDescription();
         this.user_id = restaurant.getUser().getId();
+        this.likeCount = restaurant.getLikes().size();
         this.created_time = restaurant.getCreated_time();
         this.modified_time = restaurant.getModified_time();
     }
