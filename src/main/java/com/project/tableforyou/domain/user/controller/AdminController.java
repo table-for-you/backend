@@ -29,7 +29,7 @@ public class AdminController {
     }
 
     /* 회원 삭제 */
-    @DeleteMapping("/user/{user_id}/delete")
+    @DeleteMapping("/users/{user_id}/delete")
     public ResponseEntity<String> deleteUser(@PathVariable(name = "user_id") Long user_id) {
 
         adminService.deleteUser(user_id);
@@ -45,7 +45,7 @@ public class AdminController {
     }
 
     /* 가게 추가 요청 승인 (가게 주인 ADMIN -> USER) */
-    @PostMapping("/restaurant/{restaurant_id}")
+    @PostMapping("/restaurants/{restaurant_id}")
     public ResponseEntity<String> approvalRestaurant(@PathVariable(name = "restaurant_id") Long restaurant_id) {
 
         adminService.approvalRestaurant(restaurant_id);
@@ -53,7 +53,7 @@ public class AdminController {
     }
 
     /* 가게 삭제 */
-    @DeleteMapping("/restaurant/{restaurant_id}/delete")
+    @DeleteMapping("/restaurants/{restaurant_id}/delete")
     public ResponseEntity<String> deleteRestaurant(@PathVariable(name = "restaurant_id") Long restaurant_id) {
 
         adminService.deleteRestaurant(restaurant_id);

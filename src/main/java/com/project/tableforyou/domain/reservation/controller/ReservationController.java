@@ -15,14 +15,14 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/restaurant")
+@RequestMapping("/restaurants")
 @Slf4j
 public class ReservationController {
 
     private final ReservationService reservationService;
 
     /* 예약자 추가 */
-    @PostMapping("/{restaurant}/reservation/create")
+    @PostMapping("/{restaurant}/reservations/create")
     public ResponseEntity<String> create(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                          @PathVariable(name = "restaurant") String restaurant) {
 
@@ -32,20 +32,20 @@ public class ReservationController {
     }
 
     /* 예약자 읽기 */
-    @GetMapping("/{restaurant}/reservation/{username}")
+    @GetMapping("/{restaurant}/reservations/{username}")
     public ReservationResponseDto read(@PathVariable(name = "restaurant") String restaurant,
                                        @PathVariable(name = "username") String username) {
         return reservationService.findByBooking(restaurant, username);
     }
 
     /* 해당 가게 예약자 불러오기. */
-    @GetMapping("/{restaurant}/reservation")
+    @GetMapping("/{restaurant}/reservations")
     public List<ReservationResponseDto> readAll(@PathVariable(name = "restaurant") String restaurant) {
         return reservationService.findAllReservation(restaurant);
     }
 
     /* 예약자 앞으로 당기기 */
-    @PatchMapping("/{restaurant}/reservation/decreaseBooking")
+    @PatchMapping("/{restaurant}/reservations/decreaseBooking")
     public ResponseEntity<String> decreaseBooking(@PathVariable(name = "restaurant") String restaurant) {
         try {
             List<ReservationResponseDto> reservations = reservationService.getReservations(restaurant, null, null);  // 이미 여기서 트랜잭션은 끝나 1차캐시에 없음.
@@ -58,7 +58,7 @@ public class ReservationController {
     }
 
     /* 예약 순서 미루기 */ // restaurant_id 에서 이름을 가져오기. reservation_id에서 booking 가져오기
-    @PutMapping("/{restaurant}/reservation/postponedGuestBooking/{username}")
+    @PutMapping("/{restaurant}/reservations/postponedGuestBooking/{username}")
     public ResponseEntity<String> postponedGuestBooking(@PathVariable(name = "restaurant") String restaurant,
                                                         @PathVariable(name = "username") String username,
                                                         @RequestBody ReservationRequestDto dto) {
@@ -70,7 +70,7 @@ public class ReservationController {
     }
 
     /* 예약자 삭제 */
-    @DeleteMapping("/{restaurant}/reservation/{username}")
+    @DeleteMapping("/{restaurant}/reservations/{username}")
     public ResponseEntity<String> delete(@PathVariable(name = "restaurant") String restaurant,
                                          @PathVariable(name = "username") String username) {
 
