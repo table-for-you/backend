@@ -14,18 +14,20 @@ public class LikeController {
 
     private final LikeService likeService;
 
-    /* 가게 좋아요 증가 및 감소. */
-    @PostMapping("/{restaurant_name}")
+    /* 가게 좋아요 증가 */
+    @PostMapping("/restaurants/{restaurant_name}/like")
     public ResponseEntity<String> likeRestaurant(@PathVariable(name = "restaurant_name") String restaurant_name,
-                                                 @RequestParam("like") boolean like,
                                                  @AuthenticationPrincipal PrincipalDetails principalDetails) {
-
-        if (like) {
-            likeService.likeRestaurant(principalDetails.getUsername(), restaurant_name);
-            return ResponseEntity.ok("가게 좋아요 증가.");
-        } else {
-            likeService.unLikeRestaurant(principalDetails.getUsername(), restaurant_name);
-            return ResponseEntity.ok("가게 좋아요 감소.");
-        }
+        likeService.likeRestaurant(principalDetails.getUsername(), restaurant_name);
+        return ResponseEntity.ok("가게 좋아요 증가.");
     }
+
+    /* 가게 좋아요 감소 */
+    @DeleteMapping("/restaurants/{restaurant_name}/like")
+    public ResponseEntity<String> unLikeRestaurant(@PathVariable(name = "restaurant_name") String restaurant_name,
+                                                   @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        likeService.unLikeRestaurant(principalDetails.getUsername(), restaurant_name);
+        return ResponseEntity.ok("가게 좋아요 감소.");
+    }
+
 }
