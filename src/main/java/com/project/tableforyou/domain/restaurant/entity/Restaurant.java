@@ -37,8 +37,8 @@ public class Restaurant extends BaseTimeEntity {
     @NotBlank
     private String time;
 
-    // 가게 주인 변경을 위해. (ADMIN -> 가게 신청한 USER)
-    private String username;
+    @Enumerated(EnumType.STRING)
+    private RestaurantStatus status;
 
     @NotBlank
     private String name;
@@ -71,8 +71,8 @@ public class Restaurant extends BaseTimeEntity {
     }
 
     /* 가게 주인 ADMIN -> USER로 변경 (가게 생성) */
-    public void userUpdate(User user) {
-        this.user = user;
+    public void statusUpdate(RestaurantStatus status) {
+        this.status = status;
     }
 
     public void updateRating(double rating, int rating_num) {
