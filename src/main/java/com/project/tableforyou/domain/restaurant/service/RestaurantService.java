@@ -1,13 +1,12 @@
 package com.project.tableforyou.domain.restaurant.service;
 
-import com.project.tableforyou.domain.user.entity.Role;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantResponseDto;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
+import com.project.tableforyou.domain.restaurant.entity.RestaurantStatus;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
-import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.domain.user.repository.UserRepository;
-import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
+import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
-    private final UserRepository userRepository;
 
     /* 가게 읽기 */
     @Transactional(readOnly = true)
@@ -39,10 +37,8 @@ public class RestaurantService {
     public Page<RestaurantResponseDto> RestaurantPageList(Pageable pageable) {
 
         log.info("Finding all restaurants");
-        User user = userRepository.findByRole(Role.ADMIN).orElseThrow(() ->         // ADMIN 계정
-                new CustomException(ErrorCode.USER_NOT_FOUND));
-        // ADMIN 계정으로 등록되어 있는(아직 등록처리 안된) 가게를 제외한 가게 불러오기.
-        Page<Restaurant> restaurants = restaurantRepository.findByUserNot(user, pageable);
+
+        Page<Restaurant> restaurants = restaurantRepository.findByStatus(RestaurantStatus.APPROVED, pageable);
         return restaurants.map(RestaurantResponseDto::new);
     }
 

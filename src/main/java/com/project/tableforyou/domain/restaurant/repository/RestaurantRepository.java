@@ -1,6 +1,7 @@
 package com.project.tableforyou.domain.restaurant.repository;
 
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
+import com.project.tableforyou.domain.restaurant.entity.RestaurantStatus;
 import com.project.tableforyou.domain.user.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,8 +15,7 @@ import java.util.Optional;
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
     Page<Restaurant> findByNameContainingOrDescriptionContaining(String searchKeyword1, String searchKeyword2, Pageable pageable);
-    Page<Restaurant> findByUserNot(User user, Pageable pageable);
-    Page<Restaurant> findByUser(User user, Pageable pageable);
+    Page<Restaurant> findByStatus(RestaurantStatus status, Pageable pageable);
     Optional<Restaurant> findByName(String name);
 
     @Modifying

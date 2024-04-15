@@ -44,7 +44,7 @@ public class AdminController {
         return adminService.handleRestaurantList(pageable);
     }
 
-    /* 가게 추가 요청 승인 (가게 주인 ADMIN -> USER) */
+    /* 가게 추가 요청 승인*/
     @PostMapping("/restaurants/{restaurant_id}")
     public ResponseEntity<String> approvalRestaurant(@PathVariable(name = "restaurant_id") Long restaurant_id) {
 

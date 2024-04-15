@@ -27,16 +27,15 @@ public class OwnerService {
     private final UserRepository userRepository;
     private final RestaurantRepository restaurantRepository;
 
-    /* 가게 create. ADMIN을 주인으로 생성. ADMIN이 선별하여 주인 변경 예정 */
+    /* 가게 create. 가게 등록 대기 상태. */
     @Transactional
     public Long save(String username, RestaurantRequestDto dto) {
 
         log.info("Creating Restaurant by user username: {}", username);
-        User user = userRepository.findByRole(Role.ADMIN).orElseThrow(() ->
+        User user = userRepository.findByUsername(username).orElseThrow(() ->
                 new CustomException(ErrorCode.USER_NOT_FOUND));
 
         dto.setUser(user);
-        dto.setUsername(username);
         Restaurant restaurant = dto.toEntity();
         restaurantRepository.save(restaurant);
 
