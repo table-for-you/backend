@@ -1,26 +1,19 @@
 package com.project.tableforyou.domain.restaurant.service;
 
 import com.project.tableforyou.domain.user.entity.Role;
-import com.project.tableforyou.domain.restaurant.dto.RestaurantRequestDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantResponseDto;
-import com.project.tableforyou.domain.restaurant.dto.RestaurantUpdateDto;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
 import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.domain.user.repository.UserRepository;
-import com.project.tableforyou.handler.exceptionHandler.CustomException;
-import com.project.tableforyou.handler.exceptionHandler.ErrorCode;
+import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
+import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.Errors;
-import org.springframework.validation.FieldError;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor

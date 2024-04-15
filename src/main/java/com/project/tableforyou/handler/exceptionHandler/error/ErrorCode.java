@@ -1,4 +1,4 @@
-package com.project.tableforyou.handler.exceptionHandler;
+package com.project.tableforyou.handler.exceptionHandler.error;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

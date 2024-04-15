@@ -4,14 +4,12 @@ package com.project.tableforyou.auth.service;
 import com.project.tableforyou.auth.dto.LoginDto;
 import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.domain.user.repository.UserRepository;
-import com.project.tableforyou.handler.exceptionHandler.CustomException;
-import com.project.tableforyou.handler.exceptionHandler.ErrorCode;
+import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
+import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 

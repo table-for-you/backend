@@ -1,12 +1,11 @@
 package com.project.tableforyou.refreshToken.service;
 
-import com.project.tableforyou.handler.exceptionHandler.ErrorCode;
-import com.project.tableforyou.handler.exceptionHandler.RefreshTokenException;
+import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
+import com.project.tableforyou.handler.exceptionHandler.exception.RefreshTokenException;
 import com.project.tableforyou.refreshToken.entity.RefreshToken;
 import com.project.tableforyou.refreshToken.dto.RefreshTokenDto;
 import com.project.tableforyou.utils.jwt.JwtUtil;
 import com.project.tableforyou.refreshToken.repository.RefreshTokenRepository;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

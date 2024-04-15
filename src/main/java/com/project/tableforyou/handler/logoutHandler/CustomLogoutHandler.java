@@ -1,10 +1,9 @@
 package com.project.tableforyou.handler.logoutHandler;
 
-import com.project.tableforyou.handler.exceptionHandler.ErrorCode;
-import com.project.tableforyou.handler.exceptionHandler.RefreshTokenException;
+import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
+import com.project.tableforyou.handler.exceptionHandler.exception.RefreshTokenException;
 import com.project.tableforyou.refreshToken.service.RefreshTokenService;
 import com.project.tableforyou.utils.cookie.CookieUtil;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

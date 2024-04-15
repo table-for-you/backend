@@ -1,12 +1,16 @@
 package com.project.tableforyou.handler.exceptionHandler;
 
+import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
+import com.project.tableforyou.handler.exceptionHandler.error.ErrorDto;
+import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
+import com.project.tableforyou.handler.exceptionHandler.exception.RefreshTokenException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import static com.project.tableforyou.handler.exceptionHandler.ErrorCode.INTERNAL_SERVER_ERROR;
+import static com.project.tableforyou.handler.exceptionHandler.error.ErrorCode.INTERNAL_SERVER_ERROR;
 
 @Slf4j
 @RestControllerAdvice

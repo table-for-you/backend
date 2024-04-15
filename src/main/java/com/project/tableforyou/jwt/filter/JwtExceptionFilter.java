@@ -1,8 +1,8 @@
 package com.project.tableforyou.jwt.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.tableforyou.handler.exceptionHandler.ErrorCode;
-import com.project.tableforyou.handler.exceptionHandler.ErrorDto;
+import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
+import com.project.tableforyou.handler.exceptionHandler.error.ErrorDto;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

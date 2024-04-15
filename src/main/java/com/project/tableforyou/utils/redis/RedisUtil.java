@@ -2,8 +2,8 @@ package com.project.tableforyou.utils.redis;
 
 import com.project.tableforyou.domain.reservation.dto.ReservationResponseDto;
 import com.project.tableforyou.domain.reservation.entity.Reservation;
-import com.project.tableforyou.handler.exceptionHandler.CustomException;
-import com.project.tableforyou.handler.exceptionHandler.ErrorCode;
+import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
+import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
