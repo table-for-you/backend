@@ -11,7 +11,6 @@ public class RestaurantResponseDto {
     private final int totalSeats;
     private final double rating;
     private final String time;
-    private final String username;
     private final String name;
     private final String location;
     private final String tel;
@@ -28,7 +27,6 @@ public class RestaurantResponseDto {
         this.totalSeats = restaurant.getTotalSeats();
         this.rating = restaurant.getRating();
         this.time = restaurant.getTime();
-        this.username = restaurant.getUsername();
         this.name = restaurant.getName();
         this.location = restaurant.getLocation();
         this.tel = restaurant.getTel();
