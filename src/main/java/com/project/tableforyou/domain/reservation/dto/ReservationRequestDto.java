@@ -13,12 +13,4 @@ public class ReservationRequestDto {
     private String username;
     private String restaurant;
 
-    /* dto -> Entity */
-    public Reservation toEntity() {
-        return Reservation.builder()
-                .booking(booking)
-                .username(username)
-                .restaurant(restaurant)
-                .build();
-    }
 }
