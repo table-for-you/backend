@@ -32,13 +32,11 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
 
         log.info("Creating Reservation");
 
-        User user = userRepository.findByUsername(username).orElseThrow(() ->
-                new CustomException(ErrorCode.USER_NOT_FOUND));
         Restaurant restaurant = restaurantRepository.findByName(restaurantName).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
         Reservation reservation = new Reservation();
-        reservation.setUsername(user.getUsername());
+        reservation.setUsername(username);
         reservation.setRestaurant(restaurant.getName());
 
         String key = redisUtil.generateRedisKey(restaurant.getName());
@@ -46,7 +44,7 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
         reservation.setBooking(size+1);
 
         redisUtil.saveReservationToRedis(key, reservation);
-        log.info("Reservation created with username: {}", user.getUsername());
+        log.info("Reservation created with username: {}", username);
     }
 
     /* 예약 읽기 */
