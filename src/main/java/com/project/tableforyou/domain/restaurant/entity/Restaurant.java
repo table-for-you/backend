@@ -31,6 +31,7 @@ public class Restaurant extends BaseTimeEntity {
     @NotNull
     private double rating;
 
+    // 평점 참여 인원
     private int rating_num;
 
     // 영업시간
