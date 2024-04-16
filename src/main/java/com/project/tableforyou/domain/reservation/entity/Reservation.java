@@ -18,9 +18,6 @@ public class Reservation {
 
     private String restaurant;
 
-    public Reservation(ReservationResponseDto dto) {
-        this.booking = dto.getBooking();
-    }
 
     public void update(int booking) {
         this.booking = booking;
