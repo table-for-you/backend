@@ -1,5 +1,6 @@
 package com.project.tableforyou.domain.user.controller;
 
+import com.project.tableforyou.domain.restaurant.dto.RestaurantNameDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantRequestDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantUpdateDto;
 import com.project.tableforyou.domain.user.service.OwnerService;
@@ -13,10 +14,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/owner")
+@RequestMapping("/owner/restaurants")
 @RequiredArgsConstructor
 @Slf4j
 public class OwnerController {
@@ -24,7 +26,7 @@ public class OwnerController {
     private final OwnerService ownerService;
 
     /* 가게 생성 */
-    @PostMapping("/restaurants/create")
+    @PostMapping
     public ResponseEntity<Object> create(@AuthenticationPrincipal PrincipalDetails principalDetails,    // 순서 조심
                                          @Valid @RequestBody RestaurantRequestDto dto,
                                          BindingResult bindingResult) {
@@ -43,6 +45,13 @@ public class OwnerController {
             log.error("Error occurred during create Restaurant: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred during create Restaurant");
         }
+    }
+
+    /* 사장 가게 불러오기 */
+    @GetMapping
+    public List<RestaurantNameDto> readRestaurant(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        return ownerService.findByRestaurantOwner(principalDetails.getUsername());
     }
 
     /* 가게 업데이트 */

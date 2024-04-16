@@ -1,5 +1,6 @@
 package com.project.tableforyou.domain.user.service;
 
+import com.project.tableforyou.domain.restaurant.dto.RestaurantNameDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantRequestDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantUpdateDto;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
@@ -17,7 +18,9 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -41,6 +44,15 @@ public class OwnerService {
 
         log.info("Restaurant created with ID: {}", restaurant.getId());
         return restaurant.getId();
+    }
+
+    /* 사장 가게 불러오기 */
+    @Transactional(readOnly = true)
+    public List<RestaurantNameDto> findByRestaurantOwner(String username) {
+
+        User user = userRepository.findByUsername(username).orElseThrow(() ->
+                new CustomException(ErrorCode.USER_NOT_FOUND));
+        return user.getRestaurants().stream().map(RestaurantNameDto::new).collect(Collectors.toList());
     }
 
     /* 가게 수정 */
