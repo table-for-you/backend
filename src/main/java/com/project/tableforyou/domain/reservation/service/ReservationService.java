@@ -40,6 +40,10 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
         reservation.setRestaurant(restaurant.getName());
 
         String key = redisUtil.generateRedisKey(restaurantId);
+
+        if (redisUtil.existedReservation(key, username))    // 중복 예약 확인.
+            throw new CustomException(ErrorCode.ALREADY_USER_RESERVATION);
+
         int size = redisUtil.getReservationSizeFromRedis(key); // redis 사이즈를 통해 예약 번호 지정
         reservation.setBooking(size+1);
 

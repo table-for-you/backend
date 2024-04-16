@@ -45,13 +45,18 @@ public class RedisUtil {
         return size != null ? size.intValue() : 0; // int 형식으로 변환하여 반환, null인 경우 0 반환
     }
 
+    /* Redis에 해당 값 존재하는지 확인.*/
+    public boolean existedReservation(String key, String username) {
+        return redisTemplate.opsForHash().hasKey(key, username);
+    }
 
+    /* key 생성 */
     public String generateRedisKey(Long restaurantId) {
         return restaurantId + KEY_NAME;
     }
 
+    /* Redis에서 모든 예약 정보 가져오기*/
     public List<ReservationResponseDto> getEntries(String key) {
-        // Redis에서 모든 예약 정보 가져오기
         Map<Object, Object> entries = redisTemplate.opsForHash().entries(key);
 
         // 예약 정보를 DTO로 변환하여 반환
