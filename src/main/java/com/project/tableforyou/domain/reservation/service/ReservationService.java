@@ -28,18 +28,18 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
     private final RedisUtil redisUtil;
 
     /* 예약자 추가 */
-    public void save(String username, String restaurantName) {
+    public void save(String username, Long restaurantId) {
 
         log.info("Creating Reservation");
 
-        Restaurant restaurant = restaurantRepository.findByName(restaurantName).orElseThrow(() ->
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
         Reservation reservation = new Reservation();
         reservation.setUsername(username);
         reservation.setRestaurant(restaurant.getName());
 
-        String key = redisUtil.generateRedisKey(restaurant.getName());
+        String key = redisUtil.generateRedisKey(restaurantId);
         int size = redisUtil.getReservationSizeFromRedis(key); // redis 사이즈를 통해 예약 번호 지정
         reservation.setBooking(size+1);
 
@@ -48,19 +48,19 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
     }
 
     /* 예약 읽기 */
-    public ReservationResponseDto findByBooking(String restaurant, String username) {
+    public ReservationResponseDto findByBooking(Long restaurantId, String username) {
 
-        return new ReservationResponseDto(redisUtil.getReservationFromRedis(redisUtil.generateRedisKey(restaurant), username));
+        return new ReservationResponseDto(redisUtil.getReservationFromRedis(redisUtil.generateRedisKey(restaurantId), username));
     }
 
     /* 예약자 줄어들 때. */
-    public String decreaseBooking(List<ReservationResponseDto> reservations) {
+    public String decreaseBooking(List<ReservationResponseDto> reservations, Long restaurantId) {
 
         log.info("Decreasing bookings for reservations");
         String user = null;
 
+        String key = redisUtil.generateRedisKey(restaurantId);
         for (ReservationResponseDto reservation: reservations) {
-            String key = redisUtil.generateRedisKey(reservation.getRestaurant());
             Reservation storedReservation = redisUtil.getReservationFromRedis(key, reservation.getUsername());
 
             if (storedReservation != null) {
@@ -81,11 +81,11 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
     }
 
     /* 예약 미루기(미루기할 시 store 예약자 수에 대한 조건 + 뒤에 있던 사람들 앞으로 당기기 - decreaseBooking) */
-    public void postponedGuestBooking(String restaurant, String username, ReservationRequestDto dto) {
+    public void postponedGuestBooking(Long restaurantId, String username, ReservationRequestDto dto) {
 
         log.info("Postponing guest booking for reservation with username: {}", username);
 
-        String key = redisUtil.generateRedisKey(restaurant);
+        String key = redisUtil.generateRedisKey(restaurantId);
 
         // Redis에서 예약 정보를 가져오기.
         Reservation reservation = redisUtil.getReservationFromRedis(key, username);
@@ -101,35 +101,35 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
     }
 
     /* 해당 가게의 모든 예약자 가져오기 */
-    public List<ReservationResponseDto> findAllReservation(String restaurant) {
+    public List<ReservationResponseDto> findAllReservation(Long restaurantId) {
 
-        log.info("Finding all reservations by restaurant: {}", restaurant);
-        String key = redisUtil.generateRedisKey(restaurant);
+        log.info("Finding all reservations by restaurant: {}", restaurantId);
+        String key = redisUtil.generateRedisKey(restaurantId);
 
         // Redis에서 모든 예약 정보 가져오기
         return redisUtil.getEntries(key);
     }
 
     /* 예약자 삭제(중간사람 삭제 시 뒤에 있던 사람들 앞으로 당기기 - decreaseBooking) */
-    public void delete(String restaurant, String username) {
-        log.info("Deleting reservation with username {} from restaurant {}", username, restaurant);
+    public void delete(Long restaurantId, String username) {
+        log.info("Deleting reservation with username {} from restaurant {}", username, restaurantId);
 
         // Redis에서 해당 가게의 예약 정보를 가져옵니다.
-        String key = redisUtil.generateRedisKey(restaurant);
+        String key = redisUtil.generateRedisKey(restaurantId);
         Reservation reservation = redisUtil.getReservationFromRedis(key, username);
 
         // 해당 예약이 존재하는 경우 삭제합니다.
         if (reservation != null) {
             redisUtil.deleteReservationFromRedis(key, username);
-            log.info("Reservation with username {} from restaurant {} deleted from Redis", username, restaurant);
+            log.info("Reservation with username {} from restaurant {} deleted from Redis", username, restaurantId);
         } else {
-            log.warn("Reservation with username {} from restaurant {} not found in Redis", username, restaurant);
+            log.warn("Reservation with username {} from restaurant {} not found in Redis", username, restaurantId);
         }
     }
 
     /* 예약자 List를 받기위한 메서드. */
-    public List<ReservationResponseDto> getReservations(String restaurant, String username, ReservationRequestDto dto) {
-        String key = redisUtil.generateRedisKey(restaurant);
+    public List<ReservationResponseDto> getReservations(Long restaurantId, String username, ReservationRequestDto dto) {
+        String key = redisUtil.generateRedisKey(restaurantId);
 
         List<ReservationResponseDto> reservations = redisUtil.getEntries(key);
 

@@ -57,33 +57,33 @@ public class OwnerService {
 
     /* 가게 수정 */
     @Transactional
-    public void update(String name, String username, RestaurantUpdateDto dto) {
+    public void update(Long restaurantId, String username, RestaurantUpdateDto dto) {
 
-        log.info("Updating Restaurant with name: {}", name);
-        Restaurant restaurant = restaurantRepository.findByName(name).orElseThrow(() ->
+        log.info("Updating Restaurant with name: {}", restaurantId);
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
         if(!verifyAuthenticationByUsername(username, restaurant.getUser().getUsername()))
             throw new CustomException(ErrorCode.UNAUTHORIZED);
         else {
             restaurant.update(dto);
-            log.info("Restaurant updated successfully with name: {}", name);
+            log.info("Restaurant updated successfully with name: {}", restaurantId);
         }
     }
 
 
     /* 가게 삭제 */
     @Transactional
-    public void delete(String name, String username) {         // 다른 사용자가 삭제하는 경우 확인해보기. 만약 그런다면 findByUserIdAndId 사용. 그냥 권한 설정 하면 될듯?
+    public void delete(Long restaurantId, String username) {         // 다른 사용자가 삭제하는 경우 확인해보기. 만약 그런다면 findByUserIdAndId 사용. 그냥 권한 설정 하면 될듯?
 
-        log.info("Deleting Restaurant with name: {}", name);
-        Restaurant restaurant = restaurantRepository.findByName(name).orElseThrow(() ->
+        log.info("Deleting Restaurant with name: {}", restaurantId);
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
         if(!verifyAuthenticationByUsername(username, restaurant.getUser().getUsername()))
             throw new CustomException(ErrorCode.UNAUTHORIZED);
         else {
             restaurantRepository.delete(restaurant);
-            log.info("Restaurant deleted successfully with name: {}", name);
+            log.info("Restaurant deleted successfully with name: {}", restaurantId);
         }
     }
 

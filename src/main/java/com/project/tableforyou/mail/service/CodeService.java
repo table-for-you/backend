@@ -22,20 +22,15 @@ public class CodeService {
     private final Map<String, CodeDto> codeMap = new ConcurrentHashMap<>();  // 메일 인증번호 확인용. 멀티스레드 측면에서 안전성 이점.
     private static final int VERIFICATION_EXPIRATION_MINUTES = 3; // 이메일 인증 유효 시간 3분
     private static final int RESEND_VALIDITY_MINUTES = 1; // 이메일 재전송 유효 시간 1분
-    private static final String SEND_EMAIL = "mail";
-    private static final String SEND_PHONE = "phone";
 
     /* 회원가입 이메일 인증 번호. */
     public boolean sendCodeToMail(String email) {
-        return sendCode(email, SEND_EMAIL);
+        return sendCode(email);
     }
 
     /* 회원가입 핸드폰 인증번호 확인 메서드. (임시로 만든 메서드) */
-    public boolean sendCodeToPhone(String phone) {
-        return sendCode(phone, SEND_PHONE);
-    }
 
-    private boolean sendCode(String key, String type) {
+    private boolean sendCode(String key) {
         CodeDto storedData = codeMap.get(key);
         if (storedData != null) {
             LocalDateTime currentTime = LocalDateTime.now();
@@ -51,10 +46,9 @@ public class CodeService {
             }
         }
         String authCode = createCode();
-        switch (type) {
-            case "phone" -> log.info("[tableForYou] 본인인증번호 : {}", authCode);
-            case "mail" -> mailService.sendMail(key, authCode);
-        }
+
+        mailService.sendMail(key, authCode);
+
         codeMap.put(key, new CodeDto(authCode, LocalDateTime.now()));
         return true;
     }

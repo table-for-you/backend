@@ -25,10 +25,10 @@ public class MenuService {
 
     /* 메뉴 추가 */
     @Transactional
-    public Long save(String restaurantName, MenuRequestDto dto) {
+    public Long save(Long restaurantId, MenuRequestDto dto) {
 
         log.info("Creating menu");
-        Restaurant restaurant = restaurantRepository.findByName(restaurantName).orElseThrow(() ->
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
         dto.setRestaurant(restaurant);
@@ -41,28 +41,28 @@ public class MenuService {
 
     /* 메뉴 리스트 페이징 */
     @Transactional(readOnly = true)
-    public Page<MenuResponseDto> menuPageList(String restaurant, Pageable pageable) {
+    public Page<MenuResponseDto> menuPageList(Long restaurantId, Pageable pageable) {
 
-        log.info("Finding all menus with restaurant: {}", restaurant);
-        Page<Menu> menus = menuRepository.findByRestaurantName(restaurant, pageable);
+        log.info("Finding all menus with restaurant: {}", restaurantId);
+        Page<Menu> menus = menuRepository.findByRestaurantId(restaurantId, pageable);
         return menus.map(MenuResponseDto::new);
     }
 
     /* 메뉴 검색 */
     @Transactional(readOnly = true)
-    public Page<MenuResponseDto> menuPageSearchList(String restaurant, String searchKeyword, Pageable pageable) {
+    public Page<MenuResponseDto> menuPageSearchList(Long restaurantId, String searchKeyword, Pageable pageable) {
 
-        log.info("Find all menus with Restaurant: {} and keyword: {}", restaurant, searchKeyword);
-        Page<Menu> menus = menuRepository.findByRestaurantNameAndNameContaining(restaurant, searchKeyword, pageable);
+        log.info("Find all menus with Restaurant: {} and keyword: {}", restaurantId, searchKeyword);
+        Page<Menu> menus = menuRepository.findByRestaurantIdAndNameContaining(restaurantId, searchKeyword, pageable);
         return menus.map(MenuResponseDto::new);
     }
 
     /* 메뉴 업데이트 */
     @Transactional
-    public void update(String restaurant, Long id, MenuRequestDto dto) {
+    public void update(Long restaurantId, Long id, MenuRequestDto dto) {
 
         log.info("Updating menu with ID: {}", id);
-        Menu menu = menuRepository.findByRestaurantNameAndId(restaurant, id).orElseThrow(() ->
+        Menu menu = menuRepository.findByRestaurantIdAndId(restaurantId, id).orElseThrow(() ->
                 new CustomException(ErrorCode.MENU_NOT_FOUND));
         menu.update(dto.getName(), dto.getPrice());
         log.info("Menu updated successfully");
@@ -70,10 +70,10 @@ public class MenuService {
 
     /* 메뉴 삭제 */
     @Transactional
-    public void delete(String restaurant, Long id) {
+    public void delete(Long restaurantId, Long id) {
 
         log.info("Deleting menu with ID: {}", id);
-        Menu menu = menuRepository.findByRestaurantNameAndId(restaurant, id).orElseThrow(() ->
+        Menu menu = menuRepository.findByRestaurantIdAndId(restaurantId, id).orElseThrow(() ->
                 new CustomException(ErrorCode.MENU_NOT_FOUND));
         menuRepository.delete(menu);
         log.info("Menu deleted successfully");

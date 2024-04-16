@@ -29,10 +29,10 @@ public class AdminController {
     }
 
     /* 회원 삭제 */
-    @DeleteMapping("/users/{user_id}/delete")
-    public ResponseEntity<String> deleteUser(@PathVariable(name = "user_id") Long user_id) {
+    @DeleteMapping("/users/{userId}")
+    public ResponseEntity<String> deleteUser(@PathVariable(name = "userId") Long userId) {
 
-        adminService.deleteUser(user_id);
+        adminService.deleteUser(userId);
         return ResponseEntity.ok("회원 삭제 성공.");
     }
 
@@ -45,18 +45,18 @@ public class AdminController {
     }
 
     /* 가게 추가 요청 승인*/
-    @PostMapping("/restaurants/{restaurant_id}")
-    public ResponseEntity<String> approvalRestaurant(@PathVariable(name = "restaurant_id") Long restaurant_id) {
+    @PatchMapping("/restaurants/{restaurantId}")
+    public ResponseEntity<String> approvalRestaurant(@PathVariable(name = "restaurantId") Long restaurantId) {
 
-        adminService.approvalRestaurant(restaurant_id);
+        adminService.approvalRestaurant(restaurantId);
         return ResponseEntity.ok("사용자 가게 등록 완료.");
     }
 
-    /* 가게 삭제 */
-    @DeleteMapping("/restaurants/{restaurant_id}/delete")
-    public ResponseEntity<String> deleteRestaurant(@PathVariable(name = "restaurant_id") Long restaurant_id) {
+    /* 가게 삭제 (승인 거절) */
+    @DeleteMapping("/restaurants/{restaurantId}")
+    public ResponseEntity<String> deleteRestaurant(@PathVariable(name = "restaurantId") Long restaurantId) {
 
-        adminService.deleteRestaurant(restaurant_id);
+        adminService.deleteRestaurant(restaurantId);
         return ResponseEntity.ok("가게 삭제 완료.");
     }
 }

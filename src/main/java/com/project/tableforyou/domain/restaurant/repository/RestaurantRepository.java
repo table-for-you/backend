@@ -16,10 +16,9 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
     Page<Restaurant> findByNameContainingOrDescriptionContaining(String searchKeyword1, String searchKeyword2, Pageable pageable);
     Page<Restaurant> findByStatus(RestaurantStatus status, Pageable pageable);
-    Optional<Restaurant> findByName(String name);
 
     @Modifying
-    @Query("update Restaurant r set r.usedSeats = r.usedSeats + :value where r.name = :name")
-    void updateUsedSeats(@Param("name") String name, @Param("value") int value); // JPQL의 id와 매핑하기 위해.
+    @Query("update Restaurant r set r.usedSeats = r.usedSeats + :value where r.id = :id")
+    void updateUsedSeats(@Param("id") Long id, @Param("value") int value); // JPQL의 id와 매핑하기 위해.
 
 }

@@ -54,7 +54,7 @@ public class UserController {
     }
 
     /* 회원 업데이트 */
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<String> update(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                          @RequestBody UserUpdateDto dto) {
 
@@ -64,7 +64,7 @@ public class UserController {
     }
 
     /* 회원 삭제 */
-    @DeleteMapping("/delete")
+    @DeleteMapping
     public ResponseEntity<String> delete(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         userService.delete(principalDetails.getUsername());

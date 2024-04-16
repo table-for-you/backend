@@ -46,8 +46,8 @@ public class RedisUtil {
     }
 
 
-    public String generateRedisKey(String restaurant) {
-        return restaurant + KEY_NAME;
+    public String generateRedisKey(Long restaurantId) {
+        return restaurantId + KEY_NAME;
     }
 
     public List<ReservationResponseDto> getEntries(String key) {

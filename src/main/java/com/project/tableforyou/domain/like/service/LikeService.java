@@ -26,12 +26,12 @@ public class LikeService {
 
     /* 가게 좋아요 실행 메서드 */
     @Transactional
-    public void likeRestaurant(String username, String restaurant_name) {
+    public void likeRestaurant(String username, Long restaurantId) {
 
         User user = userRepository.findByUsername(username).orElseThrow(() ->
                 new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        Restaurant restaurant = restaurantRepository.findByName(restaurant_name).orElseThrow(() ->
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
         if(likeRepository.existsByUserAndRestaurant(user, restaurant)) {
@@ -48,12 +48,12 @@ public class LikeService {
 
     /* 가게 좋아요 취소 메서드 */
     @Transactional
-    public void unLikeRestaurant(String username, String restaurant_name) {
+    public void unLikeRestaurant(String username, Long restaurantId) {
 
         User user = userRepository.findByUsername(username).orElseThrow(() ->
                 new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        Restaurant restaurant = restaurantRepository.findByName(restaurant_name).orElseThrow(() ->
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
         Like like = likeRepository.findByUserAndRestaurant(user, restaurant).orElseThrow(() ->
@@ -62,6 +62,7 @@ public class LikeService {
         likeRepository.delete(like);
     }
 
+    /* 사용자가 좋아요한 가게 불러오기. */
     @Transactional(readOnly = true)
     public List<RestaurantNameDto> getLikeRestaurants(String username) {
 

@@ -24,10 +24,10 @@ public class RestaurantService {
 
     /* 가게 읽기 */
     @Transactional(readOnly = true)
-    public RestaurantResponseDto findByName(String name) {
+    public RestaurantResponseDto findByName(Long restaurantId) {
 
-        log.info("Finding restaurant by name: {}", name);
-        Restaurant restaurant = restaurantRepository.findByName(name).orElseThrow(() ->
+        log.info("Finding restaurant by name: {}", restaurantId);
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
         return new RestaurantResponseDto(restaurant);
     }
@@ -45,9 +45,9 @@ public class RestaurantService {
 
     /* 가게 예약자 수 읽기 */
     @Transactional(readOnly = true)
-    public int RestaurantWaiting(String name) {
+    public int RestaurantWaiting(Long restaurantId) {
 
-        String key = redisUtil.generateRedisKey(name);
+        String key = redisUtil.generateRedisKey(restaurantId);
         return redisUtil.getReservationSizeFromRedis(key); // redis 사이즈를 통해 예약 번호 지정
     }
 
@@ -62,16 +62,16 @@ public class RestaurantService {
 
     /* 가게 좌석 업데이트 */
     @Transactional
-    public void updateUsedSeats(String restaurant, int value) {    // 가게에 user를 추가해야 하지 않나? 그리고 인원이 줄면 어떻게 user을 없애지? 그리고 예약자를 줄이고 여기로 다시 보내야하는데
-        restaurantRepository.updateUsedSeats(restaurant, value);
-        log.info("Restaurant usedSeat updated successfully with restaurant: {}", restaurant);
+    public void updateUsedSeats(Long restaurantId, int value) {    // 가게에 user를 추가해야 하지 않나? 그리고 인원이 줄면 어떻게 user을 없애지? 그리고 예약자를 줄이고 여기로 다시 보내야하는데
+        restaurantRepository.updateUsedSeats(restaurantId, value);
+        log.info("Restaurant usedSeat updated successfully with restaurant: {}", restaurantId);
     }
 
     /* 평점 업데이트 */
     @Transactional
-    public void updateRating(String name, double rating) {
+    public void updateRating(Long restaurantId, double rating) {
 
-        Restaurant restaurant = restaurantRepository.findByName(name).orElseThrow(() ->
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
         double before_rating = restaurant.getRating();
         int now_ratingNum = restaurant.getRating_num() + 1;
@@ -84,6 +84,6 @@ public class RestaurantService {
 
 
         restaurant.updateRating(now_rating, now_ratingNum);
-        log.info("Restaurant rating updated successfully with name: {}", name);
+        log.info("Restaurant rating updated successfully with name: {}", restaurantId);
     }
 }

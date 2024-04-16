@@ -55,21 +55,21 @@ public class OwnerController {
     }
 
     /* 가게 업데이트 */
-    @PutMapping("/{restaurant}")
-    public ResponseEntity<String> update(@PathVariable(name = "restaurant") String restaurant, @RequestBody RestaurantUpdateDto dto,
+    @PutMapping("/{restaurantId}")
+    public ResponseEntity<String> update(@PathVariable(name = "restaurantId") Long restaurantId, @RequestBody RestaurantUpdateDto dto,
                                          @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        ownerService.update(restaurant, principalDetails.getUsername(), dto);
+        ownerService.update(restaurantId, principalDetails.getUsername(), dto);
         return ResponseEntity.ok("가게 수정 완료.");
     }
 
 
     /* 가게 삭제 */
-    @DeleteMapping("/{restaurant}")
-    public ResponseEntity<String> delete(@PathVariable(name = "restaurant") String restaurant,
+    @DeleteMapping("/{restaurantId}")
+    public ResponseEntity<String> delete(@PathVariable(name = "restaurantId") Long restaurantId,
                                          @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        ownerService.delete(restaurant, principalDetails.getUsername());
+        ownerService.delete(restaurantId, principalDetails.getUsername());
         return ResponseEntity.ok("가게 삭제 완료.");
 
     }
