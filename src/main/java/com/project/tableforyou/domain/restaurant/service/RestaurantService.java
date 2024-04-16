@@ -4,9 +4,9 @@ import com.project.tableforyou.domain.restaurant.dto.RestaurantResponseDto;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import com.project.tableforyou.domain.restaurant.entity.RestaurantStatus;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
-import com.project.tableforyou.domain.user.repository.UserRepository;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
+import com.project.tableforyou.utils.redis.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
+    private final RedisUtil redisUtil;
 
     /* 가게 읽기 */
     @Transactional(readOnly = true)
@@ -40,6 +41,14 @@ public class RestaurantService {
 
         Page<Restaurant> restaurants = restaurantRepository.findByStatus(RestaurantStatus.APPROVED, pageable);
         return restaurants.map(RestaurantResponseDto::new);
+    }
+
+    /* 가게 예약자 수 읽기 */
+    @Transactional(readOnly = true)
+    public int RestaurantWaiting(String name) {
+
+        String key = redisUtil.generateRedisKey(name);
+        return redisUtil.getReservationSizeFromRedis(key); // redis 사이즈를 통해 예약 번호 지정
     }
 
     /* 가게 검색 || 가게 소개 검색 페이징 */
