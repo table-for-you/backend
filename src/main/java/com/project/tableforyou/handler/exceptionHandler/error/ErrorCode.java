@@ -17,7 +17,7 @@ public enum ErrorCode {
 
     // RefreshToken 인증 중 오류
     REFRESH_TOKEN_NOT_FOUND(404, "RefreshToken이 존재하지 않습니다."),
-    REFRESG_TOKEN_EXPIRED(404, "RefreshToken이 만료되었습니다."),
+    REFRESH_TOKEN_EXPIRED(404, "RefreshToken이 만료되었습니다."),
 
     // 존재하지 않는 값을 보낼 때.
     USER_NOT_FOUND(404, "존재하지 않는 회원입니다."),

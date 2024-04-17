@@ -73,7 +73,7 @@ public class AuthController {
         RefreshTokenDto refreshToken = refreshTokenService.findByRefreshToken(refreshTokenInCookie);
 
         if (jwtUtil.isExpired(refreshToken.getRefreshToken())) {    // refresh token 만료
-            throw new RefreshTokenException(ErrorCode.REFRESG_TOKEN_EXPIRED);
+            throw new RefreshTokenException(ErrorCode.REFRESH_TOKEN_EXPIRED);
         }
 
         String accessTokenReIssue = refreshTokenService.accessTokenReIssue(refreshToken.getRefreshToken());
