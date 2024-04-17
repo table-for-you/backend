@@ -23,14 +23,8 @@ public class CodeService {
     private static final int VERIFICATION_EXPIRATION_MINUTES = 3; // 이메일 인증 유효 시간 3분
     private static final int RESEND_VALIDITY_MINUTES = 1; // 이메일 재전송 유효 시간 1분
 
-    /* 회원가입 이메일 인증 번호. */
-    public boolean sendCodeToMail(String email) {
-        return sendCode(email);
-    }
-
-    /* 회원가입 핸드폰 인증번호 확인 메서드. (임시로 만든 메서드) */
-
-    private boolean sendCode(String key) {
+    /* 회원가입 인증번호 확인 메서드. */
+    public boolean sendCodeToMail(String key) {
         CodeDto storedData = codeMap.get(key);
         if (storedData != null) {
             LocalDateTime currentTime = LocalDateTime.now();
