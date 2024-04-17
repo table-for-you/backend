@@ -38,7 +38,6 @@ public class AuthController {
     private final CookieUtil cookieUtil;
     private final RefreshTokenService refreshTokenService;
     private final AuthService authService;
-    private final ObjectMapper objectMapper;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid LoginDto loginDto, HttpServletResponse response, BindingResult bindingResult) throws IOException {
