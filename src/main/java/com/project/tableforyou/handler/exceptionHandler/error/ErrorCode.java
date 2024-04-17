@@ -28,11 +28,16 @@ public enum ErrorCode {
     LIKE_NOT_FOUND(404, "해당 가게에 좋아요를 누른 적이 없습니다."),
 
     // 이미 존재하는 값을 보냈을 때.
-    ALREADY_LIKE_RESTAURANT(404, "이미 해당 가게를 좋아요 하였습니다."),
-    ALREADY_USER_RESERVATION(404, "이미 해당 가게에 예약을 하였습니다."),
+    ALREADY_LIKE_RESTAURANT(409, "이미 해당 가게를 좋아요 하였습니다."),
+    ALREADY_USER_RESERVATION(409, "이미 해당 가게에 예약을 하였습니다."),
+    ALREADY_EXISTS_MAIL(409, "이미 존재하는 이메일입니다."),
 
     // 계정관련 오류
     USER_LOCKED(404, "계정이 잠겨있습니다. 5분 후 다시 시도해 주세요."),
+
+    // 인증 메일 관련 오류
+    ALREADY_MAIL_REQUEST(429, "1분 후 재전송 해주세요."),
+    INVALID_MAIL_ADDRESS(404, "잘못된 이메일입니다."),
 
     // 서버 에러
     INTERNAL_SERVER_ERROR(500, "서버 에러입니다. 서버 팀에 연락주세요.");
