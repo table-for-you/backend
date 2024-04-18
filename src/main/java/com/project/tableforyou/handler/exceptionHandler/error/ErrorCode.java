@@ -19,6 +19,9 @@ public enum ErrorCode {
     REFRESH_TOKEN_NOT_FOUND(404, "RefreshToken이 존재하지 않습니다."),
     REFRESH_TOKEN_EXPIRED(404, "RefreshToken이 만료되었습니다."),
 
+    // AccessToken 관련 오류
+    BLACKLIST_ACCESS_TOKEN(401, "접근 불가한 AccessToken입니다."),
+
     // 존재하지 않는 값을 보낼 때.
     USER_NOT_FOUND(404, "존재하지 않는 회원입니다."),
     RESTAURANT_NOT_FOUND(404, "존재하지 않는 가게입니다."),
