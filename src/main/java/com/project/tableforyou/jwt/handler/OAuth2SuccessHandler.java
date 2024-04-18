@@ -2,14 +2,13 @@ package com.project.tableforyou.jwt.handler;
 
 import com.project.tableforyou.utils.cookie.CookieUtil;
 import com.project.tableforyou.utils.jwt.JwtUtil;
-import com.project.tableforyou.refreshToken.dto.RefreshTokenDto;
-import com.project.tableforyou.refreshToken.service.RefreshTokenService;
+import com.project.tableforyou.token.dto.RefreshTokenDto;
+import com.project.tableforyou.token.service.RefreshTokenService;
 import com.project.tableforyou.security.auth.PrincipalDetails;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;

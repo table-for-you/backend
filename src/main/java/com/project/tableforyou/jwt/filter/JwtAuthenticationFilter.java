@@ -6,6 +6,7 @@ import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorDto;
 import com.project.tableforyou.security.auth.PrincipalDetails;
+import com.project.tableforyou.token.service.AccessTokenService;
 import com.project.tableforyou.utils.jwt.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -30,6 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final ObjectMapper objectMapper;
+    private final AccessTokenService accessTokenService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -42,7 +44,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String accessToken = resolveToken(request);
+        String accessToken = accessTokenGetHeader.substring(TOKEN_PREFIX.length()).trim();
+
+        if(accessTokenService.existsById(accessToken)) {       // AccessToken이 블랙리스트에 있는지.
+            handleExceptionToken(response, ErrorCode.BLACKLIST_ACCESS_TOKEN);
+            return;
+        }
 
         try {
             jwtUtil.isExpired(accessToken);      // 만료되었는지
@@ -60,15 +67,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         filterChain.doFilter(request, response);
-    }
-
-    /* Request의 Header에서 token 파싱 */
-    public String resolveToken(HttpServletRequest req) {
-        String bearerToken = req.getHeader(ACCESS_HEADER_VALUE);
-        if (bearerToken != null && bearerToken.startsWith(TOKEN_PREFIX)) {
-            return bearerToken.substring(TOKEN_PREFIX.length()).trim();
-        }
-        return null;
     }
 
     /* Authentication 가져오기 */
