@@ -2,11 +2,13 @@ package com.project.tableforyou.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.tableforyou.handler.logoutHandler.CustomLogoutHandler;
+import com.project.tableforyou.handler.logoutHandler.SuccessLogoutHandler;
 import com.project.tableforyou.jwt.filter.JwtAuthenticationFilter;
 import com.project.tableforyou.jwt.filter.JwtExceptionFilter;
 import com.project.tableforyou.jwt.handler.OAuth2SuccessHandler;
 import com.project.tableforyou.security.auth.PrincipalDetailsService;
 import com.project.tableforyou.security.oauth.PrincipalOAuth2UserService;
+import com.project.tableforyou.token.service.AccessTokenService;
 import com.project.tableforyou.utils.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -36,6 +38,8 @@ public class SecurityConfig {
     private final CustomLogoutHandler customLogoutHandler;
     private final PrincipalDetailsService principalDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final AccessTokenService accessTokenService;
+    private final SuccessLogoutHandler successLogoutHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -65,12 +69,15 @@ public class SecurityConfig {
                                         endPoint.userService(principalOAuth2UserService))
                                 .successHandler(oAuth2SuccessHandler))
 
-                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, objectMapper), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, objectMapper, accessTokenService),
+                        UsernamePasswordAuthenticationFilter.class)
 
                 .addFilterBefore(new JwtExceptionFilter(objectMapper), JwtAuthenticationFilter.class)
 
                 .logout(logout ->
-                        logout.addLogoutHandler(customLogoutHandler));
+                        logout
+                                .addLogoutHandler(customLogoutHandler)
+                                .logoutSuccessHandler(successLogoutHandler));
 
 
         return http.build();
