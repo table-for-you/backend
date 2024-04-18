@@ -2,7 +2,6 @@ package com.project.tableforyou.token.service;
 
 import com.project.tableforyou.token.entity.AccessToken;
 import com.project.tableforyou.token.repository.AccessTokenRepository;
-import com.project.tableforyou.utils.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccessTokenService {
 
     private final AccessTokenRepository accessTokenRepository;
-    private final JwtUtil jwtUtil;
 
     /* redis에 저장 */
     @Transactional

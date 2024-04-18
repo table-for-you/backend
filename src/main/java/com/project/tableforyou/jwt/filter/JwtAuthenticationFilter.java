@@ -36,6 +36,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+        String requestUri = request.getRequestURI();
+        if ("/".equals(requestUri)) {       // index화면 넘기기.
+            filterChain.doFilter(request, response);
+            return;
+        }
         String accessTokenGetHeader = request.getHeader(ACCESS_HEADER_VALUE);
 
         /* 로그인 되어 있지 않은 사용자 */
@@ -45,6 +50,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String accessToken = accessTokenGetHeader.substring(TOKEN_PREFIX.length()).trim();
+
+        accessToken = accessToken.replaceAll("^\"+|\"+$", "");
 
         if(accessTokenService.existsById(accessToken)) {       // AccessToken이 블랙리스트에 있는지.
             handleExceptionToken(response, ErrorCode.BLACKLIST_ACCESS_TOKEN);
