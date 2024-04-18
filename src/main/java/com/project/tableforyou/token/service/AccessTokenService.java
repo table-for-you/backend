@@ -25,7 +25,6 @@ public class AccessTokenService {
     /* 블랙리스트 확인. */
     @Transactional(readOnly = true)
     public boolean existsById(String accessToken) {
-
         return accessTokenRepository.existsById(accessToken);
     }
 
