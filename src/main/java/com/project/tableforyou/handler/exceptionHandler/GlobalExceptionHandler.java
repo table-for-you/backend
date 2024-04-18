@@ -3,7 +3,7 @@ package com.project.tableforyou.handler.exceptionHandler;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorDto;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
-import com.project.tableforyou.handler.exceptionHandler.exception.RefreshTokenException;
+import com.project.tableforyou.handler.exceptionHandler.exception.TokenException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +24,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity(error, HttpStatus.valueOf(error.getStatus()));
     }
 
-    @ExceptionHandler(RefreshTokenException.class)
-    protected ResponseEntity refreshTokenException(RefreshTokenException ex) {
+    @ExceptionHandler(TokenException.class)
+    protected ResponseEntity tokenException(TokenException ex) {
         ErrorCode errorCode = ex.getErrorCode();
         ErrorDto error = new ErrorDto(errorCode.getStatus(), errorCode.getMessage());
         log.error("Error occurred: {}", error.getMessage());

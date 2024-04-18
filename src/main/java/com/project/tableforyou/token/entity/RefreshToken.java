@@ -1,4 +1,4 @@
-package com.project.tableforyou.refreshToken.entity;
+package com.project.tableforyou.token.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
