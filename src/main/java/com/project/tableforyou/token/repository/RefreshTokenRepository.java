@@ -1,6 +1,6 @@
-package com.project.tableforyou.refreshToken.repository;
+package com.project.tableforyou.token.repository;
 
-import com.project.tableforyou.refreshToken.entity.RefreshToken;
+import com.project.tableforyou.token.entity.RefreshToken;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;

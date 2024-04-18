@@ -1,11 +1,11 @@
-package com.project.tableforyou.refreshToken.service;
+package com.project.tableforyou.token.service;
 
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
-import com.project.tableforyou.handler.exceptionHandler.exception.RefreshTokenException;
-import com.project.tableforyou.refreshToken.entity.RefreshToken;
-import com.project.tableforyou.refreshToken.dto.RefreshTokenDto;
+import com.project.tableforyou.handler.exceptionHandler.exception.tokenException;
+import com.project.tableforyou.token.entity.RefreshToken;
+import com.project.tableforyou.token.dto.RefreshTokenDto;
 import com.project.tableforyou.utils.jwt.JwtUtil;
-import com.project.tableforyou.refreshToken.repository.RefreshTokenRepository;
+import com.project.tableforyou.token.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,20 +30,19 @@ public class RefreshTokenService {
     public RefreshTokenDto findByRefreshToken(String refreshToken) {
 
         RefreshToken findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken).orElseThrow(() ->
-                new RefreshTokenException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
+                new tokenException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
 
-        RefreshTokenDto refreshTokenDto = RefreshTokenDto.builder()
+        return RefreshTokenDto.builder()
                 .username(findRefreshToken.getUsername())
                 .refreshToken(findRefreshToken.getRefreshToken())
                 .build();
-        return refreshTokenDto;
     }
 
     /* redis에서 삭제 */
     @Transactional
     public void delete(String refreshToken) {
         RefreshToken findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken).orElseThrow(() ->
-                new RefreshTokenException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
+                new tokenException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
 
         refreshTokenRepository.delete(findRefreshToken);
     }

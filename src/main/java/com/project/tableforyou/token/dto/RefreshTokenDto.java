@@ -1,6 +1,6 @@
-package com.project.tableforyou.refreshToken.dto;
+package com.project.tableforyou.token.dto;
 
-import com.project.tableforyou.refreshToken.entity.RefreshToken;
+import com.project.tableforyou.token.entity.RefreshToken;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
