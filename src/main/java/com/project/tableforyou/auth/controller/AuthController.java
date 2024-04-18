@@ -1,15 +1,14 @@
 package com.project.tableforyou.auth.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.tableforyou.auth.dto.LoginDto;
 import com.project.tableforyou.auth.service.AuthService;
 import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
-import com.project.tableforyou.handler.exceptionHandler.exception.RefreshTokenException;
+import com.project.tableforyou.handler.exceptionHandler.exception.TokenException;
 import com.project.tableforyou.utils.cookie.CookieUtil;
 import com.project.tableforyou.utils.jwt.JwtUtil;
-import com.project.tableforyou.refreshToken.dto.RefreshTokenDto;
-import com.project.tableforyou.refreshToken.service.RefreshTokenService;
+import com.project.tableforyou.token.dto.RefreshTokenDto;
+import com.project.tableforyou.token.service.RefreshTokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -67,13 +66,13 @@ public class AuthController {
         String refreshTokenInCookie = cookieUtil.getCookie(REFRESH_COOKIE_VALUE, request);
 
         if (refreshTokenInCookie == null) {     // 쿠키에 Refresh Token이 없다면
-            throw new RefreshTokenException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
+            throw new TokenException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
 
         RefreshTokenDto refreshToken = refreshTokenService.findByRefreshToken(refreshTokenInCookie);
 
         if (jwtUtil.isExpired(refreshToken.getRefreshToken())) {    // refresh token 만료
-            throw new RefreshTokenException(ErrorCode.REFRESH_TOKEN_EXPIRED);
+            throw new TokenException(ErrorCode.REFRESH_TOKEN_EXPIRED);
         }
 
         String accessTokenReIssue = refreshTokenService.accessTokenReIssue(refreshToken.getRefreshToken());
