@@ -1,10 +1,9 @@
 package com.project.tableforyou.jwt.handler;
 
+import com.project.tableforyou.security.auth.PrincipalDetails;
+import com.project.tableforyou.token.service.RefreshTokenService;
 import com.project.tableforyou.utils.cookie.CookieUtil;
 import com.project.tableforyou.utils.jwt.JwtUtil;
-import com.project.tableforyou.token.dto.RefreshTokenDto;
-import com.project.tableforyou.token.service.RefreshTokenService;
-import com.project.tableforyou.security.auth.PrincipalDetails;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -43,20 +42,11 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String accessToken = jwtUtil.generateAccessToken(role, username);     // Access Token 발급
         String refreshToken = jwtUtil.generateRefreshToken(role, username);   // Refresh Token 발급
 
-        saveRefreshToken(username, refreshToken);
+        refreshTokenService.save(username, refreshToken);
 
         response.addHeader(ACCESS_HEADER_VALUE, TOKEN_PREFIX + accessToken);    // 헤더에 access Token 추가
         response.addHeader("Set-Cookie", cookieUtil.createCookie(REFRESH_COOKIE_VALUE, refreshToken).toString());         // 쿠키에 refresh Token 값 저장.
         response.setStatus(HttpServletResponse.SC_OK);
 
-    }
-
-    /* redis에 refreshToken 저장  */
-    private void saveRefreshToken(String username, String refreshToken) {
-        RefreshTokenDto saveRefreshToken = RefreshTokenDto.builder()
-                .username(username)
-                .refreshToken(refreshToken)
-                .build();
-        refreshTokenService.save(saveRefreshToken);
     }
 }

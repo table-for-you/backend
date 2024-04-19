@@ -5,10 +5,9 @@ import com.project.tableforyou.auth.service.AuthService;
 import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.TokenException;
+import com.project.tableforyou.token.service.RefreshTokenService;
 import com.project.tableforyou.utils.cookie.CookieUtil;
 import com.project.tableforyou.utils.jwt.JwtUtil;
-import com.project.tableforyou.token.dto.RefreshTokenDto;
-import com.project.tableforyou.token.service.RefreshTokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -25,7 +24,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.project.tableforyou.utils.jwt.JwtProperties.*;
+import static com.project.tableforyou.utils.jwt.JwtProperties.REFRESH_COOKIE_VALUE;
+import static com.project.tableforyou.utils.jwt.JwtProperties.TOKEN_PREFIX;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -48,7 +48,7 @@ public class AuthController {
         String accessToken = TOKEN_PREFIX + jwtUtil.generateAccessToken(role, user.getUsername());
         String refreshToken = jwtUtil.generateRefreshToken(role, user.getUsername());
 
-        saveRefreshToken(user.getUsername(), refreshToken);
+        refreshTokenService.save(user.getUsername(), refreshToken);
 
         Map<String, Object> responseData = new HashMap<>();
         responseData.put("nickname", user.getNickname());
@@ -69,29 +69,20 @@ public class AuthController {
             throw new TokenException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
         }
 
-        RefreshTokenDto refreshToken = refreshTokenService.findByRefreshToken(refreshTokenInCookie);
+        String refreshToken = refreshTokenService.findByRefreshToken(refreshTokenInCookie);
 
-        if (jwtUtil.isExpired(refreshToken.getRefreshToken())) {    // refresh token 만료
+        if (jwtUtil.isExpired(refreshToken)) {    // refresh token 만료
             throw new TokenException(ErrorCode.REFRESH_TOKEN_EXPIRED);
         }
 
-        String accessTokenReIssue = refreshTokenService.accessTokenReIssue(refreshToken.getRefreshToken());
+        String accessTokenReIssue = refreshTokenService.accessTokenReIssue(refreshToken);
 
         // Refresh token rotation(RTR) 사용
-        String refreshTokenReIssue = refreshTokenService.refreshTokenReIssue(refreshToken, refreshToken.getRefreshToken());
+        String refreshTokenReIssue = refreshTokenService.refreshTokenReIssue(refreshToken);
 
         response.addHeader("Set-Cookie", cookieUtil.createCookie(REFRESH_COOKIE_VALUE, refreshTokenReIssue).toString());         // 쿠키에 refresh Token값 저장.
         response.setStatus(HttpServletResponse.SC_OK);
 
         return ResponseEntity.ok(TOKEN_PREFIX + accessTokenReIssue);
-    }
-
-    /* redis에 refreshToken 저장 */
-    private void saveRefreshToken(String username, String refreshToken) {
-        RefreshTokenDto saveRefreshToken = RefreshTokenDto.builder()
-                .username(username)
-                .refreshToken(refreshToken)
-                .build();
-        refreshTokenService.save(saveRefreshToken);
     }
 }

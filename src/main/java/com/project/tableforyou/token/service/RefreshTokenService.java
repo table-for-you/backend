@@ -2,49 +2,46 @@ package com.project.tableforyou.token.service;
 
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.TokenException;
-import com.project.tableforyou.token.entity.RefreshToken;
-import com.project.tableforyou.token.dto.RefreshTokenDto;
 import com.project.tableforyou.utils.jwt.JwtUtil;
-import com.project.tableforyou.token.repository.RefreshTokenRepository;
+import com.project.tableforyou.utils.redis.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
 
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final RedisUtil redisUtil;
     private final JwtUtil jwtUtil;
+    private final static String REFRESH_TOKEN_KEY_PREFIX = "RefreshToken:";
+    private final static long REFRESH_EXPIRATION_TIME = 24*60*60;
 
     /* redis에 저장 */
-    @Transactional
-    public void save(RefreshTokenDto refreshTokenDto) {
+    public void save(String username, String refreshToken) {
 
-        RefreshToken refreshToken = refreshTokenDto.toEntity();
-        refreshTokenRepository.save(refreshToken);
+        String key = REFRESH_TOKEN_KEY_PREFIX + username;
+        redisUtil.set(key, refreshToken);
+        redisUtil.expire(key, REFRESH_EXPIRATION_TIME);
     }
 
     /* refreshToken으로 redis에서 불러오기 */
-    @Transactional(readOnly = true)
-    public RefreshTokenDto findByRefreshToken(String refreshToken) {
+    public String findByRefreshToken(String refreshToken) {
 
-        RefreshToken findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken).orElseThrow(() ->
-                new TokenException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
+        String username = jwtUtil.getUsername(refreshToken);
+        String key = REFRESH_TOKEN_KEY_PREFIX + username;
+        String findRefreshToken = (String) redisUtil.get(key);
+        if(findRefreshToken == null)
+            throw new TokenException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
 
-        return RefreshTokenDto.builder()
-                .username(findRefreshToken.getUsername())
-                .refreshToken(findRefreshToken.getRefreshToken())
-                .build();
+        return findRefreshToken;
     }
 
     /* redis에서 삭제 */
-    @Transactional
     public void delete(String refreshToken) {
-        RefreshToken findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken).orElseThrow(() ->
-                new TokenException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
 
-        refreshTokenRepository.delete(findRefreshToken);
+        String username = jwtUtil.getUsername(refreshToken);
+        String key = REFRESH_TOKEN_KEY_PREFIX + username;
+        redisUtil.del(key);
     }
 
     /* accessToken 재발급 */
@@ -57,21 +54,16 @@ public class RefreshTokenService {
     }
 
     /* Refresh token rotation(RTR) 사용 */
-    public String refreshTokenReIssue(RefreshTokenDto refreshTokenDto, String refreshToken) {
+    public String refreshTokenReIssue(String refreshToken) {
 
-        this.delete(refreshTokenDto.getRefreshToken());
+        this.delete(refreshToken);
 
         String username = jwtUtil.getUsername(refreshToken);
         String role = jwtUtil.getRole(refreshToken);
 
         String refreshTokenReIssue = jwtUtil.generateRefreshToken(role, username);
 
-        RefreshTokenDto refreshTokenReIssueDto = RefreshTokenDto.builder()
-                .username(username)
-                .refreshToken(refreshTokenReIssue)
-                .build();
-
-        this.save(refreshTokenReIssueDto);
+        this.save(username, refreshTokenReIssue);
 
         return refreshTokenReIssue;
     }
