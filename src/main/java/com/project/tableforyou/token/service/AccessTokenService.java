@@ -4,14 +4,15 @@ import com.project.tableforyou.utils.redis.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import static com.project.tableforyou.utils.redis.RedisProperties.BLACKLIST_EXPIRATION_TIME;
+import static com.project.tableforyou.utils.redis.RedisProperties.BLACKLIST_KEY_PREFIX;
+
 
 @Service
 @RequiredArgsConstructor
 public class AccessTokenService {
 
     private final RedisUtil redisUtil;
-    private final static String BLACKLIST_KEY_PREFIX = "BlackListToken:";
-    private final static long BLACKLIST_EXPIRATION_TIME = 30*60;
 
     /* redis에 저장 */
     public void save(String accessToken) {

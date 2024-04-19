@@ -7,21 +7,22 @@ import com.project.tableforyou.utils.redis.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import static com.project.tableforyou.utils.redis.RedisProperties.REFRESH_EXPIRATION_TIME_IN_REDIS;
+import static com.project.tableforyou.utils.redis.RedisProperties.REFRESH_TOKEN_KEY_PREFIX;
+
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
 
     private final RedisUtil redisUtil;
     private final JwtUtil jwtUtil;
-    private final static String REFRESH_TOKEN_KEY_PREFIX = "RefreshToken:";
-    private final static long REFRESH_EXPIRATION_TIME = 24*60*60;
 
     /* redis에 저장 */
     public void save(String username, String refreshToken) {
 
         String key = REFRESH_TOKEN_KEY_PREFIX + username;
         redisUtil.set(key, refreshToken);
-        redisUtil.expire(key, REFRESH_EXPIRATION_TIME);
+        redisUtil.expire(key, REFRESH_EXPIRATION_TIME_IN_REDIS);
     }
 
     /* refreshToken으로 redis에서 불러오기 */

@@ -5,10 +5,8 @@ import com.project.tableforyou.domain.reservation.dto.ReservationResponseDto;
 import com.project.tableforyou.domain.reservation.entity.Reservation;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
-import com.project.tableforyou.domain.user.entity.User;
-import com.project.tableforyou.domain.user.repository.UserRepository;
-import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
+import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import com.project.tableforyou.utils.redis.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.project.tableforyou.utils.redis.RedisProperties.RESERVATION_KEY_PREFIX;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -25,7 +25,6 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
 
     private final RestaurantRepository restaurantRepository;
     private final RedisUtil redisUtil;
-    private final static String KEY_NAME = "reservation:";
 
     /* 예약자 추가 */
     public void save(String username, Long restaurantId) {
@@ -39,7 +38,7 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
         reservation.setUsername(username);
         reservation.setRestaurant(restaurant.getName());
 
-        String key = KEY_NAME + restaurantId;
+        String key = RESERVATION_KEY_PREFIX + restaurantId;
 
         if (redisUtil.hashExisted(key, username))    // 중복 예약 확인.
             throw new CustomException(ErrorCode.ALREADY_USER_RESERVATION);
@@ -54,7 +53,7 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
     /* 예약 읽기 */
     public ReservationResponseDto findByBooking(Long restaurantId, String username) {
 
-        return new ReservationResponseDto(redisUtil.hashGet(KEY_NAME + restaurantId, username));
+        return new ReservationResponseDto(redisUtil.hashGet(RESERVATION_KEY_PREFIX + restaurantId, username));
     }
 
     /* 예약자 줄어들 때. */
@@ -63,7 +62,7 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
         log.info("Decreasing bookings for reservations");
         String user = null;
 
-        String key = KEY_NAME + restaurantId;
+        String key = RESERVATION_KEY_PREFIX + restaurantId;
         for (ReservationResponseDto reservation: reservations) {
             Reservation storedReservation = redisUtil.hashGet(key, reservation.getUsername());
 
@@ -89,7 +88,7 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
 
         log.info("Postponing guest booking for reservation with username: {}", username);
 
-        String key = KEY_NAME + restaurantId;
+        String key = RESERVATION_KEY_PREFIX + restaurantId;
 
         // Redis에서 예약 정보를 가져오기.
         Reservation reservation = redisUtil.hashGet(key, username);
@@ -108,7 +107,7 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
     public List<ReservationResponseDto> findAllReservation(Long restaurantId) {
 
         log.info("Finding all reservations by restaurant: {}", restaurantId);
-        String key = KEY_NAME + restaurantId;
+        String key = RESERVATION_KEY_PREFIX + restaurantId;
 
         // Redis에서 모든 예약 정보 가져오기
         return redisUtil.getEntries(key);
@@ -119,7 +118,7 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
         log.info("Deleting reservation with username {} from restaurant {}", username, restaurantId);
 
         // Redis에서 해당 가게의 예약 정보를 가져옵니다.
-        String key = KEY_NAME + restaurantId;
+        String key = RESERVATION_KEY_PREFIX + restaurantId;
         Reservation reservation = redisUtil.hashGet(key, username);
 
         // 해당 예약이 존재하는 경우 삭제합니다.
@@ -133,7 +132,7 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
 
     /* 예약자 List를 받기위한 메서드. */
     public List<ReservationResponseDto> getReservations(Long restaurantId, String username, ReservationRequestDto dto) {
-        String key = KEY_NAME + restaurantId;
+        String key = RESERVATION_KEY_PREFIX + restaurantId;
 
         List<ReservationResponseDto> reservations = redisUtil.getEntries(key);
 

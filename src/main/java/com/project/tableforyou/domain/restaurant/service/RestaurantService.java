@@ -14,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.project.tableforyou.utils.redis.RedisProperties.RESERVATION_KEY_PREFIX;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -21,7 +23,6 @@ public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
     private final RedisUtil redisUtil;
-    private final static String KEY_NAME = "reservation:";
 
     /* 가게 읽기 */
     @Transactional(readOnly = true)
@@ -48,7 +49,7 @@ public class RestaurantService {
     @Transactional(readOnly = true)
     public int RestaurantWaiting(Long restaurantId) {
 
-        String key = KEY_NAME + restaurantId;
+        String key = RESERVATION_KEY_PREFIX + restaurantId;
         return redisUtil.hashSize(key); // redis 사이즈를 통해 예약 번호 지정
     }
 
