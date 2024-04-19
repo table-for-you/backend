@@ -19,10 +19,7 @@ public class JwtUtil {
 
     private final SecretKey secretKey;
 
-    private final String SECRET_KEY;
-
     public JwtUtil(@Value("${spring.jwt.secret}") String SECRET_KEY) {
-        this.SECRET_KEY = SECRET_KEY;
         secretKey = new SecretKeySpec(SECRET_KEY.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
