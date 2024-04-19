@@ -23,9 +23,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReservationService {      // 아래 redisTemplate부분 따로 나누기
 
-    private final UserRepository userRepository;
     private final RestaurantRepository restaurantRepository;
     private final RedisUtil redisUtil;
+    private final static String KEY_NAME = "reservation:";
 
     /* 예약자 추가 */
     public void save(String username, Long restaurantId) {
@@ -39,22 +39,22 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
         reservation.setUsername(username);
         reservation.setRestaurant(restaurant.getName());
 
-        String key = redisUtil.generateRedisKey(restaurantId);
+        String key = KEY_NAME + restaurantId;
 
-        if (redisUtil.existedReservation(key, username))    // 중복 예약 확인.
+        if (redisUtil.hashExisted(key, username))    // 중복 예약 확인.
             throw new CustomException(ErrorCode.ALREADY_USER_RESERVATION);
 
-        int size = redisUtil.getReservationSizeFromRedis(key); // redis 사이즈를 통해 예약 번호 지정
+        int size = redisUtil.hashSize(key); // redis 사이즈를 통해 예약 번호 지정
         reservation.setBooking(size+1);
 
-        redisUtil.saveReservationToRedis(key, reservation);
+        redisUtil.hashPut(key, reservation);
         log.info("Reservation created with username: {}", username);
     }
 
     /* 예약 읽기 */
     public ReservationResponseDto findByBooking(Long restaurantId, String username) {
 
-        return new ReservationResponseDto(redisUtil.getReservationFromRedis(redisUtil.generateRedisKey(restaurantId), username));
+        return new ReservationResponseDto(redisUtil.hashGet(KEY_NAME + restaurantId, username));
     }
 
     /* 예약자 줄어들 때. */
@@ -63,20 +63,20 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
         log.info("Decreasing bookings for reservations");
         String user = null;
 
-        String key = redisUtil.generateRedisKey(restaurantId);
+        String key = KEY_NAME + restaurantId;
         for (ReservationResponseDto reservation: reservations) {
-            Reservation storedReservation = redisUtil.getReservationFromRedis(key, reservation.getUsername());
+            Reservation storedReservation = redisUtil.hashGet(key, reservation.getUsername());
 
             if (storedReservation != null) {
                 // 예약 번호가 1인 경우 예약 삭제
                 if (storedReservation.getBooking() == 1) {
                     user = storedReservation.getUsername();
-                    redisUtil.deleteReservationFromRedis(key, storedReservation.getUsername());
+                    redisUtil.hashDel(key, storedReservation.getUsername());
                     log.info("Reservation with username {} deleted", storedReservation.getUsername());
                 } else {
                     // 예약 번호가 1이 아닌 경우 예약 번호 감소
                     storedReservation.setBooking(storedReservation.getBooking() - 1);
-                    redisUtil.saveReservationToRedis(key, storedReservation);
+                    redisUtil.hashPut(key, storedReservation);
                 }
             }
         }
@@ -89,10 +89,10 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
 
         log.info("Postponing guest booking for reservation with username: {}", username);
 
-        String key = redisUtil.generateRedisKey(restaurantId);
+        String key = KEY_NAME + restaurantId;
 
         // Redis에서 예약 정보를 가져오기.
-        Reservation reservation = redisUtil.getReservationFromRedis(key, username);
+        Reservation reservation = redisUtil.hashGet(key, username);
         if (reservation == null) {
             throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
         }
@@ -101,14 +101,14 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
         reservation.update(dto.getBooking());
 
         // 업데이트된 예약 정보를 다시 Redis에 저장.
-        redisUtil.saveReservationToRedis(key, reservation);
+        redisUtil.hashPut(key, reservation);
     }
 
     /* 해당 가게의 모든 예약자 가져오기 */
     public List<ReservationResponseDto> findAllReservation(Long restaurantId) {
 
         log.info("Finding all reservations by restaurant: {}", restaurantId);
-        String key = redisUtil.generateRedisKey(restaurantId);
+        String key = KEY_NAME + restaurantId;
 
         // Redis에서 모든 예약 정보 가져오기
         return redisUtil.getEntries(key);
@@ -119,12 +119,12 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
         log.info("Deleting reservation with username {} from restaurant {}", username, restaurantId);
 
         // Redis에서 해당 가게의 예약 정보를 가져옵니다.
-        String key = redisUtil.generateRedisKey(restaurantId);
-        Reservation reservation = redisUtil.getReservationFromRedis(key, username);
+        String key = KEY_NAME + restaurantId;
+        Reservation reservation = redisUtil.hashGet(key, username);
 
         // 해당 예약이 존재하는 경우 삭제합니다.
         if (reservation != null) {
-            redisUtil.deleteReservationFromRedis(key, username);
+            redisUtil.hashDel(key, username);
             log.info("Reservation with username {} from restaurant {} deleted from Redis", username, restaurantId);
         } else {
             log.warn("Reservation with username {} from restaurant {} not found in Redis", username, restaurantId);
@@ -133,7 +133,7 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
 
     /* 예약자 List를 받기위한 메서드. */
     public List<ReservationResponseDto> getReservations(Long restaurantId, String username, ReservationRequestDto dto) {
-        String key = redisUtil.generateRedisKey(restaurantId);
+        String key = KEY_NAME + restaurantId;
 
         List<ReservationResponseDto> reservations = redisUtil.getEntries(key);
 
@@ -141,7 +141,7 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
         if (username == null && dto == null) {
             return reservations; // 예약 앞당기기
         } else {
-            Reservation beforeReservation = redisUtil.getReservationFromRedis(key, username);
+            Reservation beforeReservation = redisUtil.hashGet(key, username);
             List<ReservationResponseDto> decreaseReservation = new ArrayList<>();
 
             if (dto == null) { // 예약 삭제로 인한 뒷사람 앞당기기

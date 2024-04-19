@@ -21,6 +21,7 @@ public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
     private final RedisUtil redisUtil;
+    private final static String KEY_NAME = "reservation:";
 
     /* 가게 읽기 */
     @Transactional(readOnly = true)
@@ -47,8 +48,8 @@ public class RestaurantService {
     @Transactional(readOnly = true)
     public int RestaurantWaiting(Long restaurantId) {
 
-        String key = redisUtil.generateRedisKey(restaurantId);
-        return redisUtil.getReservationSizeFromRedis(key); // redis 사이즈를 통해 예약 번호 지정
+        String key = KEY_NAME + restaurantId;
+        return redisUtil.hashSize(key); // redis 사이즈를 통해 예약 번호 지정
     }
 
     /* 가게 검색 || 가게 소개 검색 페이징 */
