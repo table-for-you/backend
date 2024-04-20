@@ -32,6 +32,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final ObjectMapper objectMapper;
     private final AccessTokenService accessTokenService;
+    private static final String SPECIAL_CHARACTERS_PATTERN = "[`':;|~!@#$%()^&*+=?/{}\\[\\]\\\"\\\\\"]+$";
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -51,7 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String accessToken = accessTokenGetHeader.substring(TOKEN_PREFIX.length()).trim();
 
-        accessToken = accessToken.replaceAll("^\"+|\"+$", "");
+        accessToken = accessToken.replaceAll(SPECIAL_CHARACTERS_PATTERN, "");   // 토큰 끝 특수문자 제거
 
         if(accessTokenService.existsById(accessToken)) {       // AccessToken이 블랙리스트에 있는지.
             handleExceptionToken(response, ErrorCode.BLACKLIST_ACCESS_TOKEN);
