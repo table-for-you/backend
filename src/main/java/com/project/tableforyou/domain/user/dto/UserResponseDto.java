@@ -17,11 +17,9 @@ public class UserResponseDto {
     private final String email;
     private final String nickname;
     private final String age;
-
     private final Role role;
     private final String created_time;
     private final String modified_time;
-    private final List<RestaurantResponseDto> restaurants;
 
     /* Entity -> dto */
     public UserResponseDto(User user) {
@@ -34,6 +32,5 @@ public class UserResponseDto {
         this.role = user.getRole();
         this.created_time = user.getCreated_time();
         this.modified_time = user.getModified_time();
-        this.restaurants = user.getRestaurants().stream().map(RestaurantResponseDto::new).collect(Collectors.toList());
     }
 }
