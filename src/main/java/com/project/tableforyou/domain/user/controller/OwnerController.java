@@ -3,7 +3,7 @@ package com.project.tableforyou.domain.user.controller;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantNameDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantRequestDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantUpdateDto;
-import com.project.tableforyou.domain.user.service.OwnerService;
+import com.project.tableforyou.domain.restaurant.service.OwnerRestaurantService;
 import com.project.tableforyou.security.auth.PrincipalDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import java.util.Map;
 @Slf4j
 public class OwnerController {
 
-    private final OwnerService ownerService;
+    private final OwnerRestaurantService ownerRestaurantService;
 
     /* 가게 생성 */
     @PostMapping
@@ -33,12 +33,12 @@ public class OwnerController {
 
         try {
             if (bindingResult.hasErrors()) {
-                Map<String, String> errors = ownerService.validateHandler(bindingResult);
+                Map<String, String> errors = ownerRestaurantService.validateHandler(bindingResult);
                 log.info("Failed to sign up: {}", errors);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errors);
             }
 
-            ownerService.save(principalDetails.getUsername(), dto);
+            ownerRestaurantService.save(principalDetails.getUsername(), dto);
             return ResponseEntity.ok("가게 생성 완료.");
 
         } catch (Exception e) {
@@ -51,7 +51,7 @@ public class OwnerController {
     @GetMapping
     public List<RestaurantNameDto> readRestaurant(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        return ownerService.findByRestaurantOwner(principalDetails.getUsername());
+        return ownerRestaurantService.findByRestaurantOwner(principalDetails.getUsername());
     }
 
     /* 가게 업데이트 */
@@ -59,7 +59,7 @@ public class OwnerController {
     public ResponseEntity<String> update(@PathVariable(name = "restaurantId") Long restaurantId, @RequestBody RestaurantUpdateDto dto,
                                          @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        ownerService.update(restaurantId, principalDetails.getUsername(), dto);
+        ownerRestaurantService.update(restaurantId, principalDetails.getUsername(), dto);
         return ResponseEntity.ok("가게 수정 완료.");
     }
 
@@ -69,7 +69,7 @@ public class OwnerController {
     public ResponseEntity<String> delete(@PathVariable(name = "restaurantId") Long restaurantId,
                                          @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        ownerService.delete(restaurantId, principalDetails.getUsername());
+        ownerRestaurantService.delete(restaurantId, principalDetails.getUsername());
         return ResponseEntity.ok("가게 삭제 완료.");
 
     }
