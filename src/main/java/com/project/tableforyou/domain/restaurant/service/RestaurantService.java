@@ -6,7 +6,6 @@ import com.project.tableforyou.domain.restaurant.entity.RestaurantStatus;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
-import com.project.tableforyou.utils.redis.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -17,10 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class RestaurantServiceImpl {
+public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
-    private final RedisUtil redisUtil;
 
     /* 가게 읽기 */
     @Transactional(readOnly = true)

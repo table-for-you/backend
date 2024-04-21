@@ -11,6 +11,7 @@ import com.project.tableforyou.utils.redis.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +44,7 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
         if (redisUtil.hashExisted(key, username))    // 중복 예약 확인.
             throw new CustomException(ErrorCode.ALREADY_USER_RESERVATION);
 
-        int size = redisUtil.hashSize(key); // redis 사이즈를 통해 예약 번호 지정
+        int size = RestaurantWaiting(restaurantId); // redis 사이즈를 통해 예약 번호 지정
         reservation.setBooking(size+1);
 
         redisUtil.hashPut(key, reservation);
@@ -162,5 +163,10 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
         }
     }
 
+    /* 가게 예약자 수 읽기 */
+    public int RestaurantWaiting(Long restaurantId) {
 
+        String key = RESERVATION_KEY_PREFIX + restaurantId;
+        return redisUtil.hashSize(key); // redis 사이즈를 통해 예약 번호 지정
+    }
 }
