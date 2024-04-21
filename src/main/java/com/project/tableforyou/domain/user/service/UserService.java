@@ -26,7 +26,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final MailService mailService;
 
     /* 회원 추가 */
     @Transactional
@@ -107,12 +106,6 @@ public class UserService {
             return "닉네임은 특수문자를 제외한 2~10자리여야 합니다.";
         }
         return userRepository.existsByNickname(nickname);
-    }
-
-    /* 이메일 중복 확인 */
-    public boolean existsByEmail(String email) {
-        log.info("Checking if user exists by email: {}", email);
-        return userRepository.existsByEmail(email);
     }
 
     /* 자신의 권한인지 확인 */

@@ -14,12 +14,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.project.tableforyou.utils.redis.RedisProperties.RESERVATION_KEY_PREFIX;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class RestaurantService {
+public class RestaurantServiceImpl {
 
     private final RestaurantRepository restaurantRepository;
     private final RedisUtil redisUtil;
@@ -43,14 +41,6 @@ public class RestaurantService {
 
         Page<Restaurant> restaurants = restaurantRepository.findByStatus(RestaurantStatus.APPROVED, pageable);
         return restaurants.map(RestaurantResponseDto::new);
-    }
-
-    /* 가게 예약자 수 읽기 */
-    @Transactional(readOnly = true)
-    public int RestaurantWaiting(Long restaurantId) {
-
-        String key = RESERVATION_KEY_PREFIX + restaurantId;
-        return redisUtil.hashSize(key); // redis 사이즈를 통해 예약 번호 지정
     }
 
     /* 가게 검색 || 가게 소개 검색 페이징 */

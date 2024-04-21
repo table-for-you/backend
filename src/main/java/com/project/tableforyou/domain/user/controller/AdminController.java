@@ -1,6 +1,7 @@
 package com.project.tableforyou.domain.user.controller;
 
 import com.project.tableforyou.domain.restaurant.dto.RestaurantResponseDto;
+import com.project.tableforyou.domain.restaurant.service.AdminRestaurantService;
 import com.project.tableforyou.domain.user.dto.UserResponseDto;
 import com.project.tableforyou.domain.user.service.AdminService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
 
     private final AdminService adminService;
+    private final AdminRestaurantService adminRestaurantService;
 
     /* 회원 전체 불러오기, 페이징 처리 */
     @GetMapping("/users")
@@ -41,14 +43,14 @@ public class AdminController {
     public Page<RestaurantResponseDto> handlerRestaurant(
             @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
-        return adminService.handleRestaurantList(pageable);
+        return adminRestaurantService.handleRestaurantList(pageable);
     }
 
     /* 가게 추가 요청 승인*/
     @PatchMapping("/restaurants/{restaurantId}")
     public ResponseEntity<String> approvalRestaurant(@PathVariable(name = "restaurantId") Long restaurantId) {
 
-        adminService.approvalRestaurant(restaurantId);
+        adminRestaurantService.approvalRestaurant(restaurantId);
         return ResponseEntity.ok("사용자 가게 등록 완료.");
     }
 
@@ -56,7 +58,7 @@ public class AdminController {
     @DeleteMapping("/restaurants/{restaurantId}")
     public ResponseEntity<String> deleteRestaurant(@PathVariable(name = "restaurantId") Long restaurantId) {
 
-        adminService.deleteRestaurant(restaurantId);
+        adminRestaurantService.deleteRestaurant(restaurantId);
         return ResponseEntity.ok("가게 삭제 완료.");
     }
 }
