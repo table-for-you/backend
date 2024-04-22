@@ -7,6 +7,7 @@ import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import com.project.tableforyou.security.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class VerifyAuthenticationAspect {
 
     private final RestaurantRepository restaurantRepository;
@@ -32,15 +34,18 @@ public class VerifyAuthenticationAspect {
             if (arg instanceof Long) {
                 Long restaurantId = (Long) arg;
                 restaurantVerifyAuthentication(expectedUsername, restaurantId);
+                break;      // 파라미터가 순서대로 들어가므로 MenuService의 update같이 타입이 같은게 있을 경우를 대비해 retaurantId만 받고 break한다.
             } else if (arg instanceof UserUpdateDto) {
                 UserUpdateDto userDto = (UserUpdateDto) arg;
                 userVerifyAuthentication(expectedUsername, userDto);
+                break;
             }
         }
-
+        log.info("Permission verified");
         return joinPoint.proceed();
     }
 
+    /* 레스토랑에 대한 권환 확인 메서드 */
     private void restaurantVerifyAuthentication(String expectedUsername, Long restaurantId) {
 
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
@@ -50,6 +55,7 @@ public class VerifyAuthenticationAspect {
             throw new CustomException(ErrorCode.UNAUTHORIZED);
     }
 
+    /* 사용자에 대한 권환 확인 메서드 */
     private void userVerifyAuthentication(String expectedUsername, UserUpdateDto userDto) {
 
         if(!expectedUsername.equals(userDto.getUsername()))
