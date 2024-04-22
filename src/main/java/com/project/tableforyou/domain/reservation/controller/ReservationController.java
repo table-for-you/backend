@@ -48,7 +48,7 @@ public class ReservationController {
     @PatchMapping("/{restaurantId}/reservations/decreaseBooking")
     public ResponseEntity<String> decreaseBooking(@PathVariable(name = "restaurantId") Long restaurantId) {
         try {
-            List<ReservationResponseDto> reservations = reservationService.getReservations(restaurantId, null, null);  // 이미 여기서 트랜잭션은 끝나 1차캐시에 없음.
+            List<ReservationResponseDto> reservations = reservationService.getReservations(restaurantId, null, null);
             String user = reservationService.decreaseBooking(reservations, restaurantId);
             return ResponseEntity.ok(user + "님 입장");
         } catch (Exception e) {

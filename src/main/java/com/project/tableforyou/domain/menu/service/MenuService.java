@@ -1,7 +1,9 @@
 package com.project.tableforyou.domain.menu.service;
 
+import com.project.tableforyou.aop.annotation.VerifyAuthentication;
 import com.project.tableforyou.domain.menu.dto.MenuRequestDto;
 import com.project.tableforyou.domain.menu.dto.MenuResponseDto;
+import com.project.tableforyou.domain.menu.dto.MenuUpdateDto;
 import com.project.tableforyou.domain.menu.entity.Menu;
 import com.project.tableforyou.domain.menu.repository.MenuRepository;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
@@ -24,6 +26,7 @@ public class MenuService {
     private final RestaurantRepository restaurantRepository;
 
     /* 메뉴 추가 */
+    @VerifyAuthentication
     @Transactional
     public Long save(Long restaurantId, MenuRequestDto dto) {
 
@@ -58,8 +61,9 @@ public class MenuService {
     }
 
     /* 메뉴 업데이트 */
+    @VerifyAuthentication
     @Transactional
-    public void update(Long restaurantId, Long id, MenuRequestDto dto) {
+    public void update(Long restaurantId, Long id, MenuUpdateDto dto) {
 
         log.info("Updating menu with ID: {}", id);
         Menu menu = menuRepository.findByRestaurantIdAndId(restaurantId, id).orElseThrow(() ->
@@ -69,6 +73,7 @@ public class MenuService {
     }
 
     /* 메뉴 삭제 */
+    @VerifyAuthentication
     @Transactional
     public void delete(Long restaurantId, Long id) {
 

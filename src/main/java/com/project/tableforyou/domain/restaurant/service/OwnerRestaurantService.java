@@ -1,5 +1,6 @@
 package com.project.tableforyou.domain.restaurant.service;
 
+import com.project.tableforyou.aop.annotation.VerifyAuthentication;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantNameDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantRequestDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantUpdateDto;
@@ -55,40 +56,31 @@ public class OwnerRestaurantService {
     }
 
     /* 가게 수정 */
+    @VerifyAuthentication
     @Transactional
-    public void update(Long restaurantId, String username, RestaurantUpdateDto dto) {
+    public void update(Long restaurantId, RestaurantUpdateDto dto) {
 
         log.info("Updating Restaurant with name: {}", restaurantId);
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
-        if(!verifyAuthenticationByUsername(username, restaurant.getUser().getUsername()))
-            throw new CustomException(ErrorCode.UNAUTHORIZED);
-        else {
-            restaurant.update(dto);
-            log.info("Restaurant updated successfully with name: {}", restaurantId);
-        }
+
+        restaurant.update(dto);
+        log.info("Restaurant updated successfully with name: {}", restaurantId);
+
     }
 
 
     /* 가게 삭제 */
+    @VerifyAuthentication
     @Transactional
-    public void delete(Long restaurantId, String username) {         // 다른 사용자가 삭제하는 경우 확인해보기. 만약 그런다면 findByUserIdAndId 사용. 그냥 권한 설정 하면 될듯?
+    public void delete(Long restaurantId) {         // 다른 사용자가 삭제하는 경우 확인해보기. 만약 그런다면 findByUserIdAndId 사용. 그냥 권한 설정 하면 될듯?
 
         log.info("Deleting Restaurant with name: {}", restaurantId);
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
-        if(!verifyAuthenticationByUsername(username, restaurant.getUser().getUsername()))
-            throw new CustomException(ErrorCode.UNAUTHORIZED);
-        else {
-            restaurantRepository.delete(restaurant);
-            log.info("Restaurant deleted successfully with name: {}", restaurantId);
-        }
-    }
-
-    /* 자신의 권한인지 확인 */
-    private boolean verifyAuthenticationByUsername(String expectedUsername, String actualUsername) {
-        return actualUsername.equals(expectedUsername);
+        restaurantRepository.delete(restaurant);
+        log.info("Restaurant deleted successfully with name: {}", restaurantId);
     }
 
     /* 가게 등록 오류 확인 */

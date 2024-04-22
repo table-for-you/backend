@@ -56,10 +56,10 @@ public class OwnerController {
 
     /* 가게 업데이트 */
     @PutMapping("/{restaurantId}")
-    public ResponseEntity<String> update(@PathVariable(name = "restaurantId") Long restaurantId, @RequestBody RestaurantUpdateDto dto,
-                                         @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<String> update(@PathVariable(name = "restaurantId") Long restaurantId,
+                                         @RequestBody RestaurantUpdateDto dto) {
 
-        ownerRestaurantService.update(restaurantId, principalDetails.getUsername(), dto);
+        ownerRestaurantService.update(restaurantId, dto);
         return ResponseEntity.ok("가게 수정 완료.");
     }
 
@@ -69,7 +69,7 @@ public class OwnerController {
     public ResponseEntity<String> delete(@PathVariable(name = "restaurantId") Long restaurantId,
                                          @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        ownerRestaurantService.delete(restaurantId, principalDetails.getUsername());
+        ownerRestaurantService.delete(restaurantId);
         return ResponseEntity.ok("가게 삭제 완료.");
 
     }

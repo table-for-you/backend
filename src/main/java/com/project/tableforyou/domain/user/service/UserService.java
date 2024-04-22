@@ -1,5 +1,6 @@
 package com.project.tableforyou.domain.user.service;
 
+import com.project.tableforyou.aop.annotation.VerifyAuthentication;
 import com.project.tableforyou.domain.user.dto.UserRequestDto;
 import com.project.tableforyou.domain.user.dto.UserResponseDto;
 import com.project.tableforyou.domain.user.dto.UserUpdateDto;
@@ -53,6 +54,7 @@ public class UserService {
     }
 
     /* 회원 업데이트 */
+    @VerifyAuthentication
     @Transactional
     public void update(String username, UserUpdateDto dto) {
 
@@ -60,12 +62,9 @@ public class UserService {
         User user = userRepository.findByUsername(username).orElseThrow(() ->
                 new CustomException(ErrorCode.USER_NOT_FOUND));
         dto.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
-        if(!verifyAuthenticationByUsername(username, dto.getUsername())) {
-            throw new CustomException(ErrorCode.UNAUTHORIZED);
-        } else {
-            user.update(dto.getNickname(), dto.getPassword(), dto.getEmail());
-            log.info("User updated successfully with username: {}", username);
-        }
+
+        user.update(dto.getNickname(), dto.getPassword(), dto.getEmail());
+        log.info("User updated successfully with username: {}", username);
     }
 
     /* 회원 삭제 */
@@ -106,10 +105,5 @@ public class UserService {
             return "닉네임은 특수문자를 제외한 2~10자리여야 합니다.";
         }
         return userRepository.existsByNickname(nickname);
-    }
-
-    /* 자신의 권한인지 확인 */
-    private boolean verifyAuthenticationByUsername(String expectedUsername, String actualUsername) {
-        return actualUsername.equals(expectedUsername);
     }
 }
