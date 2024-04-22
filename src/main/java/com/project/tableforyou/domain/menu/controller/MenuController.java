@@ -2,6 +2,7 @@ package com.project.tableforyou.domain.menu.controller;
 
 import com.project.tableforyou.domain.menu.dto.MenuRequestDto;
 import com.project.tableforyou.domain.menu.dto.MenuResponseDto;
+import com.project.tableforyou.domain.menu.dto.MenuUpdateDto;
 import com.project.tableforyou.domain.menu.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +44,7 @@ public class MenuController {
     /* 메뉴 업데이트 */
     @PutMapping("/{restaurantId}/menus/{menuId}")
     public ResponseEntity<String> update(@PathVariable(name = "restaurantId") Long restaurantId,
-                                         @PathVariable(name = "menuId") Long menuId, @RequestBody MenuRequestDto dto) {
+                                         @PathVariable(name = "menuId") Long menuId, @RequestBody MenuUpdateDto dto) {
 
         menuService.update(restaurantId, menuId, dto);
         return ResponseEntity.ok("메뉴 업데이트 완료.");

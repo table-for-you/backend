@@ -8,7 +8,6 @@ public class MenuResponseDto {
 
     private final String name;
     private final String price;
-    private final Long store_id;
     private final String created_time;
     private final String modified_time;
 
@@ -16,7 +15,6 @@ public class MenuResponseDto {
     public MenuResponseDto(Menu menu) {
         this.name = menu.getName();
         this.price = menu.getPrice();
-        this.store_id = menu.getRestaurant().getId();
         this.created_time = menu.getCreated_time();
         this.modified_time = menu.getModified_time();
     }
