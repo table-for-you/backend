@@ -79,16 +79,6 @@ public class UserService {
         log.info("User deleted successfully with username: {}", username);
     }
 
-    /* 회원가입 오류 확인 */
-    public Map<String, String> validateHandler(Errors errors) {
-        Map<String, String> validateResult = new HashMap<>();
-
-        for (FieldError error: errors.getFieldErrors()) {
-            validateResult.put(error.getField(), error.getDefaultMessage());
-        }
-        return validateResult;
-    }
-
     /* 아이디 중복 확인 */
     public Object existsByUsername(String username) {
         log.info("Checking if user exists by username: {}", username);

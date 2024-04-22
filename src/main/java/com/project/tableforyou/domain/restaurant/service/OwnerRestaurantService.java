@@ -82,14 +82,4 @@ public class OwnerRestaurantService {
         restaurantRepository.delete(restaurant);
         log.info("Restaurant deleted successfully with name: {}", restaurantId);
     }
-
-    /* 가게 등록 오류 확인 */
-    public Map<String, String> validateHandler(Errors errors) {
-        Map<String, String> validateResult = new HashMap<>();
-
-        for (FieldError error: errors.getFieldErrors()) {
-            validateResult.put(error.getField(), error.getDefaultMessage());
-        }
-        return validateResult;
-    }
 }

@@ -4,6 +4,7 @@ import com.project.tableforyou.domain.restaurant.dto.RestaurantNameDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantRequestDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantUpdateDto;
 import com.project.tableforyou.domain.restaurant.service.OwnerRestaurantService;
+import com.project.tableforyou.handler.validate.ValidateHandler;
 import com.project.tableforyou.security.auth.PrincipalDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import java.util.Map;
 public class OwnerController {
 
     private final OwnerRestaurantService ownerRestaurantService;
+    private final ValidateHandler validateHandler;
 
     /* 가게 생성 */
     @PostMapping
@@ -33,9 +35,9 @@ public class OwnerController {
 
         try {
             if (bindingResult.hasErrors()) {
-                Map<String, String> errors = ownerRestaurantService.validateHandler(bindingResult);
-                log.info("Failed to sign up: {}", errors);
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errors);
+                Map<String, String> errors = validateHandler.validate(bindingResult);
+                log.info("Failed to create Restaurant: {}", errors);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
             }
 
             ownerRestaurantService.save(principalDetails.getUsername(), dto);

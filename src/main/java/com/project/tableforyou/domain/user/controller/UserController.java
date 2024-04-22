@@ -7,6 +7,7 @@ import com.project.tableforyou.domain.user.dto.UserRequestDto;
 import com.project.tableforyou.domain.user.dto.UserResponseDto;
 import com.project.tableforyou.domain.user.dto.UserUpdateDto;
 import com.project.tableforyou.domain.user.service.UserService;
+import com.project.tableforyou.handler.validate.ValidateHandler;
 import com.project.tableforyou.security.auth.PrincipalDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +29,14 @@ public class UserController {
 
     private final UserService userService;
     private final LikeService likeService;
+    private final ValidateHandler validateHandler;
 
     /* 회원가입 과정 */
     @PostMapping("/joinProc")
     public ResponseEntity<Object> joinProc(@Valid @RequestBody UserRequestDto dto, BindingResult bindingResult) {
         try {
             if (bindingResult.hasErrors()) {
-                Map<String, String> errors = userService.validateHandler(bindingResult);
+                Map<String, String> errors = validateHandler.validate(bindingResult);
                 log.info("Failed to sign up: {}", errors);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
             }

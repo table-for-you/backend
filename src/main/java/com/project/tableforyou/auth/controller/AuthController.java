@@ -5,6 +5,7 @@ import com.project.tableforyou.auth.service.AuthService;
 import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.TokenException;
+import com.project.tableforyou.handler.validate.ValidateHandler;
 import com.project.tableforyou.token.service.RefreshTokenService;
 import com.project.tableforyou.utils.cookie.CookieUtil;
 import com.project.tableforyou.utils.jwt.JwtUtil;
@@ -13,6 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,9 +39,16 @@ public class AuthController {
     private final CookieUtil cookieUtil;
     private final RefreshTokenService refreshTokenService;
     private final AuthService authService;
+    private final ValidateHandler validateHandler;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid LoginDto loginDto, HttpServletResponse response, BindingResult bindingResult) throws IOException {
+    public ResponseEntity<?> login(@RequestBody @Valid LoginDto loginDto, BindingResult bindingResult, HttpServletResponse response) throws IOException {
+
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = validateHandler.validate(bindingResult);
+            log.info("Failed to sign in: {}", errors);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        }
 
         User user = authService.login(loginDto);
 
