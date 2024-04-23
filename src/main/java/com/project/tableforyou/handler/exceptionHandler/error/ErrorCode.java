@@ -27,8 +27,11 @@ public enum ErrorCode {
     RESTAURANT_NOT_FOUND(404, "존재하지 않는 가게입니다."),
     RESERVATION_NOT_FOUND(404, "해당하는 예약번호가 없습니다."),
     MENU_NOT_FOUND(404, "존재하지 않는 메뉴입니다."),
-    USER_INVALID_PASSWORD(404, "잘못된 비밀번호입니다."),
     LIKE_NOT_FOUND(404, "해당 가게에 좋아요를 누른 적이 없습니다."),
+
+    // 로그인 과정 에러.
+    USER_INVALID_PASSWORD(404, "잘못된 비밀번호입니다."),
+    INVALID_USER_INFO(404, "정보를 정확히 입력해주세요."),
 
     // 이미 존재하는 값을 보냈을 때.
     ALREADY_LIKE_RESTAURANT(409, "이미 해당 가게를 좋아요 하였습니다."),
