@@ -2,6 +2,7 @@ package com.project.tableforyou.utils.cookie;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,21 @@ public class CookieUtil {
                 .secure(true)
                 .sameSite("None")
                 .build();
+    }
+
+    /* 쿠키 삭제 메서드 */
+    public void deleteCookie(String cookieName, HttpServletResponse response) {
+
+        ResponseCookie cookie = ResponseCookie.from(cookieName, "")
+                .path("/")
+                .httpOnly(true)
+                .maxAge(0)
+                .secure(true)
+                .sameSite("None")
+                .build();
+
+        response.addHeader("Set-Cookie", cookie.toString());
+
     }
 
     /* 쿠키 값 가져오기 */
