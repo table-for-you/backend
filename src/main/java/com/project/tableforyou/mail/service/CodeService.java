@@ -3,6 +3,7 @@ package com.project.tableforyou.mail.service;
 import com.project.tableforyou.domain.user.repository.UserRepository;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
+import com.project.tableforyou.mail.MailType;
 import com.project.tableforyou.mail.dto.CodeDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +42,7 @@ public class CodeService {
 
         String authCode = createCode();
 
-        mailService.sendMail(email, authCode);
+        mailService.sendMail(email, authCode, MailType.CODE);
 
         codeMap.put(email, new CodeDto(authCode, LocalDateTime.now()));
     }

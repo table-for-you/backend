@@ -1,12 +1,10 @@
 package com.project.tableforyou.mail.controller;
 
-import com.project.tableforyou.domain.user.service.UserService;
 import com.project.tableforyou.mail.service.CodeService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class MailController {
 
     private final CodeService codeService;
-    private final UserService userService;
 
     /* 이메일 인증 번호 보내기 */
     @PostMapping("/emails/verification-request")
