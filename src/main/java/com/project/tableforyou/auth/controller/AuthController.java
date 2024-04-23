@@ -12,15 +12,13 @@ import com.project.tableforyou.utils.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -41,6 +39,7 @@ public class AuthController {
     private final AuthService authService;
     private final ValidateHandler validateHandler;
 
+    /* 로그인 */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid LoginDto loginDto, BindingResult bindingResult, HttpServletResponse response) throws IOException {
 
@@ -69,6 +68,7 @@ public class AuthController {
         return ResponseEntity.ok(responseData);
     }
 
+    /* accessToken 재발급 */
     @PostMapping("/reissue")
     public ResponseEntity<?> accessTokenReissue(HttpServletRequest request, HttpServletResponse response) {
 
@@ -93,5 +93,22 @@ public class AuthController {
         response.setStatus(HttpServletResponse.SC_OK);
 
         return ResponseEntity.ok(TOKEN_PREFIX + accessTokenReIssue);
+    }
+
+    /* 아이디 찾기 */
+    @GetMapping("/find-id")
+    public ResponseEntity<String> findingId(@RequestParam("email") @Valid @Email String email) {
+
+        String username = authService.findingId(email);
+        return ResponseEntity.ok(username);
+    }
+
+    /* 비밀번호 찾기 */
+    @PostMapping("/find-pass")
+    public ResponseEntity<String> findPass(@RequestParam("email") @Valid @Email String email,
+                                           @RequestParam("username") String username) {
+
+        authService.findingPassword(username, email);
+        return ResponseEntity.ok("잠시 후 등록하신 메일로 임시 비밀번호가 도착합니다.");
     }
 }

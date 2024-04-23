@@ -32,7 +32,7 @@ public class UserController {
     private final ValidateHandler validateHandler;
 
     /* 회원가입 과정 */
-    @PostMapping("/joinProc")
+    @PostMapping("/register")
     public ResponseEntity<Object> joinProc(@Valid @RequestBody UserRequestDto dto, BindingResult bindingResult) {
         try {
             if (bindingResult.hasErrors()) {
