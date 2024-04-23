@@ -10,7 +10,7 @@ import static com.project.tableforyou.utils.redis.RedisProperties.BLACKLIST_KEY_
 
 @Service
 @RequiredArgsConstructor
-public class AccessTokenService {
+public class TokenBlackListService {
 
     private final RedisUtil redisUtil;
 

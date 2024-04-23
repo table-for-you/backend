@@ -8,7 +8,7 @@ import com.project.tableforyou.jwt.filter.JwtExceptionFilter;
 import com.project.tableforyou.jwt.handler.OAuth2SuccessHandler;
 import com.project.tableforyou.security.auth.PrincipalDetailsService;
 import com.project.tableforyou.security.oauth.PrincipalOAuth2UserService;
-import com.project.tableforyou.token.service.AccessTokenService;
+import com.project.tableforyou.token.service.TokenBlackListService;
 import com.project.tableforyou.utils.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -38,7 +38,7 @@ public class SecurityConfig {
     private final CustomLogoutHandler customLogoutHandler;
     private final PrincipalDetailsService principalDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final AccessTokenService accessTokenService;
+    private final TokenBlackListService tokenBlackListService;
     private final SuccessLogoutHandler successLogoutHandler;
 
     @Bean
@@ -69,7 +69,7 @@ public class SecurityConfig {
                                         endPoint.userService(principalOAuth2UserService))
                                 .successHandler(oAuth2SuccessHandler))
 
-                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, objectMapper, accessTokenService),
+                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, objectMapper, tokenBlackListService),
                         UsernamePasswordAuthenticationFilter.class)
 
                 .addFilterBefore(new JwtExceptionFilter(objectMapper), JwtAuthenticationFilter.class)

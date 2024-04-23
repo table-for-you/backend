@@ -6,7 +6,7 @@ import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorDto;
 import com.project.tableforyou.security.auth.PrincipalDetails;
-import com.project.tableforyou.token.service.AccessTokenService;
+import com.project.tableforyou.token.service.TokenBlackListService;
 import com.project.tableforyou.utils.jwt.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -31,7 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final ObjectMapper objectMapper;
-    private final AccessTokenService accessTokenService;
+    private final TokenBlackListService tokenBlackListService;
     private static final String SPECIAL_CHARACTERS_PATTERN = "[`':;|~!@#$%()^&*+=?/{}\\[\\]\\\"\\\\\"]+$";
 
 
@@ -55,7 +55,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         accessToken = accessToken.replaceAll(SPECIAL_CHARACTERS_PATTERN, "");   // 토큰 끝 특수문자 제거
 
-        if(accessTokenService.existsById(accessToken)) {       // AccessToken이 블랙리스트에 있는지.
+        if(tokenBlackListService.existsById(accessToken)) {       // AccessToken이 블랙리스트에 있는지.
             handleExceptionToken(response, ErrorCode.BLACKLIST_ACCESS_TOKEN);
             return;
         }
