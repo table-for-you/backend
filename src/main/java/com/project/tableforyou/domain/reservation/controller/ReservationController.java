@@ -45,7 +45,7 @@ public class ReservationController {
     }
 
     /* 예약자 앞으로 당기기 */
-    @PatchMapping("/{restaurantId}/reservations/decreaseBooking")
+    @PatchMapping("/{restaurantId}/reservations/decrease-booking")
     public ResponseEntity<String> decreaseBooking(@PathVariable(name = "restaurantId") Long restaurantId) {
         try {
             List<ReservationResponseDto> reservations = reservationService.getReservations(restaurantId, null, null);
@@ -58,7 +58,7 @@ public class ReservationController {
     }
 
     /* 예약 순서 미루기 */ // restaurant_id 에서 이름을 가져오기. reservation_id에서 booking 가져오기
-    @PutMapping("/{restaurantId}/reservations/postponedGuestBooking/{username}")
+    @PutMapping("/{restaurantId}/reservations/postponed-guest-booking/{username}")
     public ResponseEntity<String> postponedGuestBooking(@PathVariable(name = "restaurantId") Long restaurantId,
                                                         @PathVariable(name = "username") String username,
                                                         @RequestBody ReservationRequestDto dto) {

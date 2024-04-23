@@ -74,19 +74,19 @@ public class UserController {
     }
 
     /* 아이디 중복 확인 */
-    @GetMapping("/checkUsername")
+    @GetMapping("/check-username")
     public Object checkUsernameExists(@RequestParam("username") String username) {
         return userService.existsByUsername(username);
     }
 
     /* 닉네임 중복 확인 */
-    @GetMapping("/checkNickname")
+    @GetMapping("/check-nickname")
     public Object checkNicknameExists(@RequestParam("nickname") String nickname) {
         return userService.existsByNickname(nickname);
     }
 
     /* 좋아요한 가게 불러오기 */
-    @GetMapping("/likeRestaurants")
+    @GetMapping("/like-restaurants")
     public List<RestaurantNameDto> likeRestaurants(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         return likeService.getLikeRestaurants(principalDetails.getUsername());
