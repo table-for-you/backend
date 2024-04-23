@@ -3,6 +3,7 @@ package com.project.tableforyou.domain.user.controller;
 import com.project.tableforyou.domain.like.service.LikeService;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantNameDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantResponseDto;
+import com.project.tableforyou.domain.user.dto.PasswordDto;
 import com.project.tableforyou.domain.user.dto.UserRequestDto;
 import com.project.tableforyou.domain.user.dto.UserResponseDto;
 import com.project.tableforyou.domain.user.dto.UserUpdateDto;
@@ -63,6 +64,14 @@ public class UserController {
         userService.update(principalDetails.getUsername(), dto);
         return ResponseEntity.ok("회원 업데이트 성공.");
 
+    }
+
+    /* 현재 비밀번호 검사 */
+    @GetMapping("/check-password")
+    public Object checkPassword(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                @RequestBody PasswordDto passwordDto) {
+
+        return userService.checkPass(principalDetails.getUsername(), passwordDto);
     }
 
     /* 회원 삭제 */

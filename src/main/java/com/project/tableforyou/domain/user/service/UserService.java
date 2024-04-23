@@ -1,6 +1,7 @@
 package com.project.tableforyou.domain.user.service;
 
 import com.project.tableforyou.aop.annotation.VerifyAuthentication;
+import com.project.tableforyou.domain.user.dto.PasswordDto;
 import com.project.tableforyou.domain.user.dto.UserRequestDto;
 import com.project.tableforyou.domain.user.dto.UserResponseDto;
 import com.project.tableforyou.domain.user.dto.UserUpdateDto;
@@ -77,6 +78,15 @@ public class UserService {
 
         userRepository.delete(user);
         log.info("User deleted successfully with username: {}", username);
+    }
+
+    /* 비밀번호 검사 */
+    @Transactional(readOnly = true)
+    public boolean checkPass(String username, PasswordDto passwordDto) {
+        User user = userRepository.findByUsername(username).orElseThrow(() ->
+                new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        return bCryptPasswordEncoder.matches(passwordDto.getPassword(), user.getPassword());
     }
 
     /* 아이디 중복 확인 */
