@@ -1,5 +1,7 @@
 package com.project.tableforyou.domain.user.controller;
 
+import com.project.tableforyou.domain.reservation.dto.ReservationResponseDto;
+import com.project.tableforyou.domain.reservation.service.ReservationService;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantNameDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantRequestDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantUpdateDto;
@@ -26,6 +28,7 @@ public class OwnerController {
 
     private final OwnerRestaurantService ownerRestaurantService;
     private final ValidateHandler validateHandler;
+    private final ReservationService reservationService;
 
     /* 가게 생성 */
     @PostMapping
@@ -41,7 +44,7 @@ public class OwnerController {
             }
 
             ownerRestaurantService.save(principalDetails.getUsername(), dto);
-            return ResponseEntity.ok("가게 생성 완료.");
+            return ResponseEntity.ok("가게 신청이 완료 되었습니다. 승인을 기다려 주세요.");
 
         } catch (Exception e) {
             log.error("Error occurred during create Restaurant: {}", e.getMessage());
@@ -74,5 +77,11 @@ public class OwnerController {
         ownerRestaurantService.delete(restaurantId);
         return ResponseEntity.ok("가게 삭제 완료.");
 
+    }
+
+    /* 해당 가게 예약자 불러오기. */
+    @GetMapping("/{restaurantId}/reservations")
+    public List<ReservationResponseDto> readAll(@PathVariable(name = "restaurantId") Long restaurantId) {
+        return reservationService.findAllReservation(restaurantId);
     }
 }

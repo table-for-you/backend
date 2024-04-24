@@ -11,14 +11,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/restaurants")
 @RequiredArgsConstructor
 @Slf4j
-public class MenuController {
+public class SecureMenuController {
 
     private final MenuService menuService;
 
@@ -28,18 +27,6 @@ public class MenuController {
 
         menuService.save(restaurantId, dto);
         return ResponseEntity.ok("메뉴 생성 완료.");
-    }
-
-    /* 메뉴 불러오기. 페이징 처리 + 검색 기능 */
-    @GetMapping("/{restaurantId}/menus")
-    public Page<MenuResponseDto> readAll(@PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
-                                         @PathVariable(name = "restaurantId") Long restaurantId,
-                                         @RequestParam(required = false, value = "search-keyword") String searchKeyword) {
-
-        if(searchKeyword == null)
-            return menuService.menuPageList(restaurantId, pageable);
-        else
-            return menuService.menuPageSearchList(restaurantId, searchKeyword, pageable);
     }
 
     /* 메뉴 업데이트 */

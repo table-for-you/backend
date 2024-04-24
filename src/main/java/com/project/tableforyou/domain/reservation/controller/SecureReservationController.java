@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/restaurants")
 @Slf4j
-public class ReservationController {
+public class SecureReservationController {
 
     private final ReservationService reservationService;
 
@@ -31,25 +31,6 @@ public class ReservationController {
 
     }
 
-    /* 예약자 읽기 */
-    @GetMapping("/{restaurantId}/reservations/{username}")
-    public ReservationResponseDto read(@PathVariable(name = "restaurantId") Long restaurantId,
-                                       @PathVariable(name = "username") String username) {
-        return reservationService.findByBooking(restaurantId, username);
-    }
-
-    /* 예약자 앞으로 당기기 */
-    @PatchMapping("/{restaurantId}/reservations/decrease-booking")
-    public ResponseEntity<String> decreaseBooking(@PathVariable(name = "restaurantId") Long restaurantId) {
-        try {
-            List<ReservationResponseDto> reservations = reservationService.getReservations(restaurantId, null, null);
-            String user = reservationService.decreaseBooking(reservations, restaurantId);
-            return ResponseEntity.ok(user + "님 입장");
-        } catch (Exception e) {
-            log.error("Failed to update reservations: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예약자 업데이트 실패");
-        }
-    }
 
     /* 예약 순서 미루기 */ // restaurant_id 에서 이름을 가져오기. reservation_id에서 booking 가져오기
     @PutMapping("/{restaurantId}/reservations/postponed-guest-booking/{username}")
