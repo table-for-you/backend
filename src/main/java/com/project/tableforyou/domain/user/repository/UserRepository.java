@@ -2,6 +2,8 @@ package com.project.tableforyou.domain.user.repository;
 
 import com.project.tableforyou.domain.user.entity.Role;
 import com.project.tableforyou.domain.user.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,6 +20,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
     boolean existsByUsernameAndEmail(String username, String email);
+    Page<User> findByNameContaining(String searchKeyword, Pageable pageable);
+    Page<User> findByNicknameContaining(String searchKeyword, Pageable pageable);
+    Page<User> findByRole(Role role, Pageable pageable);
+
 
     @Transactional
     @Modifying

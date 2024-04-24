@@ -2,6 +2,7 @@ package com.project.tableforyou.domain.user.controller;
 
 import com.project.tableforyou.domain.restaurant.dto.RestaurantResponseDto;
 import com.project.tableforyou.domain.restaurant.service.AdminRestaurantService;
+import com.project.tableforyou.domain.user.dto.UserInfoDto;
 import com.project.tableforyou.domain.user.dto.UserResponseDto;
 import com.project.tableforyou.domain.user.service.AdminService;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +25,21 @@ public class AdminController {
 
     /* 회원 전체 불러오기, 페이징 처리 */
     @GetMapping("/users")
-    public Page<UserResponseDto> readAll(@PageableDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
-                                         @RequestParam(required = false) String searchKeyword) {
+    public Page<UserInfoDto> readAll(@PageableDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
+                                     @RequestParam(required = false, value = "type") String type,
+                                     @RequestParam(required = false, value = "search-keyword") String searchKeyword) {
 
-        return adminService.userPageList(pageable);
+        if ("name".equals(type))
+            return adminService.userPageListByName(searchKeyword, pageable);
+
+        else if ("nickname".equals(type))
+            return adminService.userPageListByNickname(searchKeyword, pageable);
+
+        else if ("role".equals(type))
+            return adminService.userPageListByRole(searchKeyword, pageable);
+
+        else
+            return adminService.userPageList(pageable);
     }
 
     /* 회원 삭제 */

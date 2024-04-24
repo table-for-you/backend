@@ -1,6 +1,8 @@
 package com.project.tableforyou.domain.user.service;
 
+import com.project.tableforyou.domain.user.dto.UserInfoDto;
 import com.project.tableforyou.domain.user.dto.UserResponseDto;
+import com.project.tableforyou.domain.user.entity.Role;
 import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.domain.user.repository.UserRepository;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
@@ -21,11 +23,35 @@ public class AdminService {
 
     /* 전체 회원 불러오기 */
     @Transactional(readOnly = true)
-    public Page<UserResponseDto> userPageList(Pageable pageable) {
+    public Page<UserInfoDto> userPageList(Pageable pageable) {
 
         log.info("Finding all users");
         Page<User> users = userRepository.findAll(pageable);
-        return users.map(UserResponseDto::new);
+        return users.map(UserInfoDto::new);
+    }
+
+    /* 이름으로 회원 찾기 */
+    @Transactional(readOnly = true)
+    public Page<UserInfoDto> userPageListByName(String searchKeyword, Pageable pageable) {
+
+        Page<User> users = userRepository.findByNameContaining(searchKeyword, pageable);
+        return users.map(UserInfoDto::new);
+    }
+
+    /* 닉네임으로 회원 찾기 */
+    @Transactional(readOnly = true)
+    public Page<UserInfoDto> userPageListByNickname(String searchKeyword, Pageable pageable) {
+
+        Page<User> users = userRepository.findByNicknameContaining(searchKeyword, pageable);
+        return users.map(UserInfoDto::new);
+    }
+
+    /* 권한에 따라 회원 찾기 */
+    @Transactional(readOnly = true)
+    public Page<UserInfoDto> userPageListByRole(String searchKeyword, Pageable pageable) {
+
+        Page<User> users = userRepository.findByRole(Role.valueOf(searchKeyword), pageable);
+        return users.map(UserInfoDto::new);
     }
 
     /* 회원 삭제하기 */
