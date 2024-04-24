@@ -33,7 +33,7 @@ public class MenuController {
     @GetMapping("/{restaurantId}/menus")
     public Page<MenuResponseDto> readAll(@PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
                                          @PathVariable(name = "restaurantId") Long restaurantId,
-                                         @RequestParam(required = false) String searchKeyword) {
+                                         @RequestParam(required = false, value = "search-keyword") String searchKeyword) {
 
         if(searchKeyword == null)
             return menuService.menuPageList(restaurantId, pageable);
