@@ -64,7 +64,7 @@ public class UserService {
                 new CustomException(ErrorCode.USER_NOT_FOUND));
         dto.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
 
-        user.update(dto.getNickname(), dto.getPassword(), dto.getEmail());
+        user.update(dto.getNickname(), dto.getPassword());
         log.info("User updated successfully with username: {}", username);
     }
 

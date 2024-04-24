@@ -58,10 +58,9 @@ public class User extends BaseTimeEntity {
     private LocalDateTime lockTime;
 
 
-    public void update(String nickname, String password, String email) {
+    public void update(String nickname, String password) {
         this.nickname = nickname;
         this.password = password;
-        this.email = email;
     }
 
     // 이미 있을 경우 최근 로그인 시간만 업데이트.
