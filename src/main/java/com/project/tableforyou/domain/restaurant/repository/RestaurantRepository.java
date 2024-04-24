@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
-    Page<Restaurant> findByNameContainingOrDescriptionContaining(String searchKeyword1, String searchKeyword2, Pageable pageable);
+    Page<Restaurant> findByStatusAndNameContainingOrDescriptionContaining(RestaurantStatus status, String searchKeyword1, String searchKeyword2, Pageable pageable);
     Page<Restaurant> findByStatus(RestaurantStatus status, Pageable pageable);
 
     @Modifying

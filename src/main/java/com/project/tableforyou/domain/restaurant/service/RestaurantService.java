@@ -46,7 +46,8 @@ public class RestaurantService {
     public Page<RestaurantResponseDto> RestaurantPageSearchList(String searchKeyword1, String searchKeyword2, Pageable pageable) {
 
         log.info("Finding all restaurants with searchKeyword: {}", searchKeyword1);
-        Page<Restaurant> restaurants = restaurantRepository.findByNameContainingOrDescriptionContaining(searchKeyword1, searchKeyword2, pageable);
+        Page<Restaurant> restaurants = restaurantRepository.
+                findByStatusAndNameContainingOrDescriptionContaining(RestaurantStatus.APPROVED, searchKeyword1, searchKeyword2, pageable);
         return restaurants.map(RestaurantResponseDto::new);
     }
 
