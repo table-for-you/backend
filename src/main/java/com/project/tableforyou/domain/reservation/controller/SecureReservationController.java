@@ -38,12 +38,6 @@ public class ReservationController {
         return reservationService.findByBooking(restaurantId, username);
     }
 
-    /* 해당 가게 예약자 불러오기. */
-    @GetMapping("/{restaurantId}/reservations")
-    public List<ReservationResponseDto> readAll(@PathVariable(name = "restaurantId") Long restaurantId) {
-        return reservationService.findAllReservation(restaurantId);
-    }
-
     /* 예약자 앞으로 당기기 */
     @PatchMapping("/{restaurantId}/reservations/decrease-booking")
     public ResponseEntity<String> decreaseBooking(@PathVariable(name = "restaurantId") Long restaurantId) {

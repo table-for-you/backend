@@ -57,10 +57,10 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(authorize ->
                         authorize
-                                .requestMatchers("/api/user/**").authenticated()
+                                .requestMatchers("/public/**", "/api/**").permitAll()
                                 .requestMatchers("/owner/**").hasAnyRole("OWNER", "ADMIN")
                                 .requestMatchers("/admin/**").hasAnyRole("ADMIN")
-                                .anyRequest().permitAll())
+                                .anyRequest().authenticated())
 
 
                 .oauth2Login(oauth2 ->
