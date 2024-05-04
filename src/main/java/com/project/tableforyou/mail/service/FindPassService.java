@@ -32,7 +32,7 @@ public class FindPassService {
                 new CustomException(ErrorCode.USER_NOT_FOUND));
 
         String newPass = createPass();
-        user.setPassword(bCryptPasswordEncoder.encode(newPass));
+        user.updatePassword(bCryptPasswordEncoder.encode(newPass));
 
         mailService.sendMail(email, newPass, MailType.PASS);
     }
