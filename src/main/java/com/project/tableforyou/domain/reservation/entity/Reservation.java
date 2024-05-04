@@ -1,10 +1,12 @@
 package com.project.tableforyou.domain.reservation.entity;
 
 
-import com.project.tableforyou.domain.reservation.dto.ReservationResponseDto;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Getter @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -20,6 +22,9 @@ public class Reservation {
 
 
     public void update(int booking) {
+        this.booking = booking;
+    }
+    public void setBooking(int booking) {
         this.booking = booking;
     }
 }

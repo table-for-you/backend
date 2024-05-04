@@ -5,12 +5,15 @@ import com.project.tableforyou.domain.like.entity.Like;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -60,6 +63,10 @@ public class User extends BaseTimeEntity {
 
     public void update(String nickname, String password) {
         this.nickname = nickname;
+        this.password = password;
+    }
+
+    public void setPassword(String password) {
         this.password = password;
     }
 

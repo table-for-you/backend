@@ -35,9 +35,10 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
-        Reservation reservation = new Reservation();
-        reservation.setUsername(username);
-        reservation.setRestaurant(restaurant.getName());
+        Reservation reservation = Reservation.builder()
+                .username(username)
+                .restaurant(restaurant.getName())
+                .build();
 
         String key = RESERVATION_KEY_PREFIX + restaurantId;
 
