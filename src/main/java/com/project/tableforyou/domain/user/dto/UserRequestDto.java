@@ -9,9 +9,6 @@ import lombok.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Getter @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 public class UserRequestDto {
 
     @NotBlank(message = "이름은 필수 입력 값입니다.")

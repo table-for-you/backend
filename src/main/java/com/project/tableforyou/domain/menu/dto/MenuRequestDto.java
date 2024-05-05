@@ -3,12 +3,10 @@ package com.project.tableforyou.domain.menu.dto;
 import com.project.tableforyou.domain.menu.entity.Menu;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import jakarta.validation.constraints.NotBlank;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class MenuRequestDto {
 
     @NotBlank

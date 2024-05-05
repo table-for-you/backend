@@ -2,15 +2,10 @@ package com.project.tableforyou.domain.user.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter @Setter
 public class UserUpdateDto {
 
     private String username;    // 본인 확인을 위한 username. 변경 불가하게 막아두기.
