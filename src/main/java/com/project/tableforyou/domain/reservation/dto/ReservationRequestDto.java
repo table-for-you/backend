@@ -1,8 +1,9 @@
 package com.project.tableforyou.domain.reservation.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 
-@Getter
+@Getter @Setter
 public class ReservationRequestDto {
 
     private int booking;
