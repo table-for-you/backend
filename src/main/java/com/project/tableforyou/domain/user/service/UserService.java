@@ -2,24 +2,18 @@ package com.project.tableforyou.domain.user.service;
 
 import com.project.tableforyou.aop.annotation.VerifyAuthentication;
 import com.project.tableforyou.domain.user.dto.PasswordDto;
-import com.project.tableforyou.domain.user.dto.UserRequestDto;
+import com.project.tableforyou.domain.user.dto.SignUpDto;
 import com.project.tableforyou.domain.user.dto.UserResponseDto;
 import com.project.tableforyou.domain.user.dto.UserUpdateDto;
 import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.domain.user.repository.UserRepository;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
-import com.project.tableforyou.mail.service.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.Errors;
-import org.springframework.validation.FieldError;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +25,7 @@ public class UserService {
 
     /* 회원 추가 */
     @Transactional
-    public Long create(UserRequestDto dto) {
+    public Long create(SignUpDto dto) {
 
         log.info("Creating user with username: {}", dto.getUsername());
         dto.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));

@@ -1,6 +1,6 @@
 package com.project.tableforyou.security.oauth;
 
-import com.project.tableforyou.domain.user.dto.UserRequestDto;
+import com.project.tableforyou.domain.user.dto.SignUpDto;
 import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.domain.user.repository.UserRepository;
 import com.project.tableforyou.security.auth.PrincipalDetails;
@@ -55,7 +55,7 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
 
         User user = userRepository.findByEmail(oAuth2UserInfo.getEmail())
                 .map(User::updateModifiedDateIfUserExists)  // 이미 있다면 사용자 접근 시간 업데이트
-                .orElse(new UserRequestDto().toEntity(oAuth2UserInfo, bCryptPasswordEncoder)); // 없다면 새로 만들기.
+                .orElse(new SignUpDto().toEntity(oAuth2UserInfo, bCryptPasswordEncoder)); // 없다면 새로 만들기.
         userRepository.save(user);
 
         return user;

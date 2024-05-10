@@ -1,7 +1,7 @@
 package com.project.tableforyou.domain.user.controller;
 
 import com.project.tableforyou.domain.user.dto.PasswordDto;
-import com.project.tableforyou.domain.user.dto.UserRequestDto;
+import com.project.tableforyou.domain.user.dto.SignUpDto;
 import com.project.tableforyou.domain.user.service.UserService;
 import com.project.tableforyou.handler.validate.ValidateHandler;
 import com.project.tableforyou.security.auth.PrincipalDetails;
@@ -27,7 +27,7 @@ public class PublicUserController {
 
     /* 회원가입 */
     @PostMapping("/register")
-    public ResponseEntity<Object> joinProc(@Valid @RequestBody UserRequestDto dto, BindingResult bindingResult) {
+    public ResponseEntity<Object> joinProc(@Valid @RequestBody SignUpDto dto, BindingResult bindingResult) {
         try {
             if (bindingResult.hasErrors()) {
                 Map<String, String> errors = validateHandler.validate(bindingResult);
