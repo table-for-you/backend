@@ -38,16 +38,16 @@ public class Restaurant extends BaseTimeEntity {
     private int rating_num;
 
     // 영업시간
-    @NotBlank
+    @NotNull
     private String time;
 
     @Enumerated(EnumType.STRING)
     private RestaurantStatus status;
 
-    @NotBlank
+    @NotNull
     private String name;
 
-    @NotBlank
+    @NotNull
     private String location;
 
     private String tel;

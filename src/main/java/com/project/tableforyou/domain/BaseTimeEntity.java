@@ -11,9 +11,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Getter
-@MappedSuperclass  // 해당 클래스를 상속받는 서브 클래스에게 매핑 정보를 제공하는 역할. 공통적인 매핑 정보를 담음.
-@EntityListeners(AuditingEntityListener.class)  // @EntityListeners : 엔티티의 생명주기 이벤트에 대한 리스너를 지정
-// AuditingEntityListener.class : 생성일자와 수정일자를 자동으로 관리하기 위한 리스너. 자동으로 생성일과 수정일을 갱신
+@MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 public abstract class BaseTimeEntity {
 
     @NotNull
