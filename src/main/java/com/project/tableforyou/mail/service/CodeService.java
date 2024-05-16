@@ -5,6 +5,7 @@ import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import com.project.tableforyou.mail.MailType;
 import com.project.tableforyou.mail.dto.CodeDto;
+import com.project.tableforyou.utils.redis.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,10 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+
+import static com.project.tableforyou.utils.redis.RedisProperties.CODE_EXPIRATION_TIME;
+import static com.project.tableforyou.utils.redis.RedisProperties.CODE_KEY_PREFIX;
 
 @Service
 @RequiredArgsConstructor
@@ -25,9 +30,8 @@ public class CodeService {
 
     private final UserRepository userRepository;
     private final MailService mailService;
-    private final Map<String, CodeDto> codeMap = new ConcurrentHashMap<>();  // 메일 인증번호 확인용. 멀티스레드 측면에서 안전성 이점.
-    private static final int VERIFICATION_EXPIRATION_MINUTES = 3; // 이메일 인증 유효 시간 3분
-    private static final int RESEND_VALIDITY_MINUTES = 1; // 이메일 재전송 유효 시간 1분
+    private final RedisUtil redisUtil;
+    private static final int RESEND_THRESHOLD_SECONDS = 2 * 60; // 2분을 초로 환산
 
     /* 회원가입 인증번호 확인 메서드. */
     public void sendCodeToMail(String email) {
@@ -44,7 +48,9 @@ public class CodeService {
 
         mailService.sendMail(email, authCode, MailType.CODE);
 
-        codeMap.put(email, new CodeDto(authCode, LocalDateTime.now()));
+        String key = CODE_KEY_PREFIX + email;
+        redisUtil.set(key, authCode);
+        redisUtil.expire(key, CODE_EXPIRATION_TIME);
     }
 
     /* 이메일 검증 */
@@ -55,21 +61,13 @@ public class CodeService {
     /* 인증번호 재전송 시간 확인 */
     private boolean checkRetryEmail(String email) {
 
-        CodeDto storedData = codeMap.get(email);
-        if (storedData != null) {
-            LocalDateTime currentTime = LocalDateTime.now();
-            LocalDateTime expirationTime = storedData.getTimestamp().plusMinutes(RESEND_VALIDITY_MINUTES); // 이전에 보낸 메일로부터 1분이 지났는지 확인
-
-            if (currentTime.isBefore(expirationTime)) {
-                // 이전에 보낸 메일로부터 1분이 지나지 않았으면 메일을 보낼 수 없음
-                return false;
-            } else {
-                // 이전에 보낸 메일로부터 1분이 지났으면 해당 데이터 삭제
-                codeMap.remove(email);
-            }
+        String key = CODE_KEY_PREFIX + email;
+        if(!redisUtil.setExisted(key)) {
+            return true;
+        } else {
+            long expireTime = redisUtil.getExpire(key, TimeUnit.SECONDS);
+            return expireTime <= RESEND_THRESHOLD_SECONDS;
         }
-
-        return true;
     }
 
     /* 인증번호 만드는 메서드. */
@@ -93,21 +91,20 @@ public class CodeService {
         if (userRepository.existsByEmail(email)) {
             throw new CustomException(ErrorCode.ALREADY_EXISTS_MAIL);
         }
-        System.out.println(userRepository.existsByEmail(email));
 
-        CodeDto storedCode = codeMap.get(email);
-        if(storedCode != null && storedCode.getCode().equals(code)) {
-            LocalDateTime expirationTime = storedCode.getTimestamp().plusMinutes(VERIFICATION_EXPIRATION_MINUTES);
+        String key = CODE_KEY_PREFIX + email;
+        String storedCode = (String) redisUtil.get(key);
 
-            if (LocalDateTime.now().isBefore(expirationTime)) {     // 유효 시간이 지나지 않았다면
-                codeMap.remove(email);      // 인증코드가 맞다면 인증코드 삭제.
-                log.info("Authentication code verified successfully: {}", email);
-                return true;
-            } else {
-                codeMap.remove(email); // 유효 기간이 지났으면 해당 데이터 삭제
-                log.warn("Authentication code has expired: {}", email);
-            }
+        if(storedCode != null && storedCode.equals(code)) {     // 유효시간 지나지 않음 + 입력 코드 일치
+            redisUtil.del(key);
+            log.info("Authentication code verified successfully: {}", email);
+            return true;
+        } else if(storedCode == null) {     // 유효시간 지나서 redis에 없음
+            log.warn("Authentication code has expired: {}", email);
+            throw new CustomException(ErrorCode.CODE_EXPIRED);
+        } else {                            // 코드 일치하지 않음
+            log.warn("Authentication code mismatch");
+            throw new CustomException(ErrorCode.INVALID_CODE);
         }
-        return false;
     }
 }
