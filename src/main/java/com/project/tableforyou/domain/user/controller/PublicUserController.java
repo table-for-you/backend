@@ -3,18 +3,18 @@ package com.project.tableforyou.domain.user.controller;
 import com.project.tableforyou.domain.user.dto.PasswordDto;
 import com.project.tableforyou.domain.user.dto.SignUpDto;
 import com.project.tableforyou.domain.user.service.UserService;
-import com.project.tableforyou.handler.validate.ValidateHandler;
 import com.project.tableforyou.security.auth.PrincipalDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/public")
@@ -23,24 +23,13 @@ import java.util.Map;
 public class PublicUserController {
 
     private final UserService userService;
-    private final ValidateHandler validateHandler;
 
     /* 회원가입 */
     @PostMapping("/register")
-    public ResponseEntity<Object> joinProc(@Valid @RequestBody SignUpDto dto, BindingResult bindingResult) {
-        try {
-            if (bindingResult.hasErrors()) {
-                Map<String, String> errors = validateHandler.validate(bindingResult);
-                log.info("Failed to sign up: {}", errors);
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-            }
-            userService.create(dto);
-            return ResponseEntity.ok("회원가입 성공.");
-        } catch (Exception e) {
-            log.error("Error occurred during sign up: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred during sign up");
-        }
+    public ResponseEntity<Object> joinProc(@Valid @RequestBody SignUpDto dto) {
 
+        userService.create(dto);
+        return ResponseEntity.ok("회원가입 성공.");
     }
 
     /* 아이디 중복 확인 */

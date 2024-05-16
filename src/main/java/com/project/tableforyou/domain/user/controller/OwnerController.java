@@ -6,19 +6,22 @@ import com.project.tableforyou.domain.restaurant.dto.RestaurantNameDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantRequestDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantUpdateDto;
 import com.project.tableforyou.domain.restaurant.service.OwnerRestaurantService;
-import com.project.tableforyou.handler.validate.ValidateHandler;
 import com.project.tableforyou.security.auth.PrincipalDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/owner/restaurants")
@@ -27,29 +30,15 @@ import java.util.Map;
 public class OwnerController {
 
     private final OwnerRestaurantService ownerRestaurantService;
-    private final ValidateHandler validateHandler;
     private final ReservationService reservationService;
 
     /* 가게 생성 */
     @PostMapping
     public ResponseEntity<Object> create(@AuthenticationPrincipal PrincipalDetails principalDetails,    // 순서 조심
-                                         @Valid @RequestBody RestaurantRequestDto dto,
-                                         BindingResult bindingResult) {
+                                         @Valid @RequestBody RestaurantRequestDto dto) {
 
-        try {
-            if (bindingResult.hasErrors()) {
-                Map<String, String> errors = validateHandler.validate(bindingResult);
-                log.info("Failed to create Restaurant: {}", errors);
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-            }
-
-            ownerRestaurantService.save(principalDetails.getUsername(), dto);
-            return ResponseEntity.ok("가게 신청이 완료 되었습니다. 승인을 기다려 주세요.");
-
-        } catch (Exception e) {
-            log.error("Error occurred during create Restaurant: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred during create Restaurant");
-        }
+        ownerRestaurantService.save(principalDetails.getUsername(), dto);
+        return ResponseEntity.ok("가게 신청이 완료 되었습니다. 승인을 기다려 주세요.");
     }
 
     /* 사장 가게 불러오기 */
