@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -37,6 +38,11 @@ public class RedisUtil {
     /* Redis set 존재 확인. */
     public boolean setExisted(String key) {
         return Boolean.TRUE.equals(redisTemplate.hasKey(key));
+    }
+
+    /* 남은 expired 시간 가져오기 */
+    public Long getExpire(String key, TimeUnit timeUnit) {
+        return redisTemplate.getExpire(key, timeUnit);
     }
 
     /* Redis 만료시간 설정. */
