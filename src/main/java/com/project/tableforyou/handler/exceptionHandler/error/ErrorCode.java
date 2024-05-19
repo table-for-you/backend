@@ -9,6 +9,8 @@ public enum ErrorCode {
 
     // 올바르지 않은 파라미터 값을 보낼 때.
     INVALID_PARAMETER(400, "올바른 값을 입력해주세요."),
+    INVALID_USERNAME_PATTERN(400, "아이디는 특수문자를 제외한 4~20자리여야 합니다."),
+    INVALID_NICKNAME_PATTERN(400, "닉네임은 특수문자를 제외한 2~10자리여야 합니다."),
 
     // 인증이 되어 있지 않을 때.
     UNAUTHORIZED(401, "접근 권한이 없습니다."),
