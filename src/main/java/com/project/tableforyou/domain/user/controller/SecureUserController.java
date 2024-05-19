@@ -6,6 +6,7 @@ import com.project.tableforyou.domain.user.dto.UserResponseDto;
 import com.project.tableforyou.domain.user.dto.UserUpdateDto;
 import com.project.tableforyou.domain.user.service.UserService;
 import com.project.tableforyou.security.auth.PrincipalDetails;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -38,8 +39,8 @@ public class SecureUserController {
 
     /* 회원 업데이트 */
     @PutMapping
-    public ResponseEntity<String> update(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                         @RequestBody UserUpdateDto dto) {
+    public ResponseEntity<String> update(@Valid @RequestBody UserUpdateDto dto,
+                                         @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         userService.update(principalDetails.getUsername(), dto);
         return ResponseEntity.ok("회원 업데이트 성공.");

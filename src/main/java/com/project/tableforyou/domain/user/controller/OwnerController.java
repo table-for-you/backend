@@ -34,8 +34,8 @@ public class OwnerController {
 
     /* 가게 생성 */
     @PostMapping
-    public ResponseEntity<Object> create(@AuthenticationPrincipal PrincipalDetails principalDetails,    // 순서 조심
-                                         @Valid @RequestBody RestaurantRequestDto dto) {
+    public ResponseEntity<Object> create(@Valid @RequestBody RestaurantRequestDto dto,
+                                         @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         ownerRestaurantService.save(principalDetails.getUsername(), dto);
         return ResponseEntity.ok("가게 신청이 완료 되었습니다. 승인을 기다려 주세요.");
@@ -50,8 +50,8 @@ public class OwnerController {
 
     /* 가게 업데이트 */
     @PutMapping("/{restaurantId}")
-    public ResponseEntity<String> update(@PathVariable(name = "restaurantId") Long restaurantId,
-                                         @RequestBody RestaurantUpdateDto dto) {
+    public ResponseEntity<String> update(@Valid @RequestBody RestaurantUpdateDto dto,
+                                         @PathVariable(name = "restaurantId") Long restaurantId) {
 
         ownerRestaurantService.update(restaurantId, dto);
         return ResponseEntity.ok("가게 수정 완료.");

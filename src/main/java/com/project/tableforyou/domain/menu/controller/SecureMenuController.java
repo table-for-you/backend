@@ -4,6 +4,7 @@ import com.project.tableforyou.domain.menu.dto.MenuRequestDto;
 import com.project.tableforyou.domain.menu.dto.MenuResponseDto;
 import com.project.tableforyou.domain.menu.dto.MenuUpdateDto;
 import com.project.tableforyou.domain.menu.service.MenuService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -23,7 +24,8 @@ public class SecureMenuController {
 
     /* 메뉴 생성 */
     @PostMapping("/{restaurantId}/menus")
-    public ResponseEntity<String> create(@PathVariable(name = "restaurantId") Long restaurantId, @RequestBody MenuRequestDto dto) {
+    public ResponseEntity<String> create(@Valid @RequestBody MenuRequestDto dto,
+                                         @PathVariable(name = "restaurantId") Long restaurantId) {
 
         menuService.save(restaurantId, dto);
         return ResponseEntity.ok("메뉴 생성 완료.");
@@ -31,8 +33,9 @@ public class SecureMenuController {
 
     /* 메뉴 업데이트 */
     @PutMapping("/{restaurantId}/menus/{menuId}")
-    public ResponseEntity<String> update(@PathVariable(name = "restaurantId") Long restaurantId,
-                                         @PathVariable(name = "menuId") Long menuId, @RequestBody MenuUpdateDto dto) {
+    public ResponseEntity<String> update(@Valid@RequestBody MenuUpdateDto dto,
+                                         @PathVariable(name = "restaurantId") Long restaurantId,
+                                         @PathVariable(name = "menuId") Long menuId) {
 
         menuService.update(restaurantId, menuId, dto);
         return ResponseEntity.ok("메뉴 업데이트 완료.");

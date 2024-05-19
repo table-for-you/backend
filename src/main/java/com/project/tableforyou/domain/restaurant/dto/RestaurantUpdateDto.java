@@ -10,13 +10,13 @@ import lombok.Setter;
 @Getter @Setter
 public class RestaurantUpdateDto {
 
-    @NotNull
+    @NotNull(message = "총 좌석은 필수 입력입니다.")
     private int totalSeats;
-    @NotBlank
+    @NotBlank(message = "영업 시간은 필수 입력 값입니다.")
     private String time;
-    @NotBlank
+    @NotBlank(message = "가게 이름은 필수 입력 값입니다.")
     private String name;
-    @NotBlank
+    @NotBlank(message = "위치 정보는 필수 입력 값입니다.")
     private String location;
     private String tel;
     private String description;
