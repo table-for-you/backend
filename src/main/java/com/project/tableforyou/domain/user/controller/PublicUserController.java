@@ -34,7 +34,7 @@ public class PublicUserController {
 
     /* 아이디 중복 확인 */
     @GetMapping("/check-username")
-    public Object checkUsernameExists(@RequestParam("username") String username) {
+    public boolean checkUsernameExists(@RequestParam("username") String username) {
         return userService.existsByUsername(username);
     }
 

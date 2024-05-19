@@ -22,6 +22,8 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private static final String USERNAME_PATTERN = "^[ㄱ-ㅎ가-힣a-z0-9-_]{4,20}$";
+    private static final String NICKNAME_PATTERN = "^[ㄱ-ㅎ가-힣a-zA-Z0-9-_]{2,10}$";
 
     /* 회원 추가 */
     @Transactional
@@ -84,19 +86,19 @@ public class UserService {
     }
 
     /* 아이디 중복 확인 */
-    public Object existsByUsername(String username) {
+    public boolean existsByUsername(String username) {
         log.info("Checking if user exists by username: {}", username);
-        if(!username.matches("^[ㄱ-ㅎ가-힣a-z0-9-_]{4,20}$")) {
-            return "아이디는 특수문자를 제외한 4~20자리여야 합니다.";
+        if(!username.matches(USERNAME_PATTERN)) {
+            throw new CustomException(ErrorCode.INVALID_USERNAME_PATTERN);
         }
         return userRepository.existsByUsername(username);
     }
 
     /* 닉네임 중복 확인 */
-    public Object existsByNickname(String nickname) {
+    public boolean existsByNickname(String nickname) {
         log.info("Checking if user exists by nickname: {}", nickname);
-        if (!nickname.matches("^[ㄱ-ㅎ가-힣a-zA-Z0-9-_]{2,10}$")) {
-            return "닉네임은 특수문자를 제외한 2~10자리여야 합니다.";
+        if (!nickname.matches(NICKNAME_PATTERN)) {
+            throw new CustomException(ErrorCode.INVALID_NICKNAME_PATTERN);
         }
         return userRepository.existsByNickname(nickname);
     }
