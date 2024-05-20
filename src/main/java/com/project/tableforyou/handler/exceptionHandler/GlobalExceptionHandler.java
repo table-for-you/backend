@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.project.tableforyou.handler.exceptionHandler.error.ErrorCode.ILLEGAL_ARGUMENT_EXCEPTION;
 import static com.project.tableforyou.handler.exceptionHandler.error.ErrorCode.INTERNAL_SERVER_ERROR;
 
 @Slf4j
@@ -37,6 +38,13 @@ public class GlobalExceptionHandler {
         ErrorDto error = new ErrorDto(errorCode.getStatus(), errorCode.getMessage());
         log.error("Error occurred: {}", error.getMessage());
         return new ResponseEntity(error, HttpStatus.valueOf(error.getStatus()));
+    }
+
+    /* 잘못된 입력 예외 처리 */
+    @ExceptionHandler
+    protected ResponseEntity customIllegalArgumentException(IllegalArgumentException ex) {
+        ErrorDto error = new ErrorDto(ILLEGAL_ARGUMENT_EXCEPTION.getStatus(), ILLEGAL_ARGUMENT_EXCEPTION.getMessage());
+        return new ResponseEntity(error, HttpStatus.valueOf(ILLEGAL_ARGUMENT_EXCEPTION.getStatus()));
     }
 
     /* 일반 예외 처리 */
