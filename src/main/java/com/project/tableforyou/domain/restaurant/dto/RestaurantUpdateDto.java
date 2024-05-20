@@ -17,6 +17,7 @@ public class RestaurantUpdateDto {
     private String time;
     @NotBlank(message = "가게 이름은 필수 입력 값입니다.")
     private String name;
+    @NotNull(message = "지역은 필수 입력 값입니다.")
     private Region region;
     @NotBlank(message = "위치 정보는 필수 입력 값입니다.")
     private String location;
