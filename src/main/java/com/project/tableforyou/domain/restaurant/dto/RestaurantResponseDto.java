@@ -1,5 +1,6 @@
 package com.project.tableforyou.domain.restaurant.dto;
 
+import com.project.tableforyou.domain.restaurant.entity.Region;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import lombok.Getter;
 
@@ -12,13 +13,14 @@ public class RestaurantResponseDto {
     private final double rating;
     private final String time;
     private final String name;
+    private final Region region;
     private final String location;
     private final String tel;
     private final String description;
-    private final Long user_id;
+    private final Long userId;
     private final int likeCount;
-    private final String created_time;
-    private final String modified_time;
+    private final String createdTime;
+    private final String modifiedTime;
 
     /* Entity -> dto */
     public RestaurantResponseDto(Restaurant restaurant) {
@@ -28,12 +30,13 @@ public class RestaurantResponseDto {
         this.rating = restaurant.getRating();
         this.time = restaurant.getTime();
         this.name = restaurant.getName();
+        this.region = restaurant.getRegion();
         this.location = restaurant.getLocation();
         this.tel = restaurant.getTel();
         this.description = restaurant.getDescription();
-        this.user_id = restaurant.getUser().getId();
+        this.userId = restaurant.getUser().getId();
         this.likeCount = restaurant.getLikes().size();
-        this.created_time = restaurant.getCreated_time();
-        this.modified_time = restaurant.getModified_time();
+        this.createdTime = restaurant.getCreatedTime();
+        this.modifiedTime = restaurant.getModifiedTime();
     }
 }

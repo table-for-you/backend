@@ -18,8 +18,8 @@ public class UserResponseDto {
     private final String nickname;
     private final String age;
     private final Role role;
-    private final String created_time;
-    private final String modified_time;
+    private final String createdTime;
+    private final String modifiedTime;
 
     /* Entity -> dto */
     public UserResponseDto(User user) {
@@ -30,7 +30,7 @@ public class UserResponseDto {
         this.nickname = user.getNickname();
         this.age = user.getAge();
         this.role = user.getRole();
-        this.created_time = user.getCreated_time();
-        this.modified_time = user.getModified_time();
+        this.createdTime = user.getCreatedTime();
+        this.modifiedTime = user.getModifiedTime();
     }
 }

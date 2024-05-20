@@ -8,14 +8,14 @@ public class MenuResponseDto {
 
     private final String name;
     private final String price;
-    private final String created_time;
-    private final String modified_time;
+    private final String createdTime;
+    private final String modifiedTime;
 
     /* Entity -> dto */
     public MenuResponseDto(Menu menu) {
         this.name = menu.getName();
         this.price = menu.getPrice();
-        this.created_time = menu.getCreated_time();
-        this.modified_time = menu.getModified_time();
+        this.createdTime = menu.getCreatedTime();
+        this.modifiedTime = menu.getModifiedTime();
     }
 }

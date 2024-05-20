@@ -18,23 +18,23 @@ public abstract class BaseTimeEntity {
     @NotNull
     @Column(name = "created_time")
     @CreatedDate
-    private String created_time;
+    private String createdTime;
 
     @NotNull
     @Column(name = "modified_time")
     @LastModifiedDate
-    private String modified_time;
+    private String modifiedTime;
 
     /* 해당 엔티티를 저장하기 이전에 실행 */
     @PrePersist
     public void onPrePersist(){
-        this.created_time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
-        this.modified_time = this.created_time;
+        this.createdTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
+        this.modifiedTime = this.createdTime;
     }
 
     /* 해당 엔티티를 업데이트 하기 이전에 실행*/
     @PreUpdate
     public void onPreUpdate(){
-        this.modified_time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
+        this.modifiedTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm:ss"));
     }
 }
