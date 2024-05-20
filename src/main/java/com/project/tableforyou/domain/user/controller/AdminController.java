@@ -5,9 +5,12 @@ import com.project.tableforyou.domain.restaurant.service.AdminRestaurantService;
 import com.project.tableforyou.domain.user.dto.UserInfoDto;
 import com.project.tableforyou.domain.user.dto.UserResponseDto;
 import com.project.tableforyou.domain.user.service.AdminService;
+import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
+import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -27,19 +30,23 @@ public class AdminController {
     @GetMapping("/users")
     public Page<UserInfoDto> readAll(@PageableDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
                                      @RequestParam(required = false, value = "type") String type,
-                                     @RequestParam(required = false, value = "search-keyword") String searchKeyword) {
+                                     @RequestParam(required = false, value = "search-keyword") String searchKeyword,
+                                     @RequestParam(required = false, value = "sort-by", defaultValue = "name") String sortBy,
+                                     @RequestParam(required = false, value = "direction", defaultValue = "ASC") String direction) {
 
-        if ("name".equals(type))
-            return adminService.userPageListByName(searchKeyword, pageable);
+        // name이 아닌 다른 정렬 방식 선택
+        Sort sort = Sort.by(Sort.Direction.fromString(direction), sortBy);
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
-        else if ("nickname".equals(type))
-            return adminService.userPageListByNickname(searchKeyword, pageable);
+        if (type == null)
+            return adminService.userPageList(sortedPageable);
 
-        else if ("role".equals(type))
-            return adminService.userPageListByRole(searchKeyword, pageable);
-
-        else
-            return adminService.userPageList(pageable);
+        return switch (type) {
+            case "name" -> adminService.userPageListByName(searchKeyword, sortedPageable);
+            case "nickname" -> adminService.userPageListByNickname(searchKeyword, sortedPageable);
+            case "role" ->  adminService.userPageListByRole(searchKeyword, sortedPageable);
+            default -> throw new CustomException(ErrorCode.INVALID_PARAMETER);
+        };
     }
 
     /* 회원 삭제 */
