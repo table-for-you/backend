@@ -24,20 +24,20 @@ public class SecureMenuController {
 
     /* 메뉴 생성 */
     @PostMapping("/{restaurantId}/menus")
-    public ResponseEntity<String> create(@Valid @RequestBody MenuRequestDto dto,
+    public ResponseEntity<String> create(@Valid @RequestBody MenuRequestDto menuDto,
                                          @PathVariable(name = "restaurantId") Long restaurantId) {
 
-        menuService.save(restaurantId, dto);
+        menuService.saveMenu(restaurantId, menuDto);
         return ResponseEntity.ok("메뉴 생성 완료.");
     }
 
     /* 메뉴 업데이트 */
     @PutMapping("/{restaurantId}/menus/{menuId}")
-    public ResponseEntity<String> update(@Valid@RequestBody MenuUpdateDto dto,
+    public ResponseEntity<String> update(@Valid@RequestBody MenuUpdateDto menuUpdateDto,
                                          @PathVariable(name = "restaurantId") Long restaurantId,
                                          @PathVariable(name = "menuId") Long menuId) {
 
-        menuService.update(restaurantId, menuId, dto);
+        menuService.updateMenu(restaurantId, menuId, menuUpdateDto);
         return ResponseEntity.ok("메뉴 업데이트 완료.");
     }
 
@@ -46,7 +46,7 @@ public class SecureMenuController {
     public ResponseEntity<String> delete(@PathVariable(name = "restaurantId") Long restaurantId,
                                          @PathVariable(name = "menuId") Long menuId) {
 
-        menuService.delete(restaurantId, menuId);
+        menuService.deleteMenu(restaurantId, menuId);
         return ResponseEntity.ok("메뉴 삭제 완료.");
     }
 }

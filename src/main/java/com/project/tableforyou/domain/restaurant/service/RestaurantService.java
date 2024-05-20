@@ -22,7 +22,7 @@ public class RestaurantService {
 
     /* 가게 읽기 */
     @Transactional(readOnly = true)
-    public RestaurantResponseDto findByName(Long restaurantId) {
+    public RestaurantResponseDto readRestaurant(Long restaurantId) {
 
         log.info("Finding restaurant by name: {}", restaurantId);
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
@@ -43,11 +43,11 @@ public class RestaurantService {
 
     /* 가게 검색 || 가게 소개 검색 페이징 */
     @Transactional(readOnly = true)
-    public Page<RestaurantResponseDto> RestaurantPageSearchList(String searchKeyword1, String searchKeyword2, Pageable pageable) {
+    public Page<RestaurantResponseDto> RestaurantPageSearchList(String searchKeyword, Pageable pageable) {
 
-        log.info("Finding all restaurants with searchKeyword: {}", searchKeyword1);
+        log.info("Finding all restaurants with searchKeyword: {}", searchKeyword);
         Page<Restaurant> restaurants = restaurantRepository.
-                findByStatusAndNameContainingOrDescriptionContaining(RestaurantStatus.APPROVED, searchKeyword1, searchKeyword2, pageable);
+                findByStatusAndNameContainingOrDescriptionContaining(RestaurantStatus.APPROVED, searchKeyword, searchKeyword, pageable);
         return restaurants.map(RestaurantResponseDto::new);
     }
 

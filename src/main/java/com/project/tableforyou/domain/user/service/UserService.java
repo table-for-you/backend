@@ -27,11 +27,11 @@ public class UserService {
 
     /* 회원 추가 */
     @Transactional
-    public Long create(SignUpDto dto) {
+    public Long signUp(SignUpDto signUpDto) {
 
-        log.info("Creating user with username: {}", dto.getUsername());
-        dto.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
-        User user = dto.toEntity();
+        log.info("Creating user with username: {}", signUpDto.getUsername());
+        signUpDto.setPassword(bCryptPasswordEncoder.encode(signUpDto.getPassword()));
+        User user = signUpDto.toEntity();
 
         userRepository.save(user);
 
@@ -41,7 +41,7 @@ public class UserService {
 
     /* 회원 불러오기 */
     @Transactional(readOnly = true)
-    public UserResponseDto findByUsername(String username) {
+    public UserResponseDto readUser(String username) {
 
         log.info("Finding user by username: {}", username);
         User user = userRepository.findByUsername(username).orElseThrow(() ->
@@ -53,20 +53,20 @@ public class UserService {
     /* 회원 업데이트 */
     @VerifyAuthentication
     @Transactional
-    public void update(String username, UserUpdateDto dto) {
+    public void updateUser(String username, UserUpdateDto userUpdateDto) {
 
         log.info("Updating user with username: {}", username);
         User user = userRepository.findByUsername(username).orElseThrow(() ->
                 new CustomException(ErrorCode.USER_NOT_FOUND));
-        dto.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
+        userUpdateDto.setPassword(bCryptPasswordEncoder.encode(userUpdateDto.getPassword()));
 
-        user.update(dto.getNickname(), dto.getPassword());
+        user.update(userUpdateDto.getNickname(), userUpdateDto.getPassword());
         log.info("User updated successfully with username: {}", username);
     }
 
     /* 회원 삭제 */
     @Transactional
-    public void delete(String username) {
+    public void deleteUser(String username) {
 
         log.info("Deleting user with username: {}", username);
         User user = userRepository.findByUsername(username).orElseThrow(() ->

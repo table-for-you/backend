@@ -30,9 +30,9 @@ public class AdminRestaurantService {
 
     /* 가게 등록하기 */
     @Transactional
-    public void approvalRestaurant(Long restaurant_id) {
+    public void approvalRestaurant(Long restaurantId) {
 
-        Restaurant restaurant = restaurantRepository.findById(restaurant_id).orElseThrow(() ->
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
         restaurant.statusUpdate(RestaurantStatus.APPROVED);
@@ -40,9 +40,9 @@ public class AdminRestaurantService {
 
     /* 가게 삭제하기 */
     @Transactional
-    public void deleteRestaurant(Long restaurant_id) {
+    public void deleteRestaurant(Long restaurantId) {
 
-        Restaurant restaurant = restaurantRepository.findById(restaurant_id).orElseThrow(() ->
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
         restaurantRepository.delete(restaurant);

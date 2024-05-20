@@ -46,7 +46,7 @@ public class AdminController {
     @DeleteMapping("/users/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable(name = "userId") Long userId) {
 
-        adminService.deleteUser(userId);
+        adminService.deleteUserByAdmin(userId);
         return ResponseEntity.ok("회원 삭제 성공.");
     }
 

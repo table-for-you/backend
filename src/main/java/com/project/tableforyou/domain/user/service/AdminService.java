@@ -56,9 +56,9 @@ public class AdminService {
 
     /* 회원 삭제하기 */
     @Transactional
-    public void deleteUser(Long user_id) {
+    public void deleteUserByAdmin(Long userId) {
 
-        User user = userRepository.findById(user_id).orElseThrow(() ->
+        User user = userRepository.findById(userId).orElseThrow(() ->
                 new CustomException(ErrorCode.USER_NOT_FOUND));
 
         userRepository.delete(user);

@@ -26,7 +26,7 @@ public class SecureReservationController {
     public ResponseEntity<String> create(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                          @PathVariable(name = "restaurantId") Long restaurantId) {
 
-        reservationService.save(principalDetails.getUsername(), restaurantId);
+        reservationService.saveReservation(principalDetails.getUsername(), restaurantId);
         return ResponseEntity.ok("예약자 추가 성공.");
 
     }
@@ -36,11 +36,12 @@ public class SecureReservationController {
     @PutMapping("/{restaurantId}/reservations/postponed-guest-booking/{username}")
     public ResponseEntity<String> postponedGuestBooking(@PathVariable(name = "restaurantId") Long restaurantId,
                                                         @PathVariable(name = "username") String username,
-                                                        @RequestBody ReservationRequestDto dto) {
+                                                        @RequestBody ReservationRequestDto reservationDto) {
 
-        List<ReservationResponseDto> decreaseReservation = reservationService.getReservations(restaurantId, username, dto);
+        List<ReservationResponseDto> decreaseReservation =
+                reservationService.getReservations(restaurantId, username, reservationDto);
         reservationService.decreaseBooking(decreaseReservation, restaurantId);
-        reservationService.postponedGuestBooking(restaurantId, username, dto);
+        reservationService.postponedGuestBooking(restaurantId, username, reservationDto);
         return ResponseEntity.ok("예약자 미루기 + 앞당기기 성공.");
     }
 
@@ -49,9 +50,10 @@ public class SecureReservationController {
     public ResponseEntity<String> delete(@PathVariable(name = "restaurantId") Long restaurantId,
                                          @PathVariable(name = "username") String username) {
 
-        List<ReservationResponseDto> decreaseReservation = reservationService.getReservations(restaurantId, username, null);
+        List<ReservationResponseDto> decreaseReservation =
+                reservationService.getReservations(restaurantId, username, null);
         reservationService.decreaseBooking(decreaseReservation, restaurantId);
-        reservationService.delete(restaurantId, username);
+        reservationService.deleteReservation(restaurantId, username);
         return ResponseEntity.ok("예약자 삭제 성공.");
     }
 }

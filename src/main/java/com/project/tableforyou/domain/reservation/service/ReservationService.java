@@ -28,7 +28,7 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
     private final RedisUtil redisUtil;
 
     /* 예약자 추가 */
-    public void save(String username, Long restaurantId) {
+    public void saveReservation(String username, Long restaurantId) {
 
         log.info("Creating Reservation");
 
@@ -86,7 +86,7 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
     }
 
     /* 예약 미루기(미루기할 시 store 예약자 수에 대한 조건 + 뒤에 있던 사람들 앞으로 당기기 - decreaseBooking) */
-    public void postponedGuestBooking(Long restaurantId, String username, ReservationRequestDto dto) {
+    public void postponedGuestBooking(Long restaurantId, String username, ReservationRequestDto ReservationDto) {
 
         log.info("Postponing guest booking for reservation with username: {}", username);
 
@@ -99,7 +99,7 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
         }
 
         // 예약 정보를 업데이트.
-        reservation.update(dto.getBooking());
+        reservation.update(ReservationDto.getBooking());
 
         // 업데이트된 예약 정보를 다시 Redis에 저장.
         redisUtil.hashPut(key, reservation);
@@ -116,7 +116,7 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
     }
 
     /* 예약자 삭제(중간사람 삭제 시 뒤에 있던 사람들 앞으로 당기기 - decreaseBooking) */
-    public void delete(Long restaurantId, String username) {
+    public void deleteReservation(Long restaurantId, String username) {
         log.info("Deleting reservation with username {} from restaurant {}", username, restaurantId);
 
         // Redis에서 해당 가게의 예약 정보를 가져옵니다.
@@ -133,30 +133,36 @@ public class ReservationService {      // 아래 redisTemplate부분 따로 나�
     }
 
     /* 예약자 List를 받기위한 메서드. */
-    public List<ReservationResponseDto> getReservations(Long restaurantId, String username, ReservationRequestDto dto) {
+    public List<ReservationResponseDto> getReservations(Long restaurantId, String username,
+                                                        ReservationRequestDto ReservationDto) {
+
         String key = RESERVATION_KEY_PREFIX + restaurantId;
 
         List<ReservationResponseDto> reservations = redisUtil.getEntries(key);
 
         // 예약 번호에 따라 필터링
-        if (username == null && dto == null) {
+        if (username == null && ReservationDto == null) {
             return reservations; // 예약 앞당기기
+
         } else {
             Reservation beforeReservation = redisUtil.hashGet(key, username);
             List<ReservationResponseDto> decreaseReservation = new ArrayList<>();
 
-            if (dto == null) { // 예약 삭제로 인한 뒷사람 앞당기기
+            if (ReservationDto == null) { // 예약 삭제로 인한 뒷사람 앞당기기
                 decreaseReservation = reservations.stream()
                         .filter(reservation -> reservation.getBooking() > beforeReservation.getBooking())
                         .collect(Collectors.toList());
+
             } else {
                 // 예약 미루기로 인한 사이 번호 앞당기기
-                if (dto.getBooking() > reservations.size() || dto.getBooking() <= beforeReservation.getBooking()) {
+                if (ReservationDto.getBooking() > reservations.size()
+                        || ReservationDto.getBooking() <= beforeReservation.getBooking()) {
                     throw new CustomException(ErrorCode.INVALID_PARAMETER);
+
                 } else {
                     decreaseReservation = reservations.stream()
                             .filter(reservation -> reservation.getBooking() > beforeReservation.getBooking()
-                                    && reservation.getBooking() <= dto.getBooking())
+                                    && reservation.getBooking() <= ReservationDto.getBooking())
                             .collect(Collectors.toList());
                 }
             }

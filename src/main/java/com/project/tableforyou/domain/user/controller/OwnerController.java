@@ -37,7 +37,7 @@ public class OwnerController {
     public ResponseEntity<Object> create(@Valid @RequestBody RestaurantRequestDto dto,
                                          @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        ownerRestaurantService.save(principalDetails.getUsername(), dto);
+        ownerRestaurantService.saveRestaurant(principalDetails.getUsername(), dto);
         return ResponseEntity.ok("가게 신청이 완료 되었습니다. 승인을 기다려 주세요.");
     }
 
@@ -50,20 +50,19 @@ public class OwnerController {
 
     /* 가게 업데이트 */
     @PutMapping("/{restaurantId}")
-    public ResponseEntity<String> update(@Valid @RequestBody RestaurantUpdateDto dto,
+    public ResponseEntity<String> update(@Valid @RequestBody RestaurantUpdateDto restaurantUpdateDto,
                                          @PathVariable(name = "restaurantId") Long restaurantId) {
 
-        ownerRestaurantService.update(restaurantId, dto);
+        ownerRestaurantService.updateRestaurant(restaurantId, restaurantUpdateDto);
         return ResponseEntity.ok("가게 수정 완료.");
     }
 
 
     /* 가게 삭제 */
     @DeleteMapping("/{restaurantId}")
-    public ResponseEntity<String> delete(@PathVariable(name = "restaurantId") Long restaurantId,
-                                         @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<String> delete(@PathVariable(name = "restaurantId") Long restaurantId) {
 
-        ownerRestaurantService.delete(restaurantId);
+        ownerRestaurantService.deleteRestaurant(restaurantId);
         return ResponseEntity.ok("가게 삭제 완료.");
 
     }

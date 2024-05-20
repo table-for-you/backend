@@ -32,14 +32,14 @@ public class OwnerRestaurantService {
 
     /* 가게 create. 가게 등록 대기 상태. */
     @Transactional
-    public Long save(String username, RestaurantRequestDto dto) {
+    public Long saveRestaurant(String username, RestaurantRequestDto restaurantDto) {
 
         log.info("Creating Restaurant by user username: {}", username);
         User user = userRepository.findByUsername(username).orElseThrow(() ->
                 new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        dto.setUser(user);
-        Restaurant restaurant = dto.toEntity();
+        restaurantDto.setUser(user);
+        Restaurant restaurant = restaurantDto.toEntity();
         restaurantRepository.save(restaurant);
 
         log.info("Restaurant created with ID: {}", restaurant.getId());
@@ -58,13 +58,13 @@ public class OwnerRestaurantService {
     /* 가게 수정 */
     @VerifyAuthentication
     @Transactional
-    public void update(Long restaurantId, RestaurantUpdateDto dto) {
+    public void updateRestaurant(Long restaurantId, RestaurantUpdateDto restaurantUpdateDto) {
 
         log.info("Updating Restaurant with name: {}", restaurantId);
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
-        restaurant.update(dto);
+        restaurant.update(restaurantUpdateDto);
         log.info("Restaurant updated successfully with name: {}", restaurantId);
 
     }
@@ -73,7 +73,7 @@ public class OwnerRestaurantService {
     /* 가게 삭제 */
     @VerifyAuthentication
     @Transactional
-    public void delete(Long restaurantId) {         // 다른 사용자가 삭제하는 경우 확인해보기. 만약 그런다면 findByUserIdAndId 사용. 그냥 권한 설정 하면 될듯?
+    public void deleteRestaurant(Long restaurantId) {         // 다른 사용자가 삭제하는 경우 확인해보기. 만약 그런다면 findByUserIdAndId 사용. 그냥 권한 설정 하면 될듯?
 
         log.info("Deleting Restaurant with name: {}", restaurantId);
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->

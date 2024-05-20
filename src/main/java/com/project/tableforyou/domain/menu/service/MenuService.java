@@ -28,14 +28,14 @@ public class MenuService {
     /* 메뉴 추가 */
     @VerifyAuthentication
     @Transactional
-    public Long save(Long restaurantId, MenuRequestDto dto) {
+    public Long saveMenu(Long restaurantId, MenuRequestDto menuDto) {
 
         log.info("Creating menu");
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
-        dto.setRestaurant(restaurant);
-        Menu menu = dto.toEntity();
+        menuDto.setRestaurant(restaurant);
+        Menu menu = menuDto.toEntity();
         menuRepository.save(menu);
 
         log.info("Menu saved with ID: {}", menu.getId());
@@ -63,22 +63,22 @@ public class MenuService {
     /* 메뉴 업데이트 */
     @VerifyAuthentication
     @Transactional
-    public void update(Long restaurantId, Long id, MenuUpdateDto dto) {
+    public void updateMenu(Long restaurantId, Long menuId, MenuUpdateDto menuUpdateDto) {
 
-        log.info("Updating menu with ID: {}", id);
-        Menu menu = menuRepository.findByRestaurantIdAndId(restaurantId, id).orElseThrow(() ->
+        log.info("Updating menu with ID: {}", menuId);
+        Menu menu = menuRepository.findByRestaurantIdAndId(restaurantId, menuId).orElseThrow(() ->
                 new CustomException(ErrorCode.MENU_NOT_FOUND));
-        menu.update(dto.getName(), dto.getPrice());
+        menu.update(menuUpdateDto.getName(), menuUpdateDto.getPrice());
         log.info("Menu updated successfully");
     }
 
     /* 메뉴 삭제 */
     @VerifyAuthentication
     @Transactional
-    public void delete(Long restaurantId, Long id) {
+    public void deleteMenu(Long restaurantId, Long menuId) {
 
-        log.info("Deleting menu with ID: {}", id);
-        Menu menu = menuRepository.findByRestaurantIdAndId(restaurantId, id).orElseThrow(() ->
+        log.info("Deleting menu with ID: {}", menuId);
+        Menu menu = menuRepository.findByRestaurantIdAndId(restaurantId, menuId).orElseThrow(() ->
                 new CustomException(ErrorCode.MENU_NOT_FOUND));
         menuRepository.delete(menu);
         log.info("Menu deleted successfully");

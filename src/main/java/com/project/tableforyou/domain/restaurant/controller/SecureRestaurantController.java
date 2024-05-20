@@ -18,7 +18,8 @@ public class SecureRestaurantController {
 
     /* 가게 평점 업데이트*/
     @PatchMapping("/{restaurantId}/update-rating")
-    public ResponseEntity<String> updateRating(@PathVariable(name = "restaurantId") Long restaurantId, @RequestParam("rating") Double rating) {
+    public ResponseEntity<String> updateRating(@PathVariable(name = "restaurantId") Long restaurantId,
+                                               @RequestParam("rating") Double rating) {
         try {
             restaurantService.updateRating(restaurantId, rating);
             return ResponseEntity.ok("가게 평점 업데이트 완료.");

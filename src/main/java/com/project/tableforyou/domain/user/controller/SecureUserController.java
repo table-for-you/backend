@@ -34,15 +34,15 @@ public class SecureUserController {
     /* 회원 불러오기 */
     @GetMapping("/{username}")
     public UserResponseDto read(@PathVariable(name = "username") String username) {
-        return userService.findByUsername(username);
+        return userService.readUser(username);
     }
 
     /* 회원 업데이트 */
     @PutMapping
-    public ResponseEntity<String> update(@Valid @RequestBody UserUpdateDto dto,
+    public ResponseEntity<String> update(@Valid @RequestBody UserUpdateDto userUpdateDto,
                                          @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        userService.update(principalDetails.getUsername(), dto);
+        userService.updateUser(principalDetails.getUsername(), userUpdateDto);
         return ResponseEntity.ok("회원 업데이트 성공.");
 
     }
@@ -51,7 +51,7 @@ public class SecureUserController {
     @DeleteMapping
     public ResponseEntity<String> delete(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        userService.delete(principalDetails.getUsername());
+        userService.deleteUser(principalDetails.getUsername());
         return ResponseEntity.ok("회원 삭제 성공.");
     }
 

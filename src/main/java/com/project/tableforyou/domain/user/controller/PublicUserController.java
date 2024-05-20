@@ -26,9 +26,9 @@ public class PublicUserController {
 
     /* 회원가입 */
     @PostMapping("/register")
-    public ResponseEntity<Object> joinProc(@Valid @RequestBody SignUpDto dto) {
+    public ResponseEntity<Object> register(@Valid @RequestBody SignUpDto signUpDto) {
 
-        userService.create(dto);
+        userService.signUp(signUpDto);
         return ResponseEntity.ok("회원가입 성공.");
     }
 
