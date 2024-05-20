@@ -35,7 +35,7 @@ public class Restaurant extends BaseTimeEntity {
     private double rating;
 
     // 평점 참여 인원
-    private int rating_num;
+    private int ratingNum;
 
     // 영업시간
     @NotNull
@@ -46,6 +46,10 @@ public class Restaurant extends BaseTimeEntity {
 
     @NotNull
     private String name;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Region region;
 
     @NotNull
     private String location;
@@ -69,6 +73,7 @@ public class Restaurant extends BaseTimeEntity {
         this.totalSeats = dto.getTotalSeats();
         this.time = dto.getTime();
         this.name = dto.getName();
+        this.region = dto.getRegion();
         this.location = dto.getLocation();
         this.tel = dto.getTel();
         this.description = dto.getDescription();
@@ -79,8 +84,8 @@ public class Restaurant extends BaseTimeEntity {
         this.status = status;
     }
 
-    public void updateRating(double rating, int rating_num) {
+    public void updateRating(double rating, int ratingNum) {
         this.rating = rating;
-        this.rating_num = rating_num;
+        this.ratingNum = ratingNum;
     }
 }

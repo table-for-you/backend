@@ -1,5 +1,6 @@
 package com.project.tableforyou.domain.restaurant.dto;
 
+import com.project.tableforyou.domain.restaurant.entity.Region;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ public class RestaurantUpdateDto {
     private String time;
     @NotBlank(message = "가게 이름은 필수 입력 값입니다.")
     private String name;
+    private Region region;
     @NotBlank(message = "위치 정보는 필수 입력 값입니다.")
     private String location;
     private String tel;

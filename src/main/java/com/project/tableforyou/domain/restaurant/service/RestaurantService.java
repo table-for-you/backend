@@ -1,6 +1,7 @@
 package com.project.tableforyou.domain.restaurant.service;
 
 import com.project.tableforyou.domain.restaurant.dto.RestaurantResponseDto;
+import com.project.tableforyou.domain.restaurant.entity.Region;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import com.project.tableforyou.domain.restaurant.entity.RestaurantStatus;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
@@ -30,10 +31,9 @@ public class RestaurantService {
         return new RestaurantResponseDto(restaurant);
     }
 
-
     /* 가게 리스트 페이징. 등록된 가게만 들고오기 */
     @Transactional(readOnly = true)
-    public Page<RestaurantResponseDto> RestaurantPageList(Pageable pageable) {
+    public Page<RestaurantResponseDto> restaurantPageList(Pageable pageable) {
 
         log.info("Finding all restaurants");
 
@@ -41,9 +41,29 @@ public class RestaurantService {
         return restaurants.map(RestaurantResponseDto::new);
     }
 
+    /* 지역별 가게 불러오기 */
+    @Transactional(readOnly = true)
+    public Page<RestaurantResponseDto> restaurantPageListByRegion(String region, Pageable pageable) {
+
+        log.info("Finding by region");
+
+        Page<Restaurant> restaurants =
+                restaurantRepository.findByRegionAndStatus(Region.valueOf(region), RestaurantStatus.APPROVED, pageable);
+        return restaurants.map(RestaurantResponseDto::new);
+    }
+
+    /* 주소로 가게 불러오기 */
+    @Transactional(readOnly = true)
+    public Page<RestaurantResponseDto> restaurantPageListByLocation(String searchKeyword, Pageable pageable) {
+
+        log.info("Finding all restaurants with searchKeyword: {}", searchKeyword);
+        Page<Restaurant> restaurants = restaurantRepository.findByLocationContaining(searchKeyword, pageable);
+        return restaurants.map(RestaurantResponseDto::new);
+    }
+
     /* 가게 검색 || 가게 소개 검색 페이징 */
     @Transactional(readOnly = true)
-    public Page<RestaurantResponseDto> RestaurantPageSearchList(String searchKeyword, Pageable pageable) {
+    public Page<RestaurantResponseDto> restaurantPageSearchList(String searchKeyword, Pageable pageable) {
 
         log.info("Finding all restaurants with searchKeyword: {}", searchKeyword);
         Page<Restaurant> restaurants = restaurantRepository.
@@ -65,16 +85,16 @@ public class RestaurantService {
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
         double before_rating = restaurant.getRating();
-        int now_ratingNum = restaurant.getRating_num() + 1;
+        int nowRatingNum = restaurant.getRatingNum() + 1;
 
-        double now_rating = 0.0;
-        if(now_ratingNum == 1)
-            now_rating = rating;
+        double nowRating = 0.0;
+        if(nowRatingNum == 1)
+            nowRating = rating;
         else
-            now_rating = before_rating + (rating - before_rating) / now_ratingNum;  // 누적 평균 공식.
+            nowRating = before_rating + (rating - before_rating) / nowRatingNum;  // 누적 평균 공식.
 
 
-        restaurant.updateRating(now_rating, now_ratingNum);
+        restaurant.updateRating(nowRating, nowRatingNum);
         log.info("Restaurant rating updated successfully with name: {}", restaurantId);
     }
 }
