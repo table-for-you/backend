@@ -1,5 +1,6 @@
 package com.project.tableforyou.domain.user.controller;
 
+import com.project.tableforyou.domain.restaurant.dto.RestaurantManageDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantResponseDto;
 import com.project.tableforyou.domain.restaurant.service.AdminRestaurantService;
 import com.project.tableforyou.domain.user.dto.UserInfoDto;
@@ -58,11 +59,29 @@ public class AdminController {
     }
 
     /* 등록 처리 중인 가게 불러오기 */
-    @GetMapping("/restaurants")
-    public Page<RestaurantResponseDto> handlerRestaurant(
+    @GetMapping("/pending-restaurants")
+    public Page<RestaurantManageDto> handlerRestaurant(
             @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
         return adminRestaurantService.handleRestaurantList(pageable);
+    }
+
+    /* 등록된 가게 불러오기 */
+    @GetMapping("/approved-restaurants")
+    public Page<RestaurantManageDto> approvedRestaurants(
+            @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
+            @RequestParam(required = false, value = "type") String type,
+            @RequestParam(required = false, value = "search-keyword") String searchKeyword) {
+
+        if (type == null) {
+            return adminRestaurantService.approvedAllRestaurant(pageable);
+        }
+
+        return switch (type) {
+            case "restaurant" -> adminRestaurantService.approvedRestaurantByRestaurantName(searchKeyword, pageable);
+            case "owner" -> adminRestaurantService.approvedRestaurantByOwnerName(searchKeyword, pageable);
+            default -> throw new CustomException(ErrorCode.INVALID_PARAMETER);
+        };
     }
 
     /* 가게 추가 요청 승인*/

@@ -18,6 +18,8 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     Page<Restaurant> findByStatus(RestaurantStatus status, Pageable pageable);
     Page<Restaurant> findByRegionAndStatus(Region region, RestaurantStatus status, Pageable pageable);
     Page<Restaurant> findByLocationContainingAndStatus(String searchKeyword, RestaurantStatus status, Pageable pageable);
+    Page<Restaurant> findByStatusAndUser_Name(RestaurantStatus status, String ownerName, Pageable pageable);
+    Page<Restaurant> findByStatusAndNameContaining(RestaurantStatus status, String searchKeyword, Pageable pageable);
     List<Restaurant> findByUser_Username(String username);
     @Modifying
     @Query("update Restaurant r set r.usedSeats = r.usedSeats + :value where r.id = :id")
