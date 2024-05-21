@@ -61,6 +61,8 @@ public class Restaurant extends BaseTimeEntity {
 
     private String image;
 
+    private String foodType;
+
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<Menu> menus;
 
@@ -80,6 +82,7 @@ public class Restaurant extends BaseTimeEntity {
         this.tel = dto.getTel();
         this.description = dto.getDescription();
         this.image = dto.getImage();
+        this.foodType = dto.getFoodType();
     }
 
     /* 가게 주인 ADMIN -> USER로 변경 (가게 생성) */

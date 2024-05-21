@@ -23,6 +23,7 @@ public class RestaurantRequestDto {
     private String tel;
     private String description;
     private String image;
+    private String foodType;
     private User user;
 
     /* dto -> Entity */
@@ -37,6 +38,7 @@ public class RestaurantRequestDto {
                 .tel(tel)
                 .description(description)
                 .image(image)
+                .foodType(foodType)
                 .user(user)
                 .build();
     }

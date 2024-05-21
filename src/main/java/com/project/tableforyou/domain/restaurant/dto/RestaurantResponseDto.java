@@ -18,6 +18,7 @@ public class RestaurantResponseDto {
     private final String tel;
     private final String description;
     private final String image;
+    private final String foodType;
     private final Long userId;
     private final int likeCount;
     private final String createdTime;
@@ -33,9 +34,10 @@ public class RestaurantResponseDto {
         this.name = restaurant.getName();
         this.region = restaurant.getRegion();
         this.location = restaurant.getLocation();
-        this.image = restaurant.getImage();
         this.tel = restaurant.getTel();
         this.description = restaurant.getDescription();
+        this.image = restaurant.getImage();
+        this.foodType = restaurant.getFoodType();
         this.userId = restaurant.getUser().getId();
         this.likeCount = restaurant.getLikes().size();
         this.createdTime = restaurant.getCreatedTime();
