@@ -23,4 +23,5 @@ public class RestaurantUpdateDto {
     private String location;
     private String tel;
     private String description;
+    private String image;
 }

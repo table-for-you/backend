@@ -22,6 +22,7 @@ public class RestaurantRequestDto {
     private String location;
     private String tel;
     private String description;
+    private String image;
     private User user;
 
     /* dto -> Entity */
@@ -35,6 +36,7 @@ public class RestaurantRequestDto {
                 .status(RestaurantStatus.PENDING)
                 .tel(tel)
                 .description(description)
+                .image(image)
                 .user(user)
                 .build();
     }
