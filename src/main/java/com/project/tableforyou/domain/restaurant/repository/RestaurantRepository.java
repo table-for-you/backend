@@ -10,12 +10,15 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 
     Page<Restaurant> findByStatusAndNameContainingOrDescriptionContaining(RestaurantStatus status, String searchKeyword1, String searchKeyword2, Pageable pageable);
     Page<Restaurant> findByStatus(RestaurantStatus status, Pageable pageable);
     Page<Restaurant> findByRegionAndStatus(Region region, RestaurantStatus status, Pageable pageable);
     Page<Restaurant> findByLocationContainingAndStatus(String searchKeyword, RestaurantStatus status, Pageable pageable);
+    List<Restaurant> findByUser_Username(String username);
     @Modifying
     @Query("update Restaurant r set r.usedSeats = r.usedSeats + :value where r.id = :id")
     void updateUsedSeats(@Param("id") Long id, @Param("value") int value); // JPQL의 id와 매핑하기 위해.

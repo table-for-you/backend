@@ -50,9 +50,8 @@ public class OwnerRestaurantService {
     @Transactional(readOnly = true)
     public List<RestaurantNameDto> findByRestaurantOwner(String username) {
 
-        User user = userRepository.findByUsername(username).orElseThrow(() ->
-                new CustomException(ErrorCode.USER_NOT_FOUND));
-        return user.getRestaurants().stream().map(RestaurantNameDto::new).collect(Collectors.toList());
+        List<Restaurant> restaurants = restaurantRepository.findByUser_Username(username);
+        return restaurants.stream().map(RestaurantNameDto::new).collect(Collectors.toList());
     }
 
     /* 가게 수정 */
