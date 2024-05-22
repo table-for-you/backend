@@ -1,10 +1,9 @@
 package com.project.tableforyou.domain.user.controller;
 
-import com.project.tableforyou.domain.restaurant.dto.RestaurantManageDto;
-import com.project.tableforyou.domain.restaurant.dto.RestaurantResponseDto;
+import com.project.tableforyou.domain.restaurant.dto.PendingDetailsRestaurantDto;
+import com.project.tableforyou.domain.restaurant.dto.PendingRestaurantDto;
 import com.project.tableforyou.domain.restaurant.service.AdminRestaurantService;
 import com.project.tableforyou.domain.user.dto.UserInfoDto;
-import com.project.tableforyou.domain.user.dto.UserResponseDto;
 import com.project.tableforyou.domain.user.service.AdminService;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
@@ -60,15 +59,22 @@ public class AdminController {
 
     /* 등록 처리 중인 가게 불러오기 */
     @GetMapping("/pending-restaurants")
-    public Page<RestaurantManageDto> handlerRestaurant(
+    public Page<PendingRestaurantDto> handlerRestaurant(
             @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
         return adminRestaurantService.handleRestaurantList(pageable);
     }
 
+    /* 등록 처리 중인 가게 자세히 불러오기 */
+    @GetMapping("/pending-restaurants/{restaurantId}")
+    public PendingDetailsRestaurantDto readPendingDetailsRestaurant(@PathVariable(name = "restaurantId") Long restaurantId) {
+
+        return adminRestaurantService.readPendingDetailsInfo(restaurantId);
+    }
+
     /* 등록된 가게 불러오기 */
     @GetMapping("/approved-restaurants")
-    public Page<RestaurantManageDto> approvedRestaurants(
+    public Page<PendingRestaurantDto> approvedRestaurants(
             @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
             @RequestParam(required = false, value = "type") String type,
             @RequestParam(required = false, value = "search-keyword") String searchKeyword) {
