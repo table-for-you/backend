@@ -17,12 +17,9 @@ public class RestaurantResponseDto {
     private final String location;
     private final String tel;
     private final String description;
-    private final String image;
+    private final String restaurantImage;
     private final String foodType;
-    private final Long userId;
     private final int likeCount;
-    private final String createdTime;
-    private final String modifiedTime;
 
     /* Entity -> dto */
     public RestaurantResponseDto(Restaurant restaurant) {
@@ -36,11 +33,8 @@ public class RestaurantResponseDto {
         this.location = restaurant.getLocation();
         this.tel = restaurant.getTel();
         this.description = restaurant.getDescription();
-        this.image = restaurant.getImage();
+        this.restaurantImage = restaurant.getRestaurantImage();
         this.foodType = restaurant.getFoodType();
-        this.userId = restaurant.getUser().getId();
         this.likeCount = restaurant.getLikes().size();
-        this.createdTime = restaurant.getCreatedTime();
-        this.modifiedTime = restaurant.getModifiedTime();
     }
 }

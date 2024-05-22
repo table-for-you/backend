@@ -59,11 +59,15 @@ public class Restaurant extends BaseTimeEntity {
     @Column(length = 100)
     private String description;
 
-    private String image;
+    @Column(name = "restaurant_image")
+    private String restaurantImage;
+
+    @Column(name = "business_license_image")
+    private String businessLicenseImage;
 
     private String foodType;
 
-    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.REMOVE)
     private List<Menu> menus;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -81,7 +85,7 @@ public class Restaurant extends BaseTimeEntity {
         this.location = dto.getLocation();
         this.tel = dto.getTel();
         this.description = dto.getDescription();
-        this.image = dto.getImage();
+        this.restaurantImage = dto.getRestaurantImage();
         this.foodType = dto.getFoodType();
     }
 

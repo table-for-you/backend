@@ -9,14 +9,14 @@ public class RestaurantInfoDto {
     private final String name;
     private final double rating;
     private final int ratingNum;
-    private final String image;
+    private final String restaurantImage;
     private final String foodType;
 
     public RestaurantInfoDto(Restaurant restaurant) {
         this.name = restaurant.getName();
         this.rating = restaurant.getRating();
         this.ratingNum = restaurant.getRatingNum();
-        this.image = restaurant.getImage();
+        this.restaurantImage = restaurant.getRestaurantImage();
         this.foodType = restaurant.getFoodType();
     }
 }

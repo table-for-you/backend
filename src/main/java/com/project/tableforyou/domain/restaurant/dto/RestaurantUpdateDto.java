@@ -23,6 +23,6 @@ public class RestaurantUpdateDto {
     private String location;
     private String tel;
     private String description;
-    private String image;
+    private String restaurantImage;
     private String foodType;
 }

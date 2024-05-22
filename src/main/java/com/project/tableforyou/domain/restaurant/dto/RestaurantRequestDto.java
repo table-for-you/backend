@@ -22,7 +22,8 @@ public class RestaurantRequestDto {
     private String location;
     private String tel;
     private String description;
-    private String image;
+    private String restaurantImage;
+    private String businessLicenseImage;
     private String foodType;
     private User user;
 
@@ -37,7 +38,8 @@ public class RestaurantRequestDto {
                 .status(RestaurantStatus.PENDING)
                 .tel(tel)
                 .description(description)
-                .image(image)
+                .restaurantImage(restaurantImage)
+                .businessLicenseImage(businessLicenseImage)
                 .foodType(foodType)
                 .user(user)
                 .build();
