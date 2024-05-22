@@ -2,6 +2,7 @@ package com.project.tableforyou.domain.reservation.controller;
 
 import com.project.tableforyou.domain.reservation.dto.ReservationResponseDto;
 import com.project.tableforyou.domain.reservation.service.ReservationService;
+import com.project.tableforyou.domain.visit.service.VisitService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import java.util.List;
 public class PublicReservationController {
 
     private final ReservationService reservationService;
+    private final VisitService visitService;
 
     /* 예약자 읽기 */
     @GetMapping("/{restaurantId}/reservations/{username}")
@@ -31,8 +33,10 @@ public class PublicReservationController {
     public ResponseEntity<String> decreaseBooking(@PathVariable(name = "restaurantId") Long restaurantId) {
         try {
             List<ReservationResponseDto> reservations = reservationService.getReservations(restaurantId, null, null);
-            String user = reservationService.decreaseBooking(reservations, restaurantId);
-            return ResponseEntity.ok(user + "님 입장");
+            String username = reservationService.decreaseBooking(reservations, restaurantId);
+
+            visitService.saveVisitRestaurant(username, restaurantId);   // 사용자가 방문 가게 목록에 저장
+            return ResponseEntity.ok(username + "님 입장");
         } catch (Exception e) {
             log.error("Failed to update reservations: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예약자 업데이트 실패");
