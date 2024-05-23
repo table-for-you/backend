@@ -1,7 +1,7 @@
 package com.project.tableforyou.domain.user.controller;
 
-import com.project.tableforyou.domain.reservation.dto.ReservationResponseDto;
-import com.project.tableforyou.domain.reservation.service.ReservationService;
+import com.project.tableforyou.domain.reservation.dto.QueueReservationResDto;
+import com.project.tableforyou.domain.reservation.service.QueueReservationService;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantNameDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantRequestDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantUpdateDto;
@@ -30,7 +30,7 @@ import java.util.List;
 public class OwnerController {
 
     private final OwnerRestaurantService ownerRestaurantService;
-    private final ReservationService reservationService;
+    private final QueueReservationService queueReservationService;
 
     /* 가게 생성 */
     @PostMapping
@@ -69,7 +69,7 @@ public class OwnerController {
 
     /* 해당 가게 예약자 불러오기. */
     @GetMapping("/{restaurantId}/reservations")
-    public List<ReservationResponseDto> readAll(@PathVariable(name = "restaurantId") Long restaurantId) {
-        return reservationService.findAllReservation(restaurantId);
+    public List<QueueReservationResDto> readAll(@PathVariable(name = "restaurantId") Long restaurantId) {
+        return queueReservationService.findAllQueueReservations(restaurantId);
     }
 }

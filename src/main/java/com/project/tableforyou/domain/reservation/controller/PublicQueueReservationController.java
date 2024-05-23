@@ -1,7 +1,7 @@
 package com.project.tableforyou.domain.reservation.controller;
 
-import com.project.tableforyou.domain.reservation.dto.ReservationResponseDto;
-import com.project.tableforyou.domain.reservation.service.ReservationService;
+import com.project.tableforyou.domain.reservation.dto.QueueReservationResDto;
+import com.project.tableforyou.domain.reservation.service.QueueReservationService;
 import com.project.tableforyou.domain.visit.service.VisitService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,25 +15,17 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/public/restaurants")
 @Slf4j
-public class PublicReservationController {
+public class PublicQueueReservationController {
 
-    private final ReservationService reservationService;
+    private final QueueReservationService queueReservationService;
     private final VisitService visitService;
 
-    /* 예약자 읽기 */
-    @GetMapping("/{restaurantId}/reservations/{username}")
-    public ReservationResponseDto read(@PathVariable(name = "restaurantId") Long restaurantId,
-                                       @PathVariable(name = "username") String username) {
-        return reservationService.findByBooking(restaurantId, username);
-    }
-
-
     /* 예약자 앞으로 당기기 */
-    @PatchMapping("/{restaurantId}/reservations/decrease-booking")
+    @PatchMapping("/{restaurantId}/queue-reservations/decrease-booking")
     public ResponseEntity<String> decreaseBooking(@PathVariable(name = "restaurantId") Long restaurantId) {
         try {
-            List<ReservationResponseDto> reservations = reservationService.getReservations(restaurantId, null, null);
-            String username = reservationService.decreaseBooking(reservations, restaurantId);
+            List<QueueReservationResDto> reservations = queueReservationService.getQueueReservations(restaurantId, null, null);
+            String username = queueReservationService.decreaseBooking(reservations, restaurantId);
 
             visitService.saveVisitRestaurant(username, restaurantId);   // 사용자가 방문 가게 목록에 저장
             return ResponseEntity.ok(username + "님 입장");

@@ -4,10 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class ReservationRequestDto {
+public class QueueReservationReqDto {
 
     private int booking;
-    private String username;
-    private String restaurant;
-
 }
