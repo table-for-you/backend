@@ -1,2 +1,27 @@
-package com.project.tableforyou.domain.reservation.controller;public class PublicTimeSlotReservationController {
+package com.project.tableforyou.domain.reservation.controller;
+
+import com.project.tableforyou.domain.reservation.entity.TimeSlot;
+import com.project.tableforyou.domain.reservation.service.TimeSlotReservationService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/public/restaurants")
+public class PublicTimeSlotReservationController {
+
+    private final TimeSlotReservationService timeSlotReservationService;
+
+    /* 특정 시간대 예약 다 찼는지 확인 */
+    @GetMapping("/{restaurantId}/timeslot-reservations-full-check")
+    public ResponseEntity<Boolean> checkTimeReservationFull(@PathVariable(name = "restaurantId") Long restaurantId,
+                                                            @RequestParam(value = "time-slot") TimeSlot timeSlot) {
+        boolean check = timeSlotReservationService.checkTimeSlotReservationFull(restaurantId, timeSlot);
+        return ResponseEntity.ok(check);
+    }
 }

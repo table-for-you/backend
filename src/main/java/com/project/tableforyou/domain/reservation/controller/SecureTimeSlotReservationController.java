@@ -1,2 +1,68 @@
-package com.project.tableforyou.domain.reservation.controller;public class SecureTimeSlotReservationController {
+package com.project.tableforyou.domain.reservation.controller;
+
+import com.project.tableforyou.domain.reservation.dto.QueueReservationResDto;
+import com.project.tableforyou.domain.reservation.dto.TimeSlotReservationResDto;
+import com.project.tableforyou.domain.reservation.entity.TimeSlot;
+import com.project.tableforyou.domain.reservation.service.TimeSlotReservationService;
+import com.project.tableforyou.security.auth.PrincipalDetails;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/restaurants")
+public class SecureTimeSlotReservationController {
+
+    private final TimeSlotReservationService timeSlotReservationService;
+
+    /* 특정 시간대 예약하기 */
+    @PostMapping("/{restaurantId}/timeslot-reservations")
+    public ResponseEntity<String> saveReservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                          @PathVariable(name = "restaurantId") Long restaurantId,
+                                                          @RequestParam(value = "time-slot") TimeSlot timeSlot) {
+
+        timeSlotReservationService.saveTimeSlotReservation(principalDetails.getUsername(), restaurantId, timeSlot);
+        return ResponseEntity.ok("예약자 추가 성공.");
+    }
+
+    /* 예약을 했는지 확인 */
+    @GetMapping("/{restaurantId}/timeslot-reservations-check")
+    public ResponseEntity<Boolean> checkUserReservation(@PathVariable(name = "restaurantId") Long restaurantId,
+                                                        @AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                        @RequestParam(value = "time-slot") TimeSlot timeSlot) {
+
+        boolean isReserved = timeSlotReservationService
+                .isUserAlreadyInTimeSlot(principalDetails.getUsername(), restaurantId, timeSlot);
+
+        return ResponseEntity.ok(isReserved);
+    }
+
+    /* 특정 시간 예약자 전체 불러오기 */
+    @GetMapping("/{restaurantId}/timeslot-reservations")
+    public List<TimeSlotReservationResDto> readAllTimeSlotReservation(@PathVariable(name = "restaurantId") Long restaurantId,
+                                                                      @RequestParam(value = "time-slot") TimeSlot timeSlot) {
+
+        return timeSlotReservationService.findAllTimeSlotReservations(restaurantId, timeSlot);
+    }
+
+    /* 예약 삭제하기 */
+    @DeleteMapping("/{restaurantId}/timeslot-reservations/{username}")
+    public ResponseEntity<String> deleteReservation(@PathVariable(name = "restaurantId") Long restaurantId,
+                                                    @PathVariable(name = "username") String username,
+                                                    @RequestParam(value = "time-slot") TimeSlot timeSlot) {
+
+        timeSlotReservationService.deleteTimeSlotReservation(restaurantId, username, timeSlot);
+        return ResponseEntity.ok("예약자 삭제 성공.");
+    }
+
 }
