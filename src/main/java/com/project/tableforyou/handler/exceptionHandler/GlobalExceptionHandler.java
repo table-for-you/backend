@@ -41,8 +41,8 @@ public class GlobalExceptionHandler {
     }
 
     /* 잘못된 입력 예외 처리 */
-    @ExceptionHandler
-    protected ResponseEntity customIllegalArgumentException(IllegalArgumentException ex) {
+    @ExceptionHandler(IllegalArgumentException.class)
+    protected ResponseEntity customIllegalArgumentException() {
         ErrorDto error = new ErrorDto(ILLEGAL_ARGUMENT_EXCEPTION.getStatus(), ILLEGAL_ARGUMENT_EXCEPTION.getMessage());
         return new ResponseEntity(error, HttpStatus.valueOf(ILLEGAL_ARGUMENT_EXCEPTION.getStatus()));
     }
