@@ -23,7 +23,6 @@ import static com.project.tableforyou.utils.redis.RedisProperties.RESERVATION_KE
 @RequiredArgsConstructor
 public class QueueReservationService {
 
-    private final RestaurantRepository restaurantRepository;
     private final RedisUtil redisUtil;
     private static final String QUEUE = "queue:";
 
@@ -31,9 +30,6 @@ public class QueueReservationService {
     public void saveQueueReservation(String username, Long restaurantId) {
 
         log.info("Creating Reservation");
-
-        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
-                new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
         String key = RESERVATION_KEY_PREFIX + QUEUE + restaurantId;
 
