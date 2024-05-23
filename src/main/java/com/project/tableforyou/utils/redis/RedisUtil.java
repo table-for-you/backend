@@ -1,7 +1,9 @@
 package com.project.tableforyou.utils.redis;
 
-import com.project.tableforyou.domain.reservation.dto.ReservationResponseDto;
-import com.project.tableforyou.domain.reservation.entity.Reservation;
+import com.project.tableforyou.domain.reservation.dto.QueueReservationResDto;
+import com.project.tableforyou.domain.reservation.dto.TimeSlotReservationResDto;
+import com.project.tableforyou.domain.reservation.entity.QueueReservation;
+import com.project.tableforyou.domain.reservation.entity.TimeSlotReservation;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -50,18 +52,32 @@ public class RedisUtil {
         redisTemplate.expire(key, Duration.ofSeconds(seconds));
     }
 
-    /* Redis hash 저장. */
-    public void hashPut(String key, Reservation reservation) {
-        redisTemplate.opsForHash().put(key, reservation.getUsername(), reservation);
+    /* QueueReservation 저장 */
+    public void hashPutQueue(String key, QueueReservation queueReservation) {
+        redisTemplate.opsForHash().put(key, queueReservation.getUsername(), queueReservation);
     }
 
-    /* Redis hash 정보 가져오기. */
-    public Reservation hashGet(String key, String username) {
-        Reservation reservation = (Reservation) redisTemplate.opsForHash().get(key, username);
-        if (reservation == null) {
+    /* QueueReservation 정보 가져오기 */
+    public QueueReservation hashGetQueue(String key, String username) {
+        QueueReservation queueReservation = (QueueReservation) redisTemplate.opsForHash().get(key, username);
+        if (queueReservation == null) {
             throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
         }
-        return reservation;
+        return queueReservation;
+    }
+
+    /* TimeSlotReservation 저장 */
+    public void hashPutTimeSlot(String key, TimeSlotReservation timeSlotReservation) {
+        redisTemplate.opsForHash().put(key, timeSlotReservation.getUsername(), timeSlotReservation);
+    }
+
+    /* TimeSlotReservation 정보 가져오기 */
+    public TimeSlotReservation hashGetTimeSlot(String key, String username) {
+        TimeSlotReservation timeSlotReservation = (TimeSlotReservation) redisTemplate.opsForHash().get(key, username);
+        if (timeSlotReservation == null) {
+            throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
+        }
+        return timeSlotReservation;
     }
 
     /* Redis hash 삭제. */
@@ -81,14 +97,24 @@ public class RedisUtil {
         return redisTemplate.opsForHash().hasKey(key, username);
     }
 
-    /* Redis에 저장된 모든 예약자 가져오기. */
-    public List<ReservationResponseDto> getEntries(String key) {
+    /* QueueReservation 모든 예약자 가져오기. */
+    public List<QueueReservationResDto> getQueueEntries(String key) {
         Map<Object, Object> entries = redisTemplate.opsForHash().entries(key);
 
         // 예약 정보를 DTO로 변환하여 반환
         return entries.values().stream()
-                .map(entry -> (Reservation) entry)
-                .map(ReservationResponseDto::new)
+                .map(entry -> (QueueReservation) entry)
+                .map(QueueReservationResDto::new)
+                .collect(Collectors.toList());
+    }
+
+    /* TimeSlot 모든 예약자 가져오기. */
+    public List<TimeSlotReservationResDto> getTimeSlotEntries(String key) {
+        Map<Object, Object> entries = redisTemplate.opsForHash().entries(key);
+
+        return entries.values().stream()
+                .map(entry -> (TimeSlotReservation) entry)
+                .map(TimeSlotReservationResDto::new)
                 .collect(Collectors.toList());
     }
 }
