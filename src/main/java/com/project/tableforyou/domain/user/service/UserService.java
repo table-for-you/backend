@@ -9,6 +9,7 @@ import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.domain.user.repository.UserRepository;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
+import com.project.tableforyou.security.auth.PrincipalDetailsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,6 +23,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final PrincipalDetailsService principalDetailsService;
     private static final String USERNAME_PATTERN = "^[ㄱ-ㅎ가-힣a-z0-9-_]{4,20}$";
     private static final String NICKNAME_PATTERN = "^[ㄱ-ㅎ가-힣a-zA-Z0-9-_]{2,10}$";
 
@@ -61,6 +63,9 @@ public class UserService {
         userUpdateDto.setPassword(bCryptPasswordEncoder.encode(userUpdateDto.getPassword()));
 
         user.update(userUpdateDto.getNickname(), userUpdateDto.getPassword());
+
+        principalDetailsService.updateUserCache(user);  // 정보 업데이트 시 사용자 캐시 업데이트
+
         log.info("User updated successfully with username: {}", username);
     }
 
