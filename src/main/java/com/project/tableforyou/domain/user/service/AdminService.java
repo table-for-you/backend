@@ -30,6 +30,17 @@ public class AdminService {
         return users.map(UserInfoDto::new);
     }
 
+    /* 회원 불러오기 */
+    @Transactional(readOnly = true)
+    public UserResponseDto adminReadUser(Long userId) {
+
+        log.info("Finding user by userId: {}", userId);
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        return new UserResponseDto(user);
+    }
+
     /* 이름으로 회원 찾기 */
     @Transactional(readOnly = true)
     public Page<UserInfoDto> userPageListByName(String searchKeyword, Pageable pageable) {

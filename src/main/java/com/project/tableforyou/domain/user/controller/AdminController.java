@@ -4,9 +4,12 @@ import com.project.tableforyou.domain.restaurant.dto.PendingDetailsRestaurantDto
 import com.project.tableforyou.domain.restaurant.dto.PendingRestaurantDto;
 import com.project.tableforyou.domain.restaurant.service.AdminRestaurantService;
 import com.project.tableforyou.domain.user.dto.UserInfoDto;
+import com.project.tableforyou.domain.user.dto.UserResponseDto;
 import com.project.tableforyou.domain.user.service.AdminService;
+import com.project.tableforyou.domain.user.service.UserService;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
+import com.project.tableforyou.security.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -15,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -47,6 +51,12 @@ public class AdminController {
             case "role" ->  adminService.userPageListByRole(searchKeyword, sortedPageable);
             default -> throw new CustomException(ErrorCode.INVALID_PARAMETER);
         };
+    }
+
+    /* 회원 정보 불러오기 */
+    @GetMapping("/users/{userId}")
+    public UserResponseDto readUser(@PathVariable(name = "userId") Long userId) {
+        return adminService.adminReadUser(userId);
     }
 
     /* 회원 삭제 */
