@@ -6,6 +6,7 @@ import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorDto;
 import com.project.tableforyou.security.auth.PrincipalDetails;
+import com.project.tableforyou.security.auth.PrincipalDetailsService;
 import com.project.tableforyou.token.service.TokenBlackListService;
 import com.project.tableforyou.utils.jwt.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -18,6 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -32,6 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final ObjectMapper objectMapper;
     private final TokenBlackListService tokenBlackListService;
+    private final UserDetailsService userDetailsService;
     private static final String SPECIAL_CHARACTERS_PATTERN = "[`':;|~!@#$%()^&*+=?/{}\\[\\]\\\"\\\\\"]+$";
 
 
@@ -51,26 +55,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String accessToken = accessTokenGetHeader.substring(TOKEN_PREFIX.length()).trim();
+        String accessToken = resolveAccessToken(response, accessTokenGetHeader);
 
-        accessToken = accessToken.replaceAll(SPECIAL_CHARACTERS_PATTERN, "");   // 토큰 끝 특수문자 제거
-
-        if(tokenBlackListService.existsById(accessToken)) {       // AccessToken이 블랙리스트에 있는지.
-            handleExceptionToken(response, ErrorCode.BLACKLIST_ACCESS_TOKEN);
+        if (accessToken == null)    // resolveAccessToken 메서드에 의해 accessToken에 문제가 있을 경우.
             return;
-        }
-
-        try {
-            jwtUtil.isExpired(accessToken);      // 만료되었는지
-        } catch (ExpiredJwtException e) {
-            handleExceptionToken(response, ErrorCode.ACCESS_TOKEN_EXPIRED);
-            return;
-        }
-
-        if (!"access".equals(jwtUtil.getCategory(accessToken))) {         // jwt에 담긴 category를 통해 access 가 맞는지 확인.
-            handleExceptionToken(response, ErrorCode.INVALID_ACCESS_TOKEN);
-            return;
-        }
 
         Authentication auth = getAuthentication(accessToken);
         SecurityContextHolder.getContext().setAuthentication(auth);
@@ -78,20 +66,41 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    /*
+    * @throws accessToken이 blackList에 저장되어 있거나, 만료되었거나, access 토큰이 아니거나.
+    */
+    private String resolveAccessToken(HttpServletResponse response, String accessTokenGetHeader) throws IOException {
+        String accessToken = accessTokenGetHeader.substring(TOKEN_PREFIX.length()).trim();
+
+        accessToken = accessToken.replaceAll(SPECIAL_CHARACTERS_PATTERN, "");   // 토큰 끝 특수문자 제거
+
+        if(tokenBlackListService.existsById(accessToken)) {       // AccessToken이 블랙리스트에 있는지.
+            handleExceptionToken(response, ErrorCode.BLACKLIST_ACCESS_TOKEN);
+            return null;
+        }
+
+        try {
+            jwtUtil.isExpired(accessToken);      // 만료되었는지
+        } catch (ExpiredJwtException e) {
+            handleExceptionToken(response, ErrorCode.ACCESS_TOKEN_EXPIRED);
+            return null;
+        }
+
+        if (!"access".equals(jwtUtil.getCategory(accessToken))) {         // jwt에 담긴 category를 통해 access 가 맞는지 확인.
+            handleExceptionToken(response, ErrorCode.INVALID_ACCESS_TOKEN);
+            return null;
+        }
+        return accessToken;
+    }
+
     /* Authentication 가져오기 */
     private Authentication getAuthentication(String token) {
 
         String username = jwtUtil.getUsername(token);
-        String role = jwtUtil.getRole(token);
 
-        User userEntity = User.builder()
-                .username(username)
-                .role(Role.valueOf(role))
-                .build();
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-        PrincipalDetails principalDetails = new PrincipalDetails(userEntity);
-
-        return new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
     /* 예외 처리 */

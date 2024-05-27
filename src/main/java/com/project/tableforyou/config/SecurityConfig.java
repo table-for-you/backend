@@ -6,6 +6,7 @@ import com.project.tableforyou.handler.logoutHandler.SuccessLogoutHandler;
 import com.project.tableforyou.jwt.filter.JwtAuthenticationFilter;
 import com.project.tableforyou.jwt.filter.JwtExceptionFilter;
 import com.project.tableforyou.jwt.handler.OAuth2SuccessHandler;
+import com.project.tableforyou.security.auth.PrincipalDetailsService;
 import com.project.tableforyou.security.oauth.PrincipalOAuth2UserService;
 import com.project.tableforyou.token.service.TokenBlackListService;
 import com.project.tableforyou.utils.jwt.JwtUtil;
@@ -18,6 +19,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
@@ -31,6 +33,7 @@ public class SecurityConfig {
     private final PrincipalOAuth2UserService principalOAuth2UserService;
     private final JwtUtil jwtUtil;
     private final ObjectMapper objectMapper;
+    private final UserDetailsService userDetailsService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final CustomLogoutHandler customLogoutHandler;
     private final TokenBlackListService tokenBlackListService;
@@ -64,7 +67,7 @@ public class SecurityConfig {
                                         endPoint.userService(principalOAuth2UserService))
                                 .successHandler(oAuth2SuccessHandler))
 
-                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, objectMapper, tokenBlackListService),
+                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, objectMapper, tokenBlackListService, userDetailsService),
                         UsernamePasswordAuthenticationFilter.class)
 
                 .addFilterBefore(new JwtExceptionFilter(objectMapper), JwtAuthenticationFilter.class)
