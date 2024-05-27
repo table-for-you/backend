@@ -1,5 +1,6 @@
 package com.project.tableforyou.domain.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.tableforyou.domain.BaseTimeEntity;
 import com.project.tableforyou.domain.like.entity.Like;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
@@ -22,7 +23,7 @@ import java.util.List;
 public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     @NotNull
     private String name;
@@ -51,10 +52,12 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Restaurant> restaurants;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Like> likes;
 
     /* 계정 잠금을 위한 필드 */
