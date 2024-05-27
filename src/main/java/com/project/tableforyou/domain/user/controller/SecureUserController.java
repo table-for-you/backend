@@ -32,9 +32,9 @@ public class SecureUserController {
 
 
     /* 회원 불러오기 */
-    @GetMapping("/{username}")
-    public UserResponseDto read(@PathVariable(name = "username") String username) {
-        return userService.readUser(username);
+    @GetMapping
+    public UserResponseDto read(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        return userService.readUser(principalDetails.getUsername());
     }
 
     /* 회원 업데이트 */
