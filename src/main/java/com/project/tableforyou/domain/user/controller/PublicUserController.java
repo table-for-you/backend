@@ -1,14 +1,11 @@
 package com.project.tableforyou.domain.user.controller;
 
-import com.project.tableforyou.domain.user.dto.PasswordDto;
 import com.project.tableforyou.domain.user.dto.SignUpDto;
 import com.project.tableforyou.domain.user.service.UserService;
-import com.project.tableforyou.security.auth.PrincipalDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/public")
+@RequestMapping("/public/users")
 @RequiredArgsConstructor
 @Slf4j
 public class PublicUserController {
@@ -40,15 +37,7 @@ public class PublicUserController {
 
     /* 닉네임 중복 확인 */
     @GetMapping("/check-nickname")
-    public Object checkNicknameExists(@RequestParam("nickname") String nickname) {
+    public boolean checkNicknameExists(@RequestParam("nickname") String nickname) {
         return userService.existsByNickname(nickname);
-    }
-
-    /* 현재 비밀번호 검사 */
-    @GetMapping("/check-password")
-    public Object checkPassword(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                @RequestBody PasswordDto passwordDto) {
-
-        return userService.checkPass(principalDetails.getUsername(), passwordDto);
     }
 }

@@ -2,6 +2,7 @@ package com.project.tableforyou.domain.user.controller;
 
 import com.project.tableforyou.domain.like.service.LikeService;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantNameDto;
+import com.project.tableforyou.domain.user.dto.PasswordDto;
 import com.project.tableforyou.domain.user.dto.UserResponseDto;
 import com.project.tableforyou.domain.user.dto.UserUpdateDto;
 import com.project.tableforyou.domain.user.service.UserService;
@@ -14,6 +15,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +37,14 @@ public class SecureUserController {
     @GetMapping
     public UserResponseDto read(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         return userService.readUser(principalDetails.getUsername());
+    }
+
+    /* 현재 비밀번호 검사 */
+    @PostMapping("/check-password")
+    public boolean checkPassword(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                 @RequestBody PasswordDto passwordDto) {
+
+        return userService.checkPass(principalDetails.getUsername(), passwordDto);
     }
 
     /* 회원 업데이트 */
