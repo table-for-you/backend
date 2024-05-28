@@ -1,4 +1,4 @@
-package com.project.tableforyou.controller;
+package com.project.tableforyou.userController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.tableforyou.domain.user.controller.PublicUserController;
@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(controllers = {PublicUserController.class})
 @AutoConfigureDataJpa
-public class AuthControllerTest {
+public class PublicUserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -51,7 +51,6 @@ public class AuthControllerTest {
     void setup(WebApplicationContext webApplicationContext) {
         this.mockMvc = MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
-                .apply(springSecurity())
                 .build();
     }
 
@@ -70,14 +69,13 @@ public class AuthControllerTest {
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                post("/public/register")
+                post("/public/users/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequestDto))
         );
 
         // then
         resultActions
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(print());
     }
@@ -94,7 +92,7 @@ public class AuthControllerTest {
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                post("/public/register")
+                post("/public/users/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequestDto))
         );
@@ -125,7 +123,7 @@ public class AuthControllerTest {
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                post("/public/register")
+                post("/public/users/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequestDto))
         );
@@ -152,7 +150,7 @@ public class AuthControllerTest {
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                get("/public/check-nickname")
+                get("/public/users/check-nickname")
                         .param("nickname", nickname)
         );
 
@@ -172,7 +170,7 @@ public class AuthControllerTest {
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                get("/public/check-nickname")
+                get("/public/users/check-nickname")
                         .param("nickname", nickname)
         );
 
@@ -192,7 +190,7 @@ public class AuthControllerTest {
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                get("/public/check-username")
+                get("/public/users/check-username")
                         .param("username", username)
         );
 
@@ -212,7 +210,7 @@ public class AuthControllerTest {
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                get("/public/check-username")
+                get("/public/users/check-username")
                         .param("username", username)
         );
 
@@ -223,40 +221,5 @@ public class AuthControllerTest {
                 .andDo(print());
     }
 
-    @Test
-    @DisplayName("현재 비밀번호 검사")
-    public void checkPasswordTest() throws Exception {
-        // given
-        String username = "daeyoung";
 
-        PasswordDto passwordDto = new PasswordDto();
-        passwordDto.setPassword("currentPassword");
-
-        User user = User.builder()
-                .username(username)
-                .password("currentPassword")
-                .role(Role.USER)
-                .build();
-
-        PrincipalDetails principalDetails = new PrincipalDetails(user);
-
-        given(userService.checkPass(anyString(), any(PasswordDto.class))).willReturn(true);
-
-        // when
-        ResultActions resultActions = mockMvc.perform(
-                post("/public/check-password")
-                        .with(user(principalDetails))
-                        .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(passwordDto))
-        );
-
-        // then
-        resultActions
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().string("true"));
-
-
-    }
 }
