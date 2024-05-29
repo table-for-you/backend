@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter @Setter
+@Builder
 public class RestaurantRequestDto {
 
     private int totalSeats;
