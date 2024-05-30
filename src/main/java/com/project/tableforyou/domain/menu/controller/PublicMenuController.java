@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class PublicMenuController {
 
-    private static MenuService menuService;
+    private final MenuService menuService;
 
     /* 메뉴 불러오기. 페이징 처리 + 검색 기능 */
     @GetMapping("/{restaurantId}/menus")
