@@ -1,4 +1,4 @@
-package com.project.tableforyou.domain;
+package com.project.tableforyou.domain.common.service;
 
 import com.project.tableforyou.domain.like.entity.Like;
 import com.project.tableforyou.domain.like.repository.LikeRepository;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserAssociatedEntityService {
+public class AssociatedEntityService {
 
     private final LikeRepository likeRepository;
     private final RestaurantRepository restaurantRepository;
@@ -61,8 +61,9 @@ public class UserAssociatedEntityService {
 
         List<Restaurant> restaurants = foundUser.getRestaurants();
 
-        for (Restaurant restaurant : restaurants) {     // 가게의 메뉴 삭제하기
-            deleteAllMenuByRestaurant(restaurant);
+        for (Restaurant restaurant : restaurants) {
+            this.deleteAllVisitByRestaurant(restaurant);    // 가게 방문객 삭제하기
+            this.deleteAllMenuByRestaurant(restaurant);     // 가게의 메뉴 삭제하기
         }
 
         List<Long> restaurantIds = restaurants.stream()
@@ -98,6 +99,19 @@ public class UserAssociatedEntityService {
         if (!visitIds.isEmpty()) {
             visitRepository.deleteAllVisitByIdInQuery(visitIds);
             log.info("Associated visits deleted successfully for username: {}", foundUser.getUsername());
+        }
+    }
+
+    /* 가게에 관계 매핑된 방문객(Visit) 삭제 */
+    @Transactional
+    public void deleteAllVisitByRestaurant(Restaurant foundRestaurant) {
+        List<Long> visitIds = foundRestaurant.getVisits().stream()
+                .map(Visit::getId)
+                .collect(Collectors.toList());
+
+        if (!visitIds.isEmpty()) {
+            visitRepository.deleteAllVisitByIdInQuery(visitIds);
+            log.info("Associated visits deleted successfully for restaurant: {}", foundRestaurant.getName());
         }
     }
 }
