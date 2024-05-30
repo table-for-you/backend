@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.tableforyou.domain.BaseTimeEntity;
 import com.project.tableforyou.domain.like.entity.Like;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
+import com.project.tableforyou.domain.visit.entity.Visit;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -52,13 +53,17 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Restaurant> restaurants;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Like> likes;
+
+    @OneToMany(mappedBy = "visitor")
+    @JsonIgnore
+    private List<Visit> visits;
 
     /* 계정 잠금을 위한 필드 */
     private int loginAttempt;

@@ -5,6 +5,7 @@ import com.project.tableforyou.domain.like.entity.Like;
 import com.project.tableforyou.domain.menu.entity.Menu;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantUpdateDto;
 import com.project.tableforyou.domain.user.entity.User;
+import com.project.tableforyou.domain.visit.entity.Visit;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -67,15 +68,18 @@ public class Restaurant extends BaseTimeEntity {
 
     private String foodType;
 
-    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "restaurant")
     private List<Menu> menus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "restaurant")
     private List<Like> likes;
+
+    @OneToMany(mappedBy = "restaurant")
+    private List<Visit> visits;
 
     public void update(RestaurantUpdateDto dto) {
         this.totalSeats = dto.getTotalSeats();
