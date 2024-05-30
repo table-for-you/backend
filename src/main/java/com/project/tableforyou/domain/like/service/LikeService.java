@@ -66,11 +66,9 @@ public class LikeService {
     @Transactional(readOnly = true)
     public List<RestaurantNameDto> getLikeRestaurants(String username) {
 
-        User user = userRepository.findByUsername(username).orElseThrow(() ->
-                new CustomException(ErrorCode.USER_NOT_FOUND));
+        List<Like> likes = likeRepository.findByUser_Username(username);
 
-        return user.getLikes()
-                .stream()
+        return likes.stream()
                 .map(like -> new RestaurantNameDto(like.getRestaurant()))
                 .collect(Collectors.toList());
     }
