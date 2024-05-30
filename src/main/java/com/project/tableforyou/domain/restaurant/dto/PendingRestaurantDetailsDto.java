@@ -5,7 +5,7 @@ import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import lombok.Getter;
 
 @Getter
-public class PendingDetailsRestaurantDto {
+public class PendingRestaurantDetailsDto {
 
     private final String time;
     private final String name;
@@ -17,7 +17,7 @@ public class PendingDetailsRestaurantDto {
     private final String businessLicenseImage;
     private final String foodType;
 
-    public PendingDetailsRestaurantDto(Restaurant restaurant) {
+    public PendingRestaurantDetailsDto(Restaurant restaurant) {
         this.time = restaurant.getTime();
         this.name = restaurant.getName();
         this.region = restaurant.getRegion();

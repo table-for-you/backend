@@ -1,15 +1,13 @@
 package com.project.tableforyou.domain.user.controller;
 
-import com.project.tableforyou.domain.restaurant.dto.PendingDetailsRestaurantDto;
-import com.project.tableforyou.domain.restaurant.dto.PendingRestaurantDto;
+import com.project.tableforyou.domain.restaurant.dto.PendingRestaurantDetailsDto;
+import com.project.tableforyou.domain.restaurant.dto.RestaurantManageDto;
 import com.project.tableforyou.domain.restaurant.service.AdminRestaurantService;
 import com.project.tableforyou.domain.user.dto.UserInfoDto;
 import com.project.tableforyou.domain.user.dto.UserResponseDto;
 import com.project.tableforyou.domain.user.service.AdminService;
-import com.project.tableforyou.domain.user.service.UserService;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
-import com.project.tableforyou.security.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -18,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -69,7 +66,7 @@ public class AdminController {
 
     /* 등록 처리 중인 가게 불러오기 */
     @GetMapping("/pending-restaurants")
-    public Page<PendingRestaurantDto> handlerRestaurant(
+    public Page<RestaurantManageDto> handlerRestaurant(
             @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
         return adminRestaurantService.handleRestaurantList(pageable);
@@ -77,14 +74,14 @@ public class AdminController {
 
     /* 등록 처리 중인 가게 자세히 불러오기 */
     @GetMapping("/pending-restaurants/{restaurantId}")
-    public PendingDetailsRestaurantDto readPendingDetailsRestaurant(@PathVariable(name = "restaurantId") Long restaurantId) {
+    public PendingRestaurantDetailsDto readPendingDetailsRestaurant(@PathVariable(name = "restaurantId") Long restaurantId) {
 
         return adminRestaurantService.readPendingDetailsInfo(restaurantId);
     }
 
     /* 등록된 가게 불러오기 */
     @GetMapping("/approved-restaurants")
-    public Page<PendingRestaurantDto> approvedRestaurants(
+    public Page<RestaurantManageDto> approvedRestaurants(
             @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
             @RequestParam(required = false, value = "type") String type,
             @RequestParam(required = false, value = "search-keyword") String searchKeyword) {
