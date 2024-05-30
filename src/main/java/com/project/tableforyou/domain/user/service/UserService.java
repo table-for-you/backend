@@ -1,10 +1,12 @@
 package com.project.tableforyou.domain.user.service;
 
 import com.project.tableforyou.aop.annotation.VerifyAuthentication;
+import com.project.tableforyou.domain.common.service.AssociatedEntityService;
 import com.project.tableforyou.domain.user.dto.PasswordDto;
 import com.project.tableforyou.domain.user.dto.SignUpDto;
 import com.project.tableforyou.domain.user.dto.UserResponseDto;
 import com.project.tableforyou.domain.user.dto.UserUpdateDto;
+import com.project.tableforyou.domain.user.entity.Role;
 import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.domain.user.repository.UserRepository;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final AssociatedEntityService associatedEntityService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final PrincipalDetailsService principalDetailsService;
     private static final String USERNAME_PATTERN = "^[ㄱ-ㅎ가-힣a-z0-9-_]{4,20}$";
@@ -76,6 +79,13 @@ public class UserService {
         log.info("Deleting user with username: {}", username);
         User user = userRepository.findByUsername(username).orElseThrow(() ->
                 new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        associatedEntityService.deleteAllLikeByUser(user);  // 회원 좋아요 삭제
+        associatedEntityService.deleteAllVisitByUser(user); // 회원 방문가게 삭제
+
+        if (user.getRole().equals(Role.OWNER)) {      // 사장이라면 회원 가게 삭제
+            associatedEntityService.deleteAllRestaurantByUser(user);
+        }
 
         userRepository.delete(user);
         log.info("User deleted successfully with username: {}", username);

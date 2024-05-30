@@ -8,18 +8,15 @@ import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
 import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.domain.user.repository.UserRepository;
+import com.project.tableforyou.domain.common.service.AssociatedEntityService;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.Errors;
-import org.springframework.validation.FieldError;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +26,7 @@ public class OwnerRestaurantService {
 
     private final UserRepository userRepository;
     private final RestaurantRepository restaurantRepository;
+    private final AssociatedEntityService associatedEntityService;
 
     /* 가게 create. 가게 등록 대기 상태. */
     @Transactional
@@ -77,6 +75,10 @@ public class OwnerRestaurantService {
         log.info("Deleting Restaurant with name: {}", restaurantId);
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
+
+        associatedEntityService.deleteAllLikeByRestaurant(restaurant);  // 가게의 좋아요 삭제
+        associatedEntityService.deleteAllMenuByRestaurant(restaurant);  // 가게의 메뉴 삭제
+        associatedEntityService.deleteAllVisitByRestaurant(restaurant); // 방문객 삭제
 
         restaurantRepository.delete(restaurant);
         log.info("Restaurant deleted successfully with name: {}", restaurantId);

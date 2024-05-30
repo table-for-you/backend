@@ -1,5 +1,6 @@
 package com.project.tableforyou.domain.user.service;
 
+import com.project.tableforyou.domain.common.service.AssociatedEntityService;
 import com.project.tableforyou.domain.user.dto.UserInfoDto;
 import com.project.tableforyou.domain.user.dto.UserResponseDto;
 import com.project.tableforyou.domain.user.entity.Role;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminService {
 
     private final UserRepository userRepository;
+    private final AssociatedEntityService associatedEntityService;
 
     /* 전체 회원 불러오기 */
     @Transactional(readOnly = true)
@@ -71,6 +73,14 @@ public class AdminService {
 
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        associatedEntityService.deleteAllLikeByUser(user);  // 회원 좋아요 삭제
+        associatedEntityService.deleteAllVisitByUser(user); // 회원 방문가게 삭제
+
+        if (user.getRole().equals(Role.OWNER)) {     // 사장이라면 회원 가게 삭제
+            associatedEntityService.deleteAllRestaurantByUser(user);
+        }
+
 
         userRepository.delete(user);
     }

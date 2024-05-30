@@ -5,6 +5,7 @@ import com.project.tableforyou.domain.restaurant.dto.PendingRestaurantDto;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import com.project.tableforyou.domain.restaurant.entity.RestaurantStatus;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
+import com.project.tableforyou.domain.common.service.AssociatedEntityService;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminRestaurantService {
 
     private final RestaurantRepository restaurantRepository;
+    private final AssociatedEntityService associatedEntityService;
 
     /* 등록 처리 중인 가게 불러오기 */
     @Transactional(readOnly = true)
@@ -80,6 +82,10 @@ public class AdminRestaurantService {
 
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
+
+        associatedEntityService.deleteAllLikeByRestaurant(restaurant);  // 가게의 좋아요 삭제
+        associatedEntityService.deleteAllMenuByRestaurant(restaurant);  // 가게의 메뉴 삭제
+        associatedEntityService.deleteAllVisitByRestaurant(restaurant); // 방문객 삭제
 
         restaurantRepository.delete(restaurant);
     }
