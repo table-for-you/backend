@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,4 +26,8 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     @Query("update Restaurant r set r.usedSeats = r.usedSeats + :value where r.id = :id")
     void updateUsedSeats(@Param("id") Long id, @Param("value") int value); // JPQL의 id와 매핑하기 위해.
 
+    @Transactional
+    @Modifying
+    @Query("delete from Restaurant r where r.id in :ids")
+    void deleteAllRestaurantByIdInQuery(@Param("ids") List<Long> ids);
 }
