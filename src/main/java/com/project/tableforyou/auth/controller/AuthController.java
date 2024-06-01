@@ -1,10 +1,12 @@
 package com.project.tableforyou.auth.controller;
 
 import com.project.tableforyou.auth.dto.LoginDto;
+import com.project.tableforyou.auth.dto.UserRoleDto;
 import com.project.tableforyou.auth.service.AuthService;
 import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.TokenException;
+import com.project.tableforyou.security.auth.PrincipalDetails;
 import com.project.tableforyou.token.service.RefreshTokenService;
 import com.project.tableforyou.utils.cookie.CookieUtil;
 import com.project.tableforyou.utils.jwt.JwtUtil;
@@ -15,9 +17,11 @@ import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -105,4 +109,12 @@ public class AuthController {
         authService.findingPassword(username, email);
         return ResponseEntity.ok("잠시 후 등록하신 메일로 임시 비밀번호가 도착합니다.");
     }
+
+    /* 사용자 권한 확인 */
+    @GetMapping("/user-role")
+    public ResponseEntity<UserRoleDto> getUserRole(@RequestHeader("Authorization") String token) {
+
+        return ResponseEntity.ok(authService.findUserRoleByToken(token));
+    }
+
 }
