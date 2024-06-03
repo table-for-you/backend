@@ -1,4 +1,4 @@
-package com.project.tableforyou.controller.userController;
+package com.project.tableforyou.controller.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.tableforyou.domain.like.service.LikeService;

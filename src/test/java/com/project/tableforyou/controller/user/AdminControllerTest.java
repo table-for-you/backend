@@ -1,4 +1,4 @@
-package com.project.tableforyou.controller.userController;
+package com.project.tableforyou.controller.user;
 
 import com.project.tableforyou.domain.restaurant.dto.PendingRestaurantDetailsDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantManageDto;
