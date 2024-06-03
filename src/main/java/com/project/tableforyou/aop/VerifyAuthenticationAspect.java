@@ -35,10 +35,6 @@ public class VerifyAuthenticationAspect {
                 Long restaurantId = (Long) arg;
                 restaurantVerifyAuthentication(expectedUsername, restaurantId);
                 break;      // 파라미터가 순서대로 들어가므로 MenuService의 update같이 타입이 같은게 있을 경우를 대비해 retaurantId만 받고 break한다.
-            } else if (arg instanceof UserUpdateDto) {
-                UserUpdateDto userDto = (UserUpdateDto) arg;
-                userVerifyAuthentication(expectedUsername, userDto);
-                break;
             }
         }
         log.info("Permission verified");
@@ -52,13 +48,6 @@ public class VerifyAuthenticationAspect {
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
         if (!expectedUsername.equals(restaurant.getUser().getUsername()))
-            throw new CustomException(ErrorCode.UNAUTHORIZED);
-    }
-
-    /* 사용자에 대한 권환 확인 메서드 */
-    private void userVerifyAuthentication(String expectedUsername, UserUpdateDto userDto) {
-
-        if(!expectedUsername.equals(userDto.getUsername()))
             throw new CustomException(ErrorCode.UNAUTHORIZED);
     }
 

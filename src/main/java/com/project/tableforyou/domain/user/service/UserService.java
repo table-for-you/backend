@@ -1,6 +1,5 @@
 package com.project.tableforyou.domain.user.service;
 
-import com.project.tableforyou.aop.annotation.VerifyAuthentication;
 import com.project.tableforyou.domain.common.service.AssociatedEntityService;
 import com.project.tableforyou.domain.user.dto.PasswordDto;
 import com.project.tableforyou.domain.user.dto.SignUpDto;
@@ -9,8 +8,8 @@ import com.project.tableforyou.domain.user.dto.UserUpdateDto;
 import com.project.tableforyou.domain.user.entity.Role;
 import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.domain.user.repository.UserRepository;
-import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
+import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import com.project.tableforyou.security.auth.PrincipalDetailsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,7 +55,6 @@ public class UserService {
     }
 
     /* 회원 업데이트 */
-    @VerifyAuthentication
     @Transactional
     public void updateUser(String username, UserUpdateDto userUpdateDto) {
 

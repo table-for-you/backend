@@ -1,4 +1,4 @@
-package com.project.tableforyou.userController;
+package com.project.tableforyou.controller.userController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.tableforyou.domain.user.controller.PublicUserController;
