@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 public class PendingRestaurantDetailsDto {
 
+    private final Long id;
     private final String time;
     private final String name;
     private final Region region;
@@ -18,6 +19,7 @@ public class PendingRestaurantDetailsDto {
     private final String foodType;
 
     public PendingRestaurantDetailsDto(Restaurant restaurant) {
+        this.id = restaurant.getId();
         this.time = restaurant.getTime();
         this.name = restaurant.getName();
         this.region = restaurant.getRegion();

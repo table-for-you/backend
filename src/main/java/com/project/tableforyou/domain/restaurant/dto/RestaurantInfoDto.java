@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 public class RestaurantInfoDto {
 
+    private final Long id;
     private final String name;
     private final double rating;
     private final int ratingNum;
@@ -13,6 +14,7 @@ public class RestaurantInfoDto {
     private final String foodType;
 
     public RestaurantInfoDto(Restaurant restaurant) {
+        this.id = restaurant.getId();
         this.name = restaurant.getName();
         this.rating = restaurant.getRating();
         this.ratingNum = restaurant.getRatingNum();

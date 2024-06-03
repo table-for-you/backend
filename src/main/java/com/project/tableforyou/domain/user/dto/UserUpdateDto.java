@@ -8,7 +8,6 @@ import lombok.Setter;
 @Getter @Setter
 public class UserUpdateDto {
 
-    private String username;    // 본인 확인을 위한 username. 변경 불가하게 막아두기.
     @NotBlank(message = "닉네임은 필수 입력 값입니다.")
     @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-zA-Z0-9-_]{2,10}$", message = "닉네임은 특수문자를 제외한 2~10자리여야 합니다.")
     private String nickname;

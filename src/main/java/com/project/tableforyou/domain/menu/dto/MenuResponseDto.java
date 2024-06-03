@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 public class MenuResponseDto {
 
+    private final Long id;
     private final String name;
     private final String price;
     private final String createdTime;
@@ -13,6 +14,7 @@ public class MenuResponseDto {
 
     /* Entity -> dto */
     public MenuResponseDto(Menu menu) {
+        this.id = menu.getId();
         this.name = menu.getName();
         this.price = menu.getPrice();
         this.createdTime = menu.getCreatedTime();
