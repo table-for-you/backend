@@ -25,7 +25,7 @@ public class AdminRestaurantService {
 
     /* 등록 처리 중인 가게 불러오기 */
     @Transactional(readOnly = true)
-    public Page<RestaurantManageDto> handleRestaurantList(Pageable pageable) {
+    public Page<RestaurantManageDto> readPendingRestaurant(Pageable pageable) {
 
         Page<Restaurant> restaurants = restaurantRepository.findByStatus(RestaurantStatus.PENDING, pageable);
         return restaurants.map(RestaurantManageDto::new);
@@ -42,7 +42,7 @@ public class AdminRestaurantService {
 
     /* 등록된 전체 가게 불러오기 */
     @Transactional(readOnly = true)
-    public Page<RestaurantManageDto> approvedAllRestaurant(Pageable pageable) {
+    public Page<RestaurantManageDto> readApprovedRestaurant(Pageable pageable) {
 
         Page<Restaurant> restaurants = restaurantRepository.findByStatus(RestaurantStatus.APPROVED, pageable);
         return restaurants.map(RestaurantManageDto::new);
@@ -50,7 +50,7 @@ public class AdminRestaurantService {
 
     /* 등록된 가게 중 사장 이름으로 가게 불러오기 */
     @Transactional(readOnly = true)
-    public Page<RestaurantManageDto> approvedRestaurantByOwnerName(String ownerName, Pageable pageable) {
+    public Page<RestaurantManageDto> readApprovedRestaurantByOwnerName(String ownerName, Pageable pageable) {
 
         Page<Restaurant> restaurants =
                 restaurantRepository.findByStatusAndUser_Name(RestaurantStatus.APPROVED, ownerName, pageable);
@@ -59,7 +59,7 @@ public class AdminRestaurantService {
 
     /* 등록된 가게 중 가게 이름으로 가게 불러오기 */
     @Transactional(readOnly = true)
-    public Page<RestaurantManageDto> approvedRestaurantByRestaurantName(String restaurantName, Pageable pageable) {
+    public Page<RestaurantManageDto> readApprovedRestaurantByRestaurantName(String restaurantName, Pageable pageable) {
 
         Page<Restaurant> restaurants =
                 restaurantRepository.findByStatusAndNameContaining(RestaurantStatus.APPROVED, restaurantName, pageable);

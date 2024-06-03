@@ -29,7 +29,7 @@ public class AdminController {
 
     /* 회원 전체 불러오기, 페이징 처리 */
     @GetMapping("/users")
-    public Page<UserInfoDto> readAll(@PageableDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
+    public Page<UserInfoDto> readAllUser(@PageableDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
                                      @RequestParam(required = false, value = "type") String type,
                                      @RequestParam(required = false, value = "search-keyword") String searchKeyword,
                                      @RequestParam(required = false, value = "sort-by", defaultValue = "name") String sortBy,
@@ -40,12 +40,12 @@ public class AdminController {
         Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
         if (type == null)
-            return adminService.userPageList(sortedPageable);
+            return adminService.readAllUser(sortedPageable);
 
         return switch (type) {
-            case "name" -> adminService.userPageListByName(searchKeyword, sortedPageable);
-            case "nickname" -> adminService.userPageListByNickname(searchKeyword, sortedPageable);
-            case "role" ->  adminService.userPageListByRole(searchKeyword, sortedPageable);
+            case "name" -> adminService.readAllUserByName(searchKeyword, sortedPageable);
+            case "nickname" -> adminService.readAllUserByNickname(searchKeyword, sortedPageable);
+            case "role" ->  adminService.readAllUserByRole(searchKeyword, sortedPageable);
             default -> throw new CustomException(ErrorCode.INVALID_PARAMETER);
         };
     }
@@ -53,7 +53,7 @@ public class AdminController {
     /* 회원 정보 불러오기 */
     @GetMapping("/users/{userId}")
     public UserResponseDto readUser(@PathVariable(name = "userId") Long userId) {
-        return adminService.adminReadUser(userId);
+        return adminService.readUserByAdmin(userId);
     }
 
     /* 회원 삭제 */
@@ -69,7 +69,7 @@ public class AdminController {
     public Page<RestaurantManageDto> handlerRestaurant(
             @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
-        return adminRestaurantService.handleRestaurantList(pageable);
+        return adminRestaurantService.readPendingRestaurant(pageable);
     }
 
     /* 등록 처리 중인 가게 자세히 불러오기 */
@@ -87,12 +87,12 @@ public class AdminController {
             @RequestParam(required = false, value = "search-keyword") String searchKeyword) {
 
         if (type == null) {
-            return adminRestaurantService.approvedAllRestaurant(pageable);
+            return adminRestaurantService.readApprovedRestaurant(pageable);
         }
 
         return switch (type) {
-            case "restaurant" -> adminRestaurantService.approvedRestaurantByRestaurantName(searchKeyword, pageable);
-            case "owner" -> adminRestaurantService.approvedRestaurantByOwnerName(searchKeyword, pageable);
+            case "restaurant" -> adminRestaurantService.readApprovedRestaurantByRestaurantName(searchKeyword, pageable);
+            case "owner" -> adminRestaurantService.readApprovedRestaurantByOwnerName(searchKeyword, pageable);
             default -> throw new CustomException(ErrorCode.INVALID_PARAMETER);
         };
     }

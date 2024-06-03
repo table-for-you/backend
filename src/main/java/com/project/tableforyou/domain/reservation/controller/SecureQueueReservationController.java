@@ -22,7 +22,7 @@ public class SecureQueueReservationController {
 
     /* 예약자 추가 */
     @PostMapping("/{restaurantId}/queue-reservations")
-    public ResponseEntity<String> create(@AuthenticationPrincipal PrincipalDetails principalDetails,
+    public ResponseEntity<String> createReservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                          @PathVariable(name = "restaurantId") Long restaurantId) {
 
         queueReservationService.saveQueueReservation(principalDetails.getUsername(), restaurantId);
@@ -61,7 +61,7 @@ public class SecureQueueReservationController {
 
     /* 예약자 삭제 */
     @DeleteMapping("/{restaurantId}/queue-reservations/{username}")
-    public ResponseEntity<String> delete(@PathVariable(name = "restaurantId") Long restaurantId,
+    public ResponseEntity<String> deleteReservation(@PathVariable(name = "restaurantId") Long restaurantId,
                                          @PathVariable(name = "username") String username) {
 
         List<QueueReservationResDto> decreaseReservation =

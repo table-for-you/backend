@@ -20,12 +20,12 @@ public class PublicMenuController {
 
     /* 메뉴 불러오기. 페이징 처리 + 검색 기능 */
     @GetMapping("/{restaurantId}/menus")
-    public Page<MenuResponseDto> readAll(@PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
+    public Page<MenuResponseDto> readAllMenu(@PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
                                          @PathVariable(name = "restaurantId") Long restaurantId,
                                          @RequestParam(required = false, value = "search-keyword") String searchKeyword) {
 
         if(searchKeyword == null)
-            return menuService.menuPageList(restaurantId, pageable);
+            return menuService.readAllMenu(restaurantId, pageable);
         else
             return menuService.menuPageSearchList(restaurantId, searchKeyword, pageable);
     }

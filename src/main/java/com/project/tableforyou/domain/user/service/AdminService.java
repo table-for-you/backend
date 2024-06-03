@@ -25,7 +25,7 @@ public class AdminService {
 
     /* 전체 회원 불러오기 */
     @Transactional(readOnly = true)
-    public Page<UserInfoDto> userPageList(Pageable pageable) {
+    public Page<UserInfoDto> readAllUser(Pageable pageable) {
 
         log.info("Finding all users");
         Page<User> users = userRepository.findAll(pageable);
@@ -34,7 +34,7 @@ public class AdminService {
 
     /* 회원 불러오기 */
     @Transactional(readOnly = true)
-    public UserResponseDto adminReadUser(Long userId) {
+    public UserResponseDto readUserByAdmin(Long userId) {
 
         log.info("Finding user by userId: {}", userId);
         User user = userRepository.findById(userId).orElseThrow(() ->
@@ -45,7 +45,7 @@ public class AdminService {
 
     /* 이름으로 회원 찾기 */
     @Transactional(readOnly = true)
-    public Page<UserInfoDto> userPageListByName(String searchKeyword, Pageable pageable) {
+    public Page<UserInfoDto> readAllUserByName(String searchKeyword, Pageable pageable) {
 
         Page<User> users = userRepository.findByNameContaining(searchKeyword, pageable);
         return users.map(UserInfoDto::new);
@@ -53,7 +53,7 @@ public class AdminService {
 
     /* 닉네임으로 회원 찾기 */
     @Transactional(readOnly = true)
-    public Page<UserInfoDto> userPageListByNickname(String searchKeyword, Pageable pageable) {
+    public Page<UserInfoDto> readAllUserByNickname(String searchKeyword, Pageable pageable) {
 
         Page<User> users = userRepository.findByNicknameContaining(searchKeyword, pageable);
         return users.map(UserInfoDto::new);
@@ -61,7 +61,7 @@ public class AdminService {
 
     /* 권한에 따라 회원 찾기 */
     @Transactional(readOnly = true)
-    public Page<UserInfoDto> userPageListByRole(String searchKeyword, Pageable pageable) {
+    public Page<UserInfoDto> readAllUserByRole(String searchKeyword, Pageable pageable) {
 
         Page<User> users = userRepository.findByRole(Role.valueOf(searchKeyword), pageable);
         return users.map(UserInfoDto::new);

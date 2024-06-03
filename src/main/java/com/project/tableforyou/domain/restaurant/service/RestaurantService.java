@@ -34,7 +34,7 @@ public class RestaurantService {
 
     /* 가게 리스트 페이징. 등록된 가게만 들고오기 */
     @Transactional(readOnly = true)
-    public Page<RestaurantInfoDto> restaurantPageList(Pageable pageable) {
+    public Page<RestaurantInfoDto> readAllRestaurant(Pageable pageable) {
 
         log.info("Finding all restaurants");
 
@@ -44,7 +44,7 @@ public class RestaurantService {
 
     /* 지역별 가게 불러오기 */
     @Transactional(readOnly = true)
-    public Page<RestaurantInfoDto> restaurantPageListByRegion(String region, Pageable pageable) {
+    public Page<RestaurantInfoDto> readAllRestaurantByRegion(String region, Pageable pageable) {
 
         log.info("Finding by region");
 
@@ -55,7 +55,7 @@ public class RestaurantService {
 
     /* 주소로 가게 불러오기 */
     @Transactional(readOnly = true)
-    public Page<RestaurantInfoDto> restaurantPageListByLocation(String searchKeyword, Pageable pageable) {
+    public Page<RestaurantInfoDto> readAllRestaurantByLocation(String searchKeyword, Pageable pageable) {
 
         log.info("Finding all restaurants with searchKeyword: {}", searchKeyword);
         Page<Restaurant> restaurants =

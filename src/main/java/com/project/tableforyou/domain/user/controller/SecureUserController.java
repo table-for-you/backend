@@ -35,7 +35,7 @@ public class SecureUserController {
 
     /* 회원 불러오기 */
     @GetMapping
-    public UserResponseDto read(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public UserResponseDto readUser(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         return userService.readUser(principalDetails.getUsername());
     }
 
@@ -49,7 +49,7 @@ public class SecureUserController {
 
     /* 회원 업데이트 */
     @PutMapping
-    public ResponseEntity<String> update(@Valid @RequestBody UserUpdateDto userUpdateDto,
+    public ResponseEntity<String> updateUser(@Valid @RequestBody UserUpdateDto userUpdateDto,
                                          @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         userService.updateUser(principalDetails.getUsername(), userUpdateDto);
@@ -59,7 +59,7 @@ public class SecureUserController {
 
     /* 회원 삭제 */
     @DeleteMapping
-    public ResponseEntity<String> delete(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<String> deleteUser(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         userService.deleteUser(principalDetails.getUsername());
         return ResponseEntity.ok("회원 삭제 성공.");
@@ -67,8 +67,8 @@ public class SecureUserController {
 
     /* 좋아요한 가게 불러오기 */
     @GetMapping("/like-restaurants")
-    public List<RestaurantNameDto> likeRestaurants(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public List<RestaurantNameDto> getRestaurantLike(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        return likeService.getLikeRestaurants(principalDetails.getUsername());
+        return likeService.getRestaurantLike(principalDetails.getUsername());
     }
 }

@@ -25,7 +25,7 @@ public class SecureRestaurantController {
             return ResponseEntity.ok("가게 평점 업데이트 완료.");
         } catch (Exception e) {
             log.error("Error occurred while updating restaurant rating: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("가게 평점 업데이트 실패.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("가게 평점 업데이트 실패.");
         }
     }
 }

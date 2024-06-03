@@ -44,7 +44,7 @@ public class MenuService {
 
     /* 메뉴 리스트 페이징 */
     @Transactional(readOnly = true)
-    public Page<MenuResponseDto> menuPageList(Long restaurantId, Pageable pageable) {
+    public Page<MenuResponseDto> readAllMenu(Long restaurantId, Pageable pageable) {
 
         log.info("Finding all menus with restaurant: {}", restaurantId);
         Page<Menu> menus = menuRepository.findByRestaurantId(restaurantId, pageable);

@@ -34,11 +34,11 @@ public class OwnerController {
 
     /* 가게 생성 */
     @PostMapping
-    public ResponseEntity<Object> create(@Valid @RequestBody RestaurantRequestDto dto,
+    public ResponseEntity<Long> createRestaurant(@Valid @RequestBody RestaurantRequestDto dto,
                                          @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        ownerRestaurantService.saveRestaurant(principalDetails.getUsername(), dto);
-        return ResponseEntity.ok("가게 신청이 완료 되었습니다. 승인을 기다려 주세요.");
+
+        return ResponseEntity.ok(ownerRestaurantService.saveRestaurant(principalDetails.getUsername(), dto));
     }
 
     /* 사장 가게 불러오기 */
@@ -50,7 +50,7 @@ public class OwnerController {
 
     /* 가게 업데이트 */
     @PutMapping("/{restaurantId}")
-    public ResponseEntity<String> update(@Valid @RequestBody RestaurantUpdateDto restaurantUpdateDto,
+    public ResponseEntity<String> updateRestaurant(@Valid @RequestBody RestaurantUpdateDto restaurantUpdateDto,
                                          @PathVariable(name = "restaurantId") Long restaurantId) {
 
         ownerRestaurantService.updateRestaurant(restaurantId, restaurantUpdateDto);
@@ -60,7 +60,7 @@ public class OwnerController {
 
     /* 가게 삭제 */
     @DeleteMapping("/{restaurantId}")
-    public ResponseEntity<String> delete(@PathVariable(name = "restaurantId") Long restaurantId) {
+    public ResponseEntity<String> deleteRestaurant(@PathVariable(name = "restaurantId") Long restaurantId) {
 
         ownerRestaurantService.deleteRestaurant(restaurantId);
         return ResponseEntity.ok("가게 삭제 완료.");
@@ -69,7 +69,7 @@ public class OwnerController {
 
     /* 해당 가게 예약자 불러오기. */
     @GetMapping("/{restaurantId}/reservations")
-    public List<QueueReservationResDto> readAll(@PathVariable(name = "restaurantId") Long restaurantId) {
+    public List<QueueReservationResDto> readAllRestaurant(@PathVariable(name = "restaurantId") Long restaurantId) {
         return queueReservationService.findAllQueueReservations(restaurantId);
     }
 }

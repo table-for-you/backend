@@ -64,7 +64,7 @@ public class LikeService {
 
     /* 사용자가 좋아요한 가게 불러오기. */
     @Transactional(readOnly = true)
-    public List<RestaurantNameDto> getLikeRestaurants(String username) {
+    public List<RestaurantNameDto> getRestaurantLike(String username) {
 
         List<Like> likes = likeRepository.findByUser_Username(username);
 
