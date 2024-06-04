@@ -2,6 +2,7 @@ package com.project.tableforyou.domain.user.controller;
 
 import com.project.tableforyou.domain.user.dto.SignUpDto;
 import com.project.tableforyou.domain.user.service.UserService;
+import com.project.tableforyou.utils.api.ApiUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,21 +24,21 @@ public class PublicUserController {
 
     /* 회원가입 */
     @PostMapping("/register")
-    public ResponseEntity<String> register(@Valid @RequestBody SignUpDto signUpDto) {
+    public ResponseEntity<?> register(@Valid @RequestBody SignUpDto signUpDto) {
 
         userService.signUp(signUpDto);
-        return ResponseEntity.ok("회원가입 성공.");
+        return ResponseEntity.ok(ApiUtil.from("회원가입 성공."));
     }
 
     /* 아이디 중복 확인 */
     @GetMapping("/check-username")
-    public boolean checkUsernameExists(@RequestParam("username") String username) {
-        return userService.existsByUsername(username);
+    public ResponseEntity<?> checkUsernameExists(@RequestParam("username") String username) {
+        return ResponseEntity.ok(ApiUtil.from(userService.existsByUsername(username)));
     }
 
     /* 닉네임 중복 확인 */
     @GetMapping("/check-nickname")
-    public boolean checkNicknameExists(@RequestParam("nickname") String nickname) {
-        return userService.existsByNickname(nickname);
+    public ResponseEntity<?> checkNicknameExists(@RequestParam("nickname") String nickname) {
+        return ResponseEntity.ok(ApiUtil.from(userService.existsByNickname(nickname)));
     }
 }

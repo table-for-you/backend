@@ -2,6 +2,7 @@ package com.project.tableforyou.domain.reservation.controller;
 
 import com.project.tableforyou.domain.reservation.entity.TimeSlot;
 import com.project.tableforyou.domain.reservation.service.TimeSlotReservationService;
+import com.project.tableforyou.utils.api.ApiUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +20,9 @@ public class PublicTimeSlotReservationController {
 
     /* 특정 시간대 예약 다 찼는지 확인 */
     @GetMapping("/{restaurantId}/timeslot-reservations-full-check")
-    public ResponseEntity<Boolean> checkTimeReservationFull(@PathVariable(name = "restaurantId") Long restaurantId,
+    public ResponseEntity<?> checkTimeReservationFull(@PathVariable(name = "restaurantId") Long restaurantId,
                                                             @RequestParam(value = "time-slot") TimeSlot timeSlot) {
-        boolean check = timeSlotReservationService.checkTimeSlotReservationFull(restaurantId, timeSlot);
-        return ResponseEntity.ok(check);
+
+        return ResponseEntity.ok(ApiUtil.from(timeSlotReservationService.checkTimeSlotReservationFull(restaurantId, timeSlot)));
     }
 }

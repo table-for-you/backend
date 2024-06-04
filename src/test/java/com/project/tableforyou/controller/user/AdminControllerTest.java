@@ -346,7 +346,7 @@ public class AdminControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("회원 삭제 성공."));
+                .andExpect(jsonPath("$.response").value("회원 삭제 성공."));
     }
 
     @Test
@@ -536,7 +536,7 @@ public class AdminControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("사용자 가게 등록 완료."));
+                .andExpect(jsonPath("$.response").value("사용자 가게 등록 완료."));
     }
 
     @Test
@@ -557,6 +557,6 @@ public class AdminControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("가게 삭제 완료."));
+                .andExpect(jsonPath("$.response").value("가게 삭제 완료."));
     }
 }

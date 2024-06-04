@@ -1,6 +1,7 @@
 package com.project.tableforyou.domain.restaurant.controller;
 
 import com.project.tableforyou.domain.restaurant.service.RestaurantService;
+import com.project.tableforyou.utils.api.ApiUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,14 +19,11 @@ public class SecureRestaurantController {
 
     /* 가게 평점 업데이트*/
     @PatchMapping("/{restaurantId}/update-rating")
-    public ResponseEntity<String> updateRating(@PathVariable(name = "restaurantId") Long restaurantId,
-                                               @RequestParam("rating") Double rating) {
-        try {
-            restaurantService.updateRating(restaurantId, rating);
-            return ResponseEntity.ok("가게 평점 업데이트 완료.");
-        } catch (Exception e) {
-            log.error("Error occurred while updating restaurant rating: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("가게 평점 업데이트 실패.");
-        }
+    public ResponseEntity<?> updateRating(@PathVariable(name = "restaurantId") Long restaurantId,
+                                          @RequestParam("rating") Double rating) {
+
+        restaurantService.updateRating(restaurantId, rating);
+        return ResponseEntity.ok(ApiUtil.from("가게 평점 업데이트 완료."));
+
     }
 }

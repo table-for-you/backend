@@ -123,7 +123,7 @@ public class SecureUserControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("true"));
+                .andExpect(jsonPath("$.response").value("true"));
     }
 
     @Test
@@ -150,7 +150,7 @@ public class SecureUserControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("회원 업데이트 성공."));
+                .andExpect(jsonPath("$.response").value("회원 업데이트 성공."));
     }
 
     @Test
@@ -218,7 +218,7 @@ public class SecureUserControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("회원 삭제 성공."));
+                .andExpect(jsonPath("$.response").value("회원 삭제 성공."));
     }
 
     @Test

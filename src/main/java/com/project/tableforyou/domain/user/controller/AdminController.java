@@ -8,6 +8,7 @@ import com.project.tableforyou.domain.user.dto.UserResponseDto;
 import com.project.tableforyou.domain.user.service.AdminService;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
+import com.project.tableforyou.utils.api.ApiUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -58,10 +59,10 @@ public class AdminController {
 
     /* 회원 삭제 */
     @DeleteMapping("/users/{userId}")
-    public ResponseEntity<String> deleteUser(@PathVariable(name = "userId") Long userId) {
+    public ResponseEntity<?> deleteUser(@PathVariable(name = "userId") Long userId) {
 
         adminService.deleteUserByAdmin(userId);
-        return ResponseEntity.ok("회원 삭제 성공.");
+        return ResponseEntity.ok(ApiUtil.from("회원 삭제 성공."));
     }
 
     /* 등록 처리 중인 가게 불러오기 */
@@ -99,17 +100,17 @@ public class AdminController {
 
     /* 가게 추가 요청 승인*/
     @PatchMapping("/restaurants/{restaurantId}")
-    public ResponseEntity<String> approvalRestaurant(@PathVariable(name = "restaurantId") Long restaurantId) {
+    public ResponseEntity<?> approvalRestaurant(@PathVariable(name = "restaurantId") Long restaurantId) {
 
         adminRestaurantService.approvalRestaurant(restaurantId);
-        return ResponseEntity.ok("사용자 가게 등록 완료.");
+        return ResponseEntity.ok(ApiUtil.from("사용자 가게 등록 완료."));
     }
 
     /* 가게 삭제 (승인 거절) */
     @DeleteMapping("/restaurants/{restaurantId}")
-    public ResponseEntity<String> deleteRestaurant(@PathVariable(name = "restaurantId") Long restaurantId) {
+    public ResponseEntity<?> deleteRestaurant(@PathVariable(name = "restaurantId") Long restaurantId) {
 
         adminRestaurantService.deleteRestaurant(restaurantId);
-        return ResponseEntity.ok("가게 삭제 완료.");
+        return ResponseEntity.ok(ApiUtil.from("가게 삭제 완료."));
     }
 }

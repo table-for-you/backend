@@ -7,6 +7,7 @@ import com.project.tableforyou.domain.user.dto.UserResponseDto;
 import com.project.tableforyou.domain.user.dto.UserUpdateDto;
 import com.project.tableforyou.domain.user.service.UserService;
 import com.project.tableforyou.security.auth.PrincipalDetails;
+import com.project.tableforyou.utils.api.ApiUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,28 +42,28 @@ public class SecureUserController {
 
     /* 현재 비밀번호 검사 */
     @PostMapping("/check-password")
-    public boolean checkPassword(@AuthenticationPrincipal PrincipalDetails principalDetails,
+    public ResponseEntity<?> checkPassword(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                  @RequestBody PasswordDto passwordDto) {
 
-        return userService.checkPass(principalDetails.getUsername(), passwordDto);
+        return ResponseEntity.ok(ApiUtil.from(userService.checkPass(principalDetails.getUsername(), passwordDto)));
     }
 
     /* 회원 업데이트 */
     @PutMapping
-    public ResponseEntity<String> updateUser(@Valid @RequestBody UserUpdateDto userUpdateDto,
+    public ResponseEntity<?> updateUser(@Valid @RequestBody UserUpdateDto userUpdateDto,
                                          @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         userService.updateUser(principalDetails.getUsername(), userUpdateDto);
-        return ResponseEntity.ok("회원 업데이트 성공.");
+        return ResponseEntity.ok(ApiUtil.from("회원 업데이트 성공."));
 
     }
 
     /* 회원 삭제 */
     @DeleteMapping
-    public ResponseEntity<String> deleteUser(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<?> deleteUser(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         userService.deleteUser(principalDetails.getUsername());
-        return ResponseEntity.ok("회원 삭제 성공.");
+        return ResponseEntity.ok(ApiUtil.from("회원 삭제 성공."));
     }
 
     /* 좋아요한 가게 불러오기 */

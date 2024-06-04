@@ -2,6 +2,7 @@ package com.project.tableforyou.domain.like.controller;
 
 import com.project.tableforyou.domain.like.service.LikeService;
 import com.project.tableforyou.security.auth.PrincipalDetails;
+import com.project.tableforyou.utils.api.ApiUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,18 +17,18 @@ public class LikeController {
 
     /* 가게 좋아요 증가 */
     @PostMapping("{restaurantId}/like")
-    public ResponseEntity<String> likeRestaurant(@PathVariable(name = "restaurantId") Long restaurantId,
+    public ResponseEntity<?> likeRestaurant(@PathVariable(name = "restaurantId") Long restaurantId,
                                                  @AuthenticationPrincipal PrincipalDetails principalDetails) {
         likeService.likeRestaurant(principalDetails.getUsername(), restaurantId);
-        return ResponseEntity.ok("가게 좋아요 증가.");
+        return ResponseEntity.ok(ApiUtil.from("가게 좋아요 증가."));
     }
 
     /* 가게 좋아요 감소 */
     @DeleteMapping("{restaurantId}/like")
-    public ResponseEntity<String> unLikeRestaurant(@PathVariable(name = "restaurantId") Long restaurantId,
+    public ResponseEntity<?> unLikeRestaurant(@PathVariable(name = "restaurantId") Long restaurantId,
                                                    @AuthenticationPrincipal PrincipalDetails principalDetails) {
         likeService.unLikeRestaurant(principalDetails.getUsername(), restaurantId);
-        return ResponseEntity.ok("가게 좋아요 감소.");
+        return ResponseEntity.ok(ApiUtil.from("가게 좋아요 감소."));
     }
 
 }

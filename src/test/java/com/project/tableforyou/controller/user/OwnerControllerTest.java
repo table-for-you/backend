@@ -1,9 +1,15 @@
 package com.project.tableforyou.controller.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.tableforyou.domain.reservation.dto.QueueReservationReqDto;
 import com.project.tableforyou.domain.reservation.dto.QueueReservationResDto;
+import com.project.tableforyou.domain.reservation.dto.TimeSlotReservationResDto;
 import com.project.tableforyou.domain.reservation.entity.QueueReservation;
+import com.project.tableforyou.domain.reservation.entity.TimeSlot;
+import com.project.tableforyou.domain.reservation.entity.TimeSlotReservation;
+import com.project.tableforyou.domain.reservation.service.OwnerReservationService;
 import com.project.tableforyou.domain.reservation.service.QueueReservationService;
+import com.project.tableforyou.domain.reservation.service.TimeSlotReservationService;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantNameDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantRequestDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantUpdateDto;
@@ -31,6 +37,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -39,7 +47,8 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(OwnerController.class)
 @AutoConfigureDataJpa
@@ -57,8 +66,18 @@ public class OwnerControllerTest {
     @MockBean
     private QueueReservationService queueReservationService;
 
+    @MockBean
+    private TimeSlotReservationService timeSlotReservationService;
+
+    @MockBean
+    private OwnerReservationService ownerReservationService;
+
     private PrincipalDetails principalDetails;
     private User user;
+
+    private QueueReservation reservation1;
+    private QueueReservation reservation2;
+    private QueueReservation reservation3;
 
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext) {
@@ -71,6 +90,8 @@ public class OwnerControllerTest {
                 .defaultRequest(delete("/**").with(csrf()))
                 .build();
 
+        createReservation();
+
         user = User.builder()
                 .username("owner")
                 .password("password")
@@ -79,6 +100,24 @@ public class OwnerControllerTest {
 
         principalDetails = new PrincipalDetails(user);
     }
+
+    void createReservation() {
+        this.reservation1 = QueueReservation.builder()
+                .username("test1")
+                .booking(1)
+                .build();
+
+        this.reservation2 = QueueReservation.builder()
+                .username("test2")
+                .booking(2)
+                .build();
+
+        this.reservation3 = QueueReservation.builder()
+                .username("test3")
+                .booking(3)
+                .build();
+    }
+
 
     @Test
     @DisplayName("가게 신청 성공 테스트")
@@ -90,6 +129,8 @@ public class OwnerControllerTest {
                 .region(Region.DAEGU)
                 .location("대구 중구")
                 .build();
+
+        given(ownerRestaurantService.saveRestaurant(eq(user.getUsername()), any(RestaurantRequestDto.class))).willReturn(1L);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -103,7 +144,7 @@ public class OwnerControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("가게 신청이 완료 되었습니다. 승인을 기다려 주세요."));
+                .andExpect(jsonPath("$.response").value(1));
     }
 
     @Test
@@ -185,7 +226,7 @@ public class OwnerControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("가게 수정 완료."));
+                .andExpect(jsonPath("$.response").value("가게 수정 완료."));
     }
 
     @Test
@@ -235,7 +276,7 @@ public class OwnerControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("가게 삭제 완료."));
+                .andExpect(jsonPath("$.response").value("가게 삭제 완료."));
     }
 
     @Test
@@ -260,8 +301,8 @@ public class OwnerControllerTest {
     }
 
     @Test
-    @DisplayName("해당 가게 예약자 불러오기 테스트")
-    public void getAllReservationTest() throws Exception {
+    @DisplayName("해당 가게 예약자 불러오기(번호표) 테스트")
+    public void getAllQueueReservationTest() throws Exception {
         // given
         Long restaurantId = 1L;
 
@@ -275,12 +316,12 @@ public class OwnerControllerTest {
                         .username("user2")
                         .build())
         );
-
+        given(ownerReservationService.isOwnerRestaurant(restaurantId, user.getUsername())).willReturn(true);
         given(queueReservationService.findAllQueueReservations(restaurantId)).willReturn(reservations);
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                get("/owner/restaurants/{restaurantId}/reservations", restaurantId)
+                get("/owner/restaurants/{restaurantId}/queue-reservations", restaurantId)
                         .with(user(principalDetails))
         );
 
@@ -292,5 +333,268 @@ public class OwnerControllerTest {
                 .andExpect(jsonPath("$[0].username").value("user1"))
                 .andExpect(jsonPath("$[1].booking").value(2))
                 .andExpect(jsonPath("$[1].username").value("user2"));
+    }
+
+    @Test
+    @DisplayName("해당 가게 예약자 불러오기(번호표) 실패 테스트 - 권한 없음")
+    public void getAllQueueReservationFailedTest() throws Exception {
+        // given
+        Long restaurantId = 1L;
+
+        given(ownerReservationService.isOwnerRestaurant(restaurantId, user.getUsername())).willReturn(false);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/owner/restaurants/{restaurantId}/queue-reservations", restaurantId)
+                        .with(user(principalDetails))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value(ErrorCode.UNAUTHORIZED.getMessage()));
+    }
+
+    @Test
+    @DisplayName("예약 순서 미루기(번호표) 테스트")
+    void postponedGuestBookingByOwner() throws Exception {
+        // given
+        Long restaurantId = 1L;
+
+        List<QueueReservationResDto> reservations = List.of(
+                new QueueReservationResDto(reservation1),
+                new QueueReservationResDto(reservation2),
+                new QueueReservationResDto(reservation3)
+        );
+
+        QueueReservationReqDto reservationReqDto = new QueueReservationReqDto();
+        reservationReqDto.setBooking(3);
+
+        given(ownerReservationService.isOwnerRestaurant(restaurantId, user.getUsername())).willReturn(true);
+
+        given(queueReservationService
+                .getQueueReservations(eq(restaurantId), eq(principalDetails.getUsername()), any(QueueReservationReqDto.class)))
+                .willReturn(reservations);
+
+        given(queueReservationService.decreaseBooking(reservations, restaurantId)).willReturn(null);
+
+        doNothing().when(queueReservationService)
+                .postponedGuestBooking(eq(restaurantId), eq(principalDetails.getUsername()), any(QueueReservationReqDto.class));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                put("/owner/restaurants/{restaurantId}/queue-reservations/postponed-guest-booking/{username}",
+                        restaurantId, user.getUsername())
+                        .with(user(principalDetails))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reservationReqDto))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").value("예약자 미루기 + 앞당기기 성공."));
+    }
+
+    @Test
+    @DisplayName("예약 순서 미루기(번호표) 실패 테스트 - 권한 없음")
+    public void postponedGuestBookingFailedByOwnerTest() throws Exception {
+        // given
+        Long restaurantId = 1L;
+
+        given(ownerReservationService.isOwnerRestaurant(restaurantId, user.getUsername())).willReturn(false);
+
+        QueueReservationReqDto reservationReqDto = new QueueReservationReqDto();
+        reservationReqDto.setBooking(3);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                put("/owner/restaurants/{restaurantId}/queue-reservations/postponed-guest-booking/{username}",
+                        restaurantId, user.getUsername())
+                        .with(user(principalDetails))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reservationReqDto))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value(ErrorCode.UNAUTHORIZED.getMessage()));
+    }
+
+    @Test
+    @DisplayName("예약 삭제(번호표) 테스트")
+    void deleteQueueReservationByOwnerTest() throws Exception {
+        // given
+        Long restaurantId = 1L;
+
+        List<QueueReservationResDto> reservations = List.of(
+                new QueueReservationResDto(reservation1),
+                new QueueReservationResDto(reservation2),
+                new QueueReservationResDto(reservation3)
+        );
+
+        given(ownerReservationService.isOwnerRestaurant(restaurantId, user.getUsername())).willReturn(true);
+
+        given(queueReservationService
+                .getQueueReservations(restaurantId, principalDetails.getUsername(), null))
+                .willReturn(reservations);
+
+        given(queueReservationService.decreaseBooking(reservations, restaurantId)).willReturn(null);
+
+        doNothing().when(queueReservationService)
+                .deleteQueueReservation(restaurantId, principalDetails.getUsername());
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                delete("/owner/restaurants/{restaurantId}/queue-reservations/{username}", restaurantId, user.getUsername())
+                        .with(user(principalDetails))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").value("예약자 삭제 성공."));
+    }
+
+    @Test
+    @DisplayName("예약 삭제 실패(번호표) 테스트 - 권한 없음")
+    public void deleteQueueReservationByOwnerFailedTest() throws Exception {
+        // given
+        Long restaurantId = 1L;
+
+        given(ownerReservationService.isOwnerRestaurant(restaurantId, user.getUsername())).willReturn(false);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                delete("/owner/restaurants/{restaurantId}/queue-reservations/{username}", restaurantId, user.getUsername())
+                        .with(user(principalDetails))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value(ErrorCode.UNAUTHORIZED.getMessage()));
+    }
+
+    @Test
+    @DisplayName("해당 가게 예약자 불러오기(시간대) 테스트")
+    public void getAllTimeSlotReservationTest() throws Exception {
+        // given
+        Long restaurantId = 1L;
+
+        List<TimeSlotReservationResDto> reservations = List.of(
+                new TimeSlotReservationResDto(TimeSlotReservation.builder()
+                        .username("user1")
+                        .timeSlot(TimeSlot.TEN_AM)
+                        .build()),
+                new TimeSlotReservationResDto(TimeSlotReservation.builder()
+                        .timeSlot(TimeSlot.TEN_AM)
+                        .username("user2")
+                        .build())
+        );
+        given(ownerReservationService.isOwnerRestaurant(restaurantId, user.getUsername())).willReturn(true);
+        given(timeSlotReservationService.findAllTimeSlotReservations(eq(restaurantId), any(TimeSlot.class))).willReturn(reservations);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/owner/restaurants/{restaurantId}/timeslot-reservations", restaurantId)
+                        .with(user(principalDetails))
+                        .param("time-slot", "TEN_AM")
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].username").value("user1"))
+                .andExpect(jsonPath("$[1].username").value("user2"));
+    }
+
+    @Test
+    @DisplayName("해당 가게 예약자 불러오기(시간대) 실패 테스트 - 권한 없음")
+    public void getAllTimeSlotReservationFailedTest() throws Exception {
+        // given
+        Long restaurantId = 1L;
+
+        given(ownerReservationService.isOwnerRestaurant(restaurantId, user.getUsername())).willReturn(false);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/owner/restaurants/{restaurantId}/timeslot-reservations", restaurantId)
+                        .with(user(principalDetails))
+                        .param("time-slot", "TEN_AM")
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value(ErrorCode.UNAUTHORIZED.getMessage()));
+    }
+
+    @Test
+    @DisplayName("예약 삭제(시간대) 테스트")
+    void deleteTimeSlotReservationByOwnerTest() throws Exception {
+        // given
+        Long restaurantId = 1L;
+
+        List<TimeSlotReservationResDto> reservations = List.of(
+                new TimeSlotReservationResDto(TimeSlotReservation.builder()
+                        .username("user1")
+                        .timeSlot(TimeSlot.TEN_AM)
+                        .build()),
+                new TimeSlotReservationResDto(TimeSlotReservation.builder()
+                        .timeSlot(TimeSlot.TEN_AM)
+                        .username("user2")
+                        .build())
+        );
+
+        given(ownerReservationService.isOwnerRestaurant(restaurantId, user.getUsername())).willReturn(true);
+
+
+        doNothing().when(timeSlotReservationService)
+                .deleteTimeSlotReservation(eq(restaurantId), eq(user.getUsername()), any(TimeSlot.class));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                delete("/owner/restaurants/{restaurantId}/timeslot-reservations/{username}", restaurantId, user.getUsername())
+                        .with(user(principalDetails))
+                        .param("time-slot", "TEN_AM")
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.response").value("예약자 삭제 성공."));
+    }
+
+    @Test
+    @DisplayName("예약 삭제(시간대) 실패 테스트 - 권한 없음")
+    public void deleteTimeSlotReservationByOwnerFailedTest() throws Exception {
+        // given
+        Long restaurantId = 1L;
+
+        given(ownerReservationService.isOwnerRestaurant(restaurantId, user.getUsername())).willReturn(false);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                delete("/owner/restaurants/{restaurantId}/timeslot-reservations/{username}", restaurantId, user.getUsername())
+                        .with(user(principalDetails))
+                        .param("time-slot", "TEN_AM")
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value(ErrorCode.UNAUTHORIZED.getMessage()));
     }
 }

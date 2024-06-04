@@ -151,7 +151,7 @@ public class PublicUserControllerTest {
         // then
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(content().string("true"))
+                .andExpect(jsonPath("$.response").value("true"))
                 .andDo(print());
     }
 
@@ -191,7 +191,7 @@ public class PublicUserControllerTest {
         // then
         resultActions
                 .andExpect(status().isOk())
-                .andExpect(content().string("true"))
+                .andExpect(jsonPath("$.response").value("true"))
                 .andDo(print());
     }
 

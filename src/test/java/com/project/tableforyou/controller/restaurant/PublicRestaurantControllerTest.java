@@ -314,7 +314,7 @@ public class PublicRestaurantControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(String.valueOf(restaurantWaitingNum)));
+                .andExpect(jsonPath("$.response").value(String.valueOf(restaurantWaitingNum)));
     }
 
     @Test
@@ -406,7 +406,7 @@ public class PublicRestaurantControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("가게 좌석 증가 완료."));
+                .andExpect(jsonPath("$.response").value("가게 좌석 증가 완료."));
     }
 
     @Test
@@ -429,7 +429,7 @@ public class PublicRestaurantControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("가게 좌석 감소 완료."));
+                .andExpect(jsonPath("$.response").value("가게 좌석 감소 완료."));
     }
 
     @Test
@@ -452,7 +452,7 @@ public class PublicRestaurantControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("가게 좌석 업데이트 실패."));
+                .andExpect(jsonPath("$.message").value(ErrorCode.INVALID_PARAMETER.getMessage()));
     }
 
     @Test
@@ -475,6 +475,6 @@ public class PublicRestaurantControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("가게 좌석 업데이트 실패."));
+                .andExpect(jsonPath("$.message").value(ErrorCode.INVALID_PARAMETER.getMessage()));
     }
 }

@@ -97,6 +97,6 @@ public class PublicQueueReservationControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value(reservation1.getUsername() + "님 입장"));
+                .andExpect(jsonPath("$.response").value(reservation1.getUsername() + "님 입장"));
     }
 }

@@ -85,7 +85,7 @@ public class SecureRestaurantControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("가게 평점 업데이트 완료."));
+                .andExpect(jsonPath("$.response").value("가게 평점 업데이트 완료."));
     }
 
     @Test

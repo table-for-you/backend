@@ -113,7 +113,7 @@ public class SecureQueueReservationControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("예약자 추가 성공."));
+                .andExpect(jsonPath("$.response").value("예약자 추가 성공."));
     }
 
     @Test
@@ -159,11 +159,11 @@ public class SecureQueueReservationControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("true"));
+                .andExpect(jsonPath("$.response").value("true"));
     }
 
     @Test
-    @DisplayName("가게 예약 확인 테스트 - 예약 o")
+    @DisplayName("가게 예약 확인 테스트 - 예약 x")
     void checkUserReservationFalseTest() throws Exception {
         // given
         Long restaurantId = 1L;
@@ -182,12 +182,12 @@ public class SecureQueueReservationControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("false"));
+                .andExpect(jsonPath("$.response").value("false"));
     }
 
     @Test
     @DisplayName("예약 순서 미루기 테스트")
-    void readAllQueueReservationTest() throws Exception {
+    void postponedGuestBookingTest() throws Exception {
         // given
         Long restaurantId = 1L;
 
@@ -221,7 +221,7 @@ public class SecureQueueReservationControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("예약자 미루기 + 앞당기기 성공."));
+                .andExpect(jsonPath("$.response").value("예약자 미루기 + 앞당기기 성공."));
     }
 
     @Test
@@ -289,6 +289,6 @@ public class SecureQueueReservationControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string("예약자 삭제 성공."));
+                .andExpect(jsonPath("$.response").value("예약자 삭제 성공."));
     }
 }

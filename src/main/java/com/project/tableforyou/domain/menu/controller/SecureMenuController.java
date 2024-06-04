@@ -4,6 +4,7 @@ import com.project.tableforyou.domain.menu.dto.MenuRequestDto;
 import com.project.tableforyou.domain.menu.dto.MenuResponseDto;
 import com.project.tableforyou.domain.menu.dto.MenuUpdateDto;
 import com.project.tableforyou.domain.menu.service.MenuService;
+import com.project.tableforyou.utils.api.ApiUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,29 +25,29 @@ public class SecureMenuController {
 
     /* 메뉴 생성 */
     @PostMapping("/{restaurantId}/menus")
-    public ResponseEntity<Long> createMenu(@Valid @RequestBody MenuRequestDto menuDto,
+    public ResponseEntity<?> createMenu(@Valid @RequestBody MenuRequestDto menuDto,
                                          @PathVariable(name = "restaurantId") Long restaurantId) {
 
 
-        return ResponseEntity.ok(menuService.saveMenu(restaurantId, menuDto));
+        return ResponseEntity.ok(ApiUtil.from(menuService.saveMenu(restaurantId, menuDto)));
     }
 
     /* 메뉴 업데이트 */
     @PutMapping("/{restaurantId}/menus/{menuId}")
-    public ResponseEntity<String> updateMenu(@Valid@RequestBody MenuUpdateDto menuUpdateDto,
+    public ResponseEntity<?> updateMenu(@Valid@RequestBody MenuUpdateDto menuUpdateDto,
                                          @PathVariable(name = "restaurantId") Long restaurantId,
                                          @PathVariable(name = "menuId") Long menuId) {
 
         menuService.updateMenu(restaurantId, menuId, menuUpdateDto);
-        return ResponseEntity.ok("메뉴 업데이트 완료.");
+        return ResponseEntity.ok(ApiUtil.from("메뉴 업데이트 완료."));
     }
 
     /* 메뉴 삭제 */
     @DeleteMapping("/{restaurantId}/menus/{menuId}")
-    public ResponseEntity<String> deleteMenu(@PathVariable(name = "restaurantId") Long restaurantId,
+    public ResponseEntity<?> deleteMenu(@PathVariable(name = "restaurantId") Long restaurantId,
                                          @PathVariable(name = "menuId") Long menuId) {
 
         menuService.deleteMenu(restaurantId, menuId);
-        return ResponseEntity.ok("메뉴 삭제 완료.");
+        return ResponseEntity.ok(ApiUtil.from("메뉴 삭제 완료."));
     }
 }
