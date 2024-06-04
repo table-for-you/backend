@@ -155,7 +155,7 @@ public class PublicRestaurantControllerTest {
                 new RestaurantInfoDto(restaurant3)
         ));
 
-        given(restaurantService.restaurantPageList(any(Pageable.class))).willReturn(restaurants);
+        given(restaurantService.readAllRestaurant(any(Pageable.class))).willReturn(restaurants);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -218,7 +218,7 @@ public class PublicRestaurantControllerTest {
                 new RestaurantInfoDto(restaurant3)
         ));
 
-        given(restaurantService.restaurantPageListByRegion(anyString(), any(Pageable.class))).willReturn(restaurants);
+        given(restaurantService.readAllRestaurantByRegion(anyString(), any(Pageable.class))).willReturn(restaurants);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -250,7 +250,7 @@ public class PublicRestaurantControllerTest {
                 new RestaurantInfoDto(restaurant3)
         ));
 
-        given(restaurantService.restaurantPageListByLocation(anyString(), any(Pageable.class))).willReturn(restaurants);
+        given(restaurantService.readAllRestaurantByLocation(anyString(), any(Pageable.class))).willReturn(restaurants);
 
         // when
         ResultActions resultActions = mockMvc.perform(

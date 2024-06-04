@@ -161,7 +161,7 @@ public class AdminControllerTest {
                 new UserInfoDto(test3)
         ));
 
-        given(adminService.userPageList(any(Pageable.class))).willReturn(users);
+        given(adminService.readAllUser(any(Pageable.class))).willReturn(users);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -192,7 +192,7 @@ public class AdminControllerTest {
                 new UserInfoDto(test2)
         ));
 
-        given(adminService.userPageListByName(anyString(), any(Pageable.class))).willReturn(users);
+        given(adminService.readAllUserByName(anyString(), any(Pageable.class))).willReturn(users);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -225,7 +225,7 @@ public class AdminControllerTest {
                 new UserInfoDto(test3)
         ));
 
-        given(adminService.userPageListByNickname(anyString(), any(Pageable.class))).willReturn(users);
+        given(adminService.readAllUserByNickname(anyString(), any(Pageable.class))).willReturn(users);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -258,7 +258,7 @@ public class AdminControllerTest {
                 new UserInfoDto(test3))
         );
 
-        given(adminService.userPageListByRole(anyString(), any(Pageable.class))).willReturn(users);
+        given(adminService.readAllUserByRole(anyString(), any(Pageable.class))).willReturn(users);
 
         // when
         ResultActions resultActions =  mockMvc.perform(
@@ -312,7 +312,7 @@ public class AdminControllerTest {
         Long userId = 1L;
         UserResponseDto userResponseDto = new UserResponseDto(test1);
 
-        given(adminService.adminReadUser(userId)).willReturn(userResponseDto);
+        given(adminService.readUserByAdmin(userId)).willReturn(userResponseDto);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -358,7 +358,7 @@ public class AdminControllerTest {
                 new RestaurantManageDto(restaurant2)
         ));
 
-        given(adminRestaurantService.handleRestaurantList(any(Pageable.class))).willReturn(restaurants);
+        given(adminRestaurantService.readPendingRestaurant(any(Pageable.class))).willReturn(restaurants);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -405,7 +405,7 @@ public class AdminControllerTest {
                 new RestaurantManageDto(restaurant4)
         ));
 
-        given(adminRestaurantService.approvedAllRestaurant(any(Pageable.class))).willReturn(restaurants);
+        given(adminRestaurantService.readApprovedRestaurant(any(Pageable.class))).willReturn(restaurants);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -438,7 +438,7 @@ public class AdminControllerTest {
                 new RestaurantManageDto(restaurant4)
         ));
 
-        given(adminRestaurantService.approvedRestaurantByRestaurantName(anyString(), any(Pageable.class))).willReturn(restaurants);
+        given(adminRestaurantService.readApprovedRestaurantByRestaurantName(anyString(), any(Pageable.class))).willReturn(restaurants);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -470,7 +470,7 @@ public class AdminControllerTest {
                 new RestaurantManageDto(restaurant2)
         ));
 
-        given(adminRestaurantService.approvedRestaurantByOwnerName(anyString(), any(Pageable.class))).willReturn(restaurants);
+        given(adminRestaurantService.readApprovedRestaurantByOwnerName(anyString(), any(Pageable.class))).willReturn(restaurants);
 
         // when
         ResultActions resultActions = mockMvc.perform(

@@ -266,7 +266,7 @@ public class SecureUserControllerTest {
                 new RestaurantNameDto(Restaurant.builder().name("Restaurant2").build())
         );
 
-        given(likeService.getLikeRestaurants(user.getUsername())).willReturn(likeRestaurants);
+        given(likeService.getRestaurantLike(user.getUsername())).willReturn(likeRestaurants);
 
         // when
         ResultActions resultActions = mockMvc.perform(
