@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,16 +24,14 @@ public class PublicQueueReservationController {
 
     /* 예약자 앞으로 당기기 */
     @PatchMapping("/{restaurantId}/queue-reservations/decrease-booking")
-    public ResponseEntity<String> decreaseBooking(@PathVariable(name = "restaurantId") Long restaurantId) {
-        try {
-            List<QueueReservationResDto> reservations = queueReservationService.getQueueReservations(restaurantId, null, null);
-            String username = queueReservationService.decreaseBooking(reservations, restaurantId);
+    public ResponseEntity<Map<String, String>> decreaseBooking(@PathVariable(name = "restaurantId") Long restaurantId) {
 
-            visitService.saveVisitRestaurant(username, restaurantId);   // 사용자가 방문 가게 목록에 저장
-            return ResponseEntity.ok(username + "님 입장");
-        } catch (Exception e) {
-            log.error("Failed to update reservations: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예약자 업데이트 실패");
-        }
+        List<QueueReservationResDto> reservations = queueReservationService.getQueueReservations(restaurantId, null, null);
+        String username = queueReservationService.decreaseBooking(reservations, restaurantId);
+
+        visitService.saveVisitRestaurant(username, restaurantId);   // 사용자가 방문 가게 목록에 저장
+        Map<String, String> response = new HashMap<>();
+        response.put("message", username + "님 입장");
+        return ResponseEntity.ok(response);
     }
 }
