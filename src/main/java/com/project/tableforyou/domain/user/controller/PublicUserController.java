@@ -23,7 +23,7 @@ public class PublicUserController {
 
     /* 회원가입 */
     @PostMapping("/register")
-    public ResponseEntity<Object> register(@Valid @RequestBody SignUpDto signUpDto) {
+    public ResponseEntity<String> register(@Valid @RequestBody SignUpDto signUpDto) {
 
         userService.signUp(signUpDto);
         return ResponseEntity.ok("회원가입 성공.");
