@@ -39,34 +39,27 @@ public class SecureQueueReservationController {
         return ResponseEntity.ok(isReserved);
     }
 
-    /* 가게 예약자 불러오기 */
-    @GetMapping("/{restaurantId}/queue-reservations")
-    public List<QueueReservationResDto> readAllQueueReservation(@PathVariable(name = "restaurantId") Long restaurantId) {
-
-        return queueReservationService.findAllQueueReservations(restaurantId);
-    }
-
-    /* 예약 순서 미루기 */ // restaurant_id 에서 이름을 가져오기. reservation_id에서 booking 가져오기
-    @PutMapping("/{restaurantId}/queue-reservations/postponed-guest-booking/{username}")
+    /* 예약 순서 미루기 (사용자) */ // restaurant_id 에서 이름을 가져오기. reservation_id에서 booking 가져오기
+    @PutMapping("/{restaurantId}/queue-reservations/postponed-guest-booking")
     public ResponseEntity<String> postponedGuestBooking(@PathVariable(name = "restaurantId") Long restaurantId,
-                                                        @PathVariable(name = "username") String username,
+                                                        @AuthenticationPrincipal PrincipalDetails principalDetails,
                                                         @RequestBody QueueReservationReqDto reservationDto) {
 
         List<QueueReservationResDto> decreaseReservation =
-                queueReservationService.getQueueReservations(restaurantId, username, reservationDto);
+                queueReservationService.getQueueReservations(restaurantId, principalDetails.getUsername(), reservationDto);
         queueReservationService.decreaseBooking(decreaseReservation, restaurantId);
-        queueReservationService.postponedGuestBooking(restaurantId, username, reservationDto);
+        queueReservationService.postponedGuestBooking(restaurantId, principalDetails.getUsername(), reservationDto);
         return ResponseEntity.ok("예약자 미루기 + 앞당기기 성공.");
     }
 
-    /* 예약자 삭제 */
-    @DeleteMapping("/{restaurantId}/queue-reservations/{username}")
+    /* 예약자 삭제 (사용자) */
+    @DeleteMapping("/{restaurantId}/queue-reservations")
     public ResponseEntity<String> deleteReservation(@PathVariable(name = "restaurantId") Long restaurantId,
-                                         @PathVariable(name = "username") String username) {
+                                                    @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         List<QueueReservationResDto> decreaseReservation =
-                queueReservationService.getQueueReservations(restaurantId, username, null);
-        queueReservationService.deleteQueueReservation(restaurantId, username);
+                queueReservationService.getQueueReservations(restaurantId, principalDetails.getUsername(), null);
+        queueReservationService.deleteQueueReservation(restaurantId, principalDetails.getUsername());
         queueReservationService.decreaseBooking(decreaseReservation, restaurantId);
         return ResponseEntity.ok("예약자 삭제 성공.");
     }

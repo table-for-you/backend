@@ -47,21 +47,13 @@ public class SecureTimeSlotReservationController {
         return ResponseEntity.ok(isReserved);
     }
 
-    /* 특정 시간 예약자 전체 불러오기 */
-    @GetMapping("/{restaurantId}/timeslot-reservations")
-    public List<TimeSlotReservationResDto> readAllTimeSlotReservation(@PathVariable(name = "restaurantId") Long restaurantId,
-                                                                      @RequestParam(value = "time-slot") TimeSlot timeSlot) {
-
-        return timeSlotReservationService.findAllTimeSlotReservations(restaurantId, timeSlot);
-    }
-
     /* 예약 삭제하기 */
-    @DeleteMapping("/{restaurantId}/timeslot-reservations/{username}")
+    @DeleteMapping("/{restaurantId}/timeslot-reservations")
     public ResponseEntity<String> deleteReservation(@PathVariable(name = "restaurantId") Long restaurantId,
-                                                    @PathVariable(name = "username") String username,
+                                                    @AuthenticationPrincipal PrincipalDetails principalDetails,
                                                     @RequestParam(value = "time-slot") TimeSlot timeSlot) {
 
-        timeSlotReservationService.deleteTimeSlotReservation(restaurantId, username, timeSlot);
+        timeSlotReservationService.deleteTimeSlotReservation(restaurantId, principalDetails.getUsername(), timeSlot);
         return ResponseEntity.ok("예약자 삭제 성공.");
     }
 
