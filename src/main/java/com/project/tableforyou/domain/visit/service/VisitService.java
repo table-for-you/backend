@@ -53,4 +53,11 @@ public class VisitService {
 
         return visits.stream().map(VisitResponseDto::new).collect(Collectors.toList());
     }
+
+    /* 방문 가게 삭제 */
+    @Transactional
+    public void deleteVisitRestaurant(String username, Long restaurantId) {
+
+        visitRepository.deleteByVisitor_UsernameAndRestaurant_Id(username, restaurantId);
+    }
 }

@@ -4,6 +4,7 @@ import com.project.tableforyou.domain.reservation.dto.QueueReservationResDto;
 import com.project.tableforyou.domain.reservation.dto.TimeSlotReservationResDto;
 import com.project.tableforyou.domain.reservation.entity.TimeSlot;
 import com.project.tableforyou.domain.reservation.service.TimeSlotReservationService;
+import com.project.tableforyou.domain.visit.service.VisitService;
 import com.project.tableforyou.security.auth.PrincipalDetails;
 import com.project.tableforyou.utils.api.ApiUtil;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import java.util.List;
 public class SecureTimeSlotReservationController {
 
     private final TimeSlotReservationService timeSlotReservationService;
+    private final VisitService visitService;
 
     /* 특정 시간대 예약하기 */
     @PostMapping("/{restaurantId}/timeslot-reservations")
@@ -33,6 +35,9 @@ public class SecureTimeSlotReservationController {
                                                           @RequestParam(value = "time-slot") TimeSlot timeSlot) {
 
         timeSlotReservationService.saveTimeSlotReservation(principalDetails.getUsername(), restaurantId, timeSlot);
+
+        visitService.saveVisitRestaurant(principalDetails.getUsername(), restaurantId);
+
         return ResponseEntity.ok(ApiUtil.from("예약자 추가 성공."));
     }
 
@@ -54,6 +59,9 @@ public class SecureTimeSlotReservationController {
                                                     @RequestParam(value = "time-slot") TimeSlot timeSlot) {
 
         timeSlotReservationService.deleteTimeSlotReservation(restaurantId, principalDetails.getUsername(), timeSlot);
+
+        visitService.deleteVisitRestaurant(principalDetails.getUsername(), restaurantId);
+
         return ResponseEntity.ok(ApiUtil.from("예약자 삭제 성공."));
     }
 
