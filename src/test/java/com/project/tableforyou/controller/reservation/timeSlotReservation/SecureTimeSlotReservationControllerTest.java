@@ -5,10 +5,10 @@ import com.project.tableforyou.domain.reservation.entity.TimeSlot;
 import com.project.tableforyou.domain.reservation.service.TimeSlotReservationService;
 import com.project.tableforyou.domain.user.entity.Role;
 import com.project.tableforyou.domain.user.entity.User;
+import com.project.tableforyou.domain.visit.service.VisitService;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import com.project.tableforyou.security.auth.PrincipalDetails;
-import com.project.tableforyou.utils.api.ApiUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,15 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.mockito.BDDMockito.given;
@@ -46,6 +40,9 @@ public class SecureTimeSlotReservationControllerTest {
 
     @MockBean
     private TimeSlotReservationService timeSlotReservationService;
+
+    @MockBean
+    private VisitService visitService;
 
     private User user;
     private PrincipalDetails principalDetails;
@@ -76,6 +73,7 @@ public class SecureTimeSlotReservationControllerTest {
         TimeSlot timeSlot = TimeSlot.TEN_AM;
 
         doNothing().when(timeSlotReservationService).saveTimeSlotReservation(principalDetails.getUsername(), restaurantId, timeSlot);
+        doNothing().when(visitService).saveVisitRestaurant(principalDetails.getUsername(), restaurantId);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -151,6 +149,7 @@ public class SecureTimeSlotReservationControllerTest {
 
         doNothing().when(timeSlotReservationService)
                 .deleteTimeSlotReservation(restaurantId, principalDetails.getUsername(), timeSlot);
+        doNothing().when(visitService).deleteVisitRestaurant(principalDetails.getUsername(), restaurantId);
 
         // when
         ResultActions resultActions = mockMvc.perform(
