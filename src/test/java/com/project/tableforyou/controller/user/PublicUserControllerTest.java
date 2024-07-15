@@ -29,7 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = {PublicUserController.class})
-@AutoConfigureDataJpa
 public class PublicUserControllerTest {
 
     @Autowired

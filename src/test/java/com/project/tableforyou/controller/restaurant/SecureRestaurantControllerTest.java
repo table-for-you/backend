@@ -26,7 +26,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(SecureRestaurantController.class)
-@AutoConfigureDataJpa
 public class SecureRestaurantControllerTest {
 
     @Autowired

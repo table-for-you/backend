@@ -41,7 +41,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = {SecureUserController.class})
-@AutoConfigureDataJpa
 public class SecureUserControllerTest {
 
     @Autowired

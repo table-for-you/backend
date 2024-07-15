@@ -44,7 +44,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AdminController.class)
-@AutoConfigureDataJpa
 public class AdminControllerTest {
 
     @Autowired
