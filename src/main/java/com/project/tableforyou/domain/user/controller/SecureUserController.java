@@ -36,8 +36,8 @@ public class SecureUserController {
 
     /* 회원 불러오기 */
     @GetMapping
-    public UserResponseDto readUser(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return userService.readUser(principalDetails.getUsername());
+    public ResponseEntity<?> readUser(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        return ResponseEntity.ok(userService.readUser(principalDetails.getUsername()));
     }
 
     /* 현재 비밀번호 검사 */
@@ -68,8 +68,8 @@ public class SecureUserController {
 
     /* 좋아요한 가게 불러오기 */
     @GetMapping("/like-restaurants")
-    public List<RestaurantNameDto> getRestaurantLike(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<?> getRestaurantLike(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        return likeService.getRestaurantLike(principalDetails.getUsername());
+        return ResponseEntity.ok(likeService.getRestaurantLike(principalDetails.getUsername()));
     }
 }

@@ -4,6 +4,7 @@ import com.project.tableforyou.domain.visit.dto.VisitResponseDto;
 import com.project.tableforyou.domain.visit.service.VisitService;
 import com.project.tableforyou.security.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +21,7 @@ public class VisitController {
 
     /* 사용자가 방문한 가게 불러오기 */
     @GetMapping("/restaurants")
-    public List<VisitResponseDto> readVisitRestaurant(@AuthenticationPrincipal PrincipalDetails principalDetails){
-        return visitService.userVisitRestaurants(principalDetails.getUsername());
+    public ResponseEntity<?> readVisitRestaurant(@AuthenticationPrincipal PrincipalDetails principalDetails){
+        return ResponseEntity.ok(visitService.userVisitRestaurants(principalDetails.getUsername()));
     }
 }

@@ -30,7 +30,7 @@ public class AdminController {
 
     /* 회원 전체 불러오기, 페이징 처리 */
     @GetMapping("/users")
-    public Page<UserInfoDto> readAllUser(@PageableDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
+    public ResponseEntity<?> readAllUser(@PageableDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
                                      @RequestParam(required = false, value = "type") String type,
                                      @RequestParam(required = false, value = "search-keyword") String searchKeyword,
                                      @RequestParam(required = false, value = "sort-by", defaultValue = "name") String sortBy,
@@ -41,20 +41,20 @@ public class AdminController {
         Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
         if (type == null)
-            return adminService.readAllUser(sortedPageable);
+            return ResponseEntity.ok(adminService.readAllUser(sortedPageable));
 
         return switch (type) {
-            case "name" -> adminService.readAllUserByName(searchKeyword, sortedPageable);
-            case "nickname" -> adminService.readAllUserByNickname(searchKeyword, sortedPageable);
-            case "role" ->  adminService.readAllUserByRole(searchKeyword, sortedPageable);
+            case "name" -> ResponseEntity.ok(adminService.readAllUserByName(searchKeyword, sortedPageable));
+            case "nickname" -> ResponseEntity.ok(adminService.readAllUserByNickname(searchKeyword, sortedPageable));
+            case "role" ->  ResponseEntity.ok(adminService.readAllUserByRole(searchKeyword, sortedPageable));
             default -> throw new CustomException(ErrorCode.INVALID_PARAMETER);
         };
     }
 
     /* 회원 정보 불러오기 */
     @GetMapping("/users/{userId}")
-    public UserResponseDto readUser(@PathVariable(name = "userId") Long userId) {
-        return adminService.readUserByAdmin(userId);
+    public ResponseEntity<?> readUser(@PathVariable(name = "userId") Long userId) {
+        return ResponseEntity.ok(adminService.readUserByAdmin(userId));
     }
 
     /* 회원 삭제 */
@@ -67,33 +67,33 @@ public class AdminController {
 
     /* 등록 처리 중인 가게 불러오기 */
     @GetMapping("/pending-restaurants")
-    public Page<RestaurantManageDto> handlerRestaurant(
+    public ResponseEntity<?> handlerRestaurant(
             @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
-        return adminRestaurantService.readPendingRestaurant(pageable);
+        return ResponseEntity.ok(adminRestaurantService.readPendingRestaurant(pageable));
     }
 
     /* 등록 처리 중인 가게 자세히 불러오기 */
     @GetMapping("/pending-restaurants/{restaurantId}")
-    public PendingRestaurantDetailsDto readPendingDetailsRestaurant(@PathVariable(name = "restaurantId") Long restaurantId) {
+    public ResponseEntity<?> readPendingDetailsRestaurant(@PathVariable(name = "restaurantId") Long restaurantId) {
 
-        return adminRestaurantService.readPendingDetailsInfo(restaurantId);
+        return ResponseEntity.ok(adminRestaurantService.readPendingDetailsInfo(restaurantId));
     }
 
     /* 등록된 가게 불러오기 */
     @GetMapping("/approved-restaurants")
-    public Page<RestaurantManageDto> approvedRestaurants(
+    public ResponseEntity<?> approvedRestaurants(
             @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
             @RequestParam(required = false, value = "type") String type,
             @RequestParam(required = false, value = "search-keyword") String searchKeyword) {
 
         if (type == null) {
-            return adminRestaurantService.readApprovedRestaurant(pageable);
+            return ResponseEntity.ok(adminRestaurantService.readApprovedRestaurant(pageable));
         }
 
         return switch (type) {
-            case "restaurant" -> adminRestaurantService.readApprovedRestaurantByRestaurantName(searchKeyword, pageable);
-            case "owner" -> adminRestaurantService.readApprovedRestaurantByOwnerName(searchKeyword, pageable);
+            case "restaurant" -> ResponseEntity.ok(adminRestaurantService.readApprovedRestaurantByRestaurantName(searchKeyword, pageable));
+            case "owner" -> ResponseEntity.ok(adminRestaurantService.readApprovedRestaurantByOwnerName(searchKeyword, pageable));
             default -> throw new CustomException(ErrorCode.INVALID_PARAMETER);
         };
     }

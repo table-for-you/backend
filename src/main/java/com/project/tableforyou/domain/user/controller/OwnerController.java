@@ -54,9 +54,9 @@ public class OwnerController {
 
     /* 사장 가게 불러오기 */
     @GetMapping
-    public List<RestaurantNameDto> readRestaurant(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<?> readRestaurant(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        return ownerRestaurantService.findByRestaurantOwner(principalDetails.getUsername());
+        return ResponseEntity.ok(ownerRestaurantService.findByRestaurantOwner(principalDetails.getUsername()));
     }
 
     /* 가게 업데이트 */
@@ -80,10 +80,10 @@ public class OwnerController {
 
     /* 해당 가게 예약자 불러오기. (번호표) */
     @GetMapping("/{restaurantId}/queue-reservations")
-    public List<QueueReservationResDto> readAllRestaurant(@PathVariable(name = "restaurantId") Long restaurantId,
+    public ResponseEntity<?> readAllRestaurant(@PathVariable(name = "restaurantId") Long restaurantId,
                                                           @AuthenticationPrincipal PrincipalDetails principalDetails) {
         if (ownerReservationService.isOwnerRestaurant(restaurantId, principalDetails.getUsername()))
-            return queueReservationService.findAllQueueReservations(restaurantId);
+            return ResponseEntity.ok(queueReservationService.findAllQueueReservations(restaurantId));
         else
             throw new CustomException(ErrorCode.UNAUTHORIZED);
     }
@@ -123,11 +123,11 @@ public class OwnerController {
 
     /* 특정 시간 예약자 전체 불러오기 (특정 시간) */
     @GetMapping("/{restaurantId}/timeslot-reservations")
-    public List<TimeSlotReservationResDto> readAllTimeSlotReservation(@PathVariable(name = "restaurantId") Long restaurantId,
+    public ResponseEntity<?> readAllTimeSlotReservation(@PathVariable(name = "restaurantId") Long restaurantId,
                                                                       @RequestParam(value = "time-slot") TimeSlot timeSlot,
                                                                       @AuthenticationPrincipal PrincipalDetails principalDetails) {
         if (ownerReservationService.isOwnerRestaurant(restaurantId, principalDetails.getUsername()))
-            return timeSlotReservationService.findAllTimeSlotReservations(restaurantId, timeSlot);
+            return ResponseEntity.ok(timeSlotReservationService.findAllTimeSlotReservations(restaurantId, timeSlot));
         else
             throw new CustomException(ErrorCode.UNAUTHORIZED);
     }
