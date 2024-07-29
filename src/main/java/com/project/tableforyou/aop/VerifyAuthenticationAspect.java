@@ -44,11 +44,14 @@ public class VerifyAuthenticationAspect {
     /* 레스토랑에 대한 권환 확인 메서드 */
     private void restaurantVerifyAuthentication(String expectedUsername, Long restaurantId) {
 
-        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
-                new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
+        String actualUsername = restaurantRepository.findUsernameByRestaurantId(restaurantId);
+        if (actualUsername == null) {
+            throw new CustomException(ErrorCode.RESTAURANT_NOT_FOUND);
+        }
 
-        if (!expectedUsername.equals(restaurant.getUser().getUsername()))
+        if (!expectedUsername.equals(actualUsername)) {
             throw new CustomException(ErrorCode.UNAUTHORIZED);
+        }
     }
 
 }
