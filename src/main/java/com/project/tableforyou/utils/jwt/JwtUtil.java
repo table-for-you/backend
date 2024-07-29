@@ -38,27 +38,34 @@ public class JwtUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("category", String.class);
     }
 
+    /* 토큰(claim)에서 id(userId) 가져오기 */
+    public Long getUserId(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("userId", Long.class);
+    }
+
     /* 토큰에 지정한 만료 시간 확인*/
     public boolean isExpired(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
     }
 
     /* access Token 발급 */
-    public String generateAccessToken(String role, String username) {
+    public String generateAccessToken(String role, String username, Long userId) {
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("category", "access");
         claims.put("role", role);
+        claims.put("userId", userId);
 
         return createJwt(claims, username, ACCESS_EXPIRATION_TIME);
     }
 
     /* refresh Token 발급 */
-    public String generateRefreshToken(String role, String username) {
+    public String generateRefreshToken(String role, String username, Long userId) {
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("category", "refresh");
         claims.put("role", role);
+        claims.put("userId", userId);
 
         return createJwt(claims, username, REFRESH_EXPIRATION_TIME);
     }

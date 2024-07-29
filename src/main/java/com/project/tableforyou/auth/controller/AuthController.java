@@ -51,8 +51,8 @@ public class AuthController {
 
         String role = String.valueOf(user.getRole());
 
-        String accessToken = TOKEN_PREFIX + jwtUtil.generateAccessToken(role, user.getUsername());
-        String refreshToken = jwtUtil.generateRefreshToken(role, user.getUsername());
+        String accessToken = TOKEN_PREFIX + jwtUtil.generateAccessToken(role, user.getUsername(), user.getId());
+        String refreshToken = jwtUtil.generateRefreshToken(role, user.getUsername(), user.getId());
 
         refreshTokenService.save(user.getUsername(), refreshToken);
 
@@ -90,7 +90,10 @@ public class AuthController {
         response.addHeader("Set-Cookie", cookieUtil.createCookie(REFRESH_COOKIE_VALUE, refreshTokenReIssue).toString());         // 쿠키에 refresh Token값 저장.
         response.setStatus(HttpServletResponse.SC_OK);
 
-        return ResponseEntity.ok(TOKEN_PREFIX + accessTokenReIssue);
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("accessToken", TOKEN_PREFIX + accessTokenReIssue);
+
+        return ResponseEntity.ok(responseData);
     }
 
     /* 아이디 찾기 */

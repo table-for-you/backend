@@ -38,9 +38,10 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         role = role.split("_")[1];      // ROLE_ 접두사 빼기 위해.
 
         String username = principalDetails.getUsername();
+        Long userId = principalDetails.getId();
 
-        String accessToken = jwtUtil.generateAccessToken(role, username);     // Access Token 발급
-        String refreshToken = jwtUtil.generateRefreshToken(role, username);   // Refresh Token 발급
+        String accessToken = jwtUtil.generateAccessToken(role, username, userId);     // Access Token 발급
+        String refreshToken = jwtUtil.generateRefreshToken(role, username, userId);   // Refresh Token 발급
 
         refreshTokenService.save(username, refreshToken);
 
