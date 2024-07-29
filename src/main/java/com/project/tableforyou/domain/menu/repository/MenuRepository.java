@@ -20,7 +20,6 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
 
     Optional<Menu> findByRestaurantIdAndId(Long restaurantId, Long Id);
 
-    @Transactional
     @Modifying
     @Query("delete from Menu m where m.id in :ids")
     void deleteAllMenuByIdInQuery(@Param("ids") List<Long> ids);

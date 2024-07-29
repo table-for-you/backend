@@ -20,7 +20,6 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
 
     boolean existsByUserAndRestaurant(User user, Restaurant restaurant);
 
-    @Transactional
     @Modifying
     @Query("delete from Like l where l.id in :ids")
     void deleteAllLikeByIdInQuery(@Param("ids") List<Long> ids);

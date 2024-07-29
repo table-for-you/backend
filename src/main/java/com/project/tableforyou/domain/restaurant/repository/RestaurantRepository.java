@@ -29,7 +29,9 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     @Query("update Restaurant r set r.usedSeats = r.usedSeats + :value where r.id = :id")
     void updateUsedSeats(@Param("id") Long id, @Param("value") int value); // JPQL의 id와 매핑하기 위해.
 
-    @Transactional
+    @Query("SELECT r.user.username FROM Restaurant r WHERE r.id = :restaurantId")
+    String findUsernameByRestaurantId(@Param("restaurantId") Long restaurantId);
+
     @Modifying
     @Query("delete from Restaurant r where r.id in :ids")
     void deleteAllRestaurantByIdInQuery(@Param("ids") List<Long> ids);
