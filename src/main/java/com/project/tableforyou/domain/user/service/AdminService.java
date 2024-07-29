@@ -43,14 +43,6 @@ public class AdminService {
         return new UserResponseDto(user);
     }
 
-    /* 이름으로 회원 찾기 */
-    @Transactional(readOnly = true)
-    public Page<UserInfoDto> readAllUserByName(String searchKeyword, Pageable pageable) {
-
-        Page<User> users = userRepository.findByNameContaining(searchKeyword, pageable);
-        return users.map(UserInfoDto::new);
-    }
-
     /* 닉네임으로 회원 찾기 */
     @Transactional(readOnly = true)
     public Page<UserInfoDto> readAllUserByNickname(String searchKeyword, Pageable pageable) {

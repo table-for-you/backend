@@ -8,13 +8,11 @@ import lombok.Getter;
 public class UserInfoDto {
 
     private final Long id;
-    private final String name;
     private final String nickname;
     private final Role role;
 
     public UserInfoDto(User user) {
         this.id = user.getId();
-        this.name = user.getName();
         this.nickname = user.getNickname();
         this.role = user.getRole();
     }

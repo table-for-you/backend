@@ -30,10 +30,10 @@ public class AdminController {
 
     /* 회원 전체 불러오기, 페이징 처리 */
     @GetMapping("/users")
-    public ResponseEntity<?> readAllUser(@PageableDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
+    public ResponseEntity<?> readAllUser(@PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
                                      @RequestParam(required = false, value = "type") String type,
                                      @RequestParam(required = false, value = "search-keyword") String searchKeyword,
-                                     @RequestParam(required = false, value = "sort-by", defaultValue = "name") String sortBy,
+                                     @RequestParam(required = false, value = "sort-by", defaultValue = "id") String sortBy,
                                      @RequestParam(required = false, value = "direction", defaultValue = "ASC") String direction) {
 
         // name이 아닌 다른 정렬 방식 선택
@@ -44,7 +44,6 @@ public class AdminController {
             return ResponseEntity.ok(adminService.readAllUser(sortedPageable));
 
         return switch (type) {
-            case "name" -> ResponseEntity.ok(adminService.readAllUserByName(searchKeyword, sortedPageable));
             case "nickname" -> ResponseEntity.ok(adminService.readAllUserByNickname(searchKeyword, sortedPageable));
             case "role" ->  ResponseEntity.ok(adminService.readAllUserByRole(searchKeyword, sortedPageable));
             default -> throw new CustomException(ErrorCode.INVALID_PARAMETER);

@@ -14,8 +14,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Builder
 public class SignUpDto {
 
-    @NotBlank(message = "이름은 필수 입력 값입니다.")
-    private String name;
     @NotBlank(message = "닉네임은 필수 입력 값입니다.")
     @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-zA-Z0-9-_]{2,10}$", message = "닉네임은 특수문자를 제외한 2~10자리여야 합니다.")
     private String nickname;
@@ -36,7 +34,6 @@ public class SignUpDto {
     /* dto -> Entity */
     public User toEntity() {
         return User.builder()
-                .name(name)
                 .nickname(nickname)
                 .username(username)
                 .password(password)
@@ -48,7 +45,6 @@ public class SignUpDto {
 
     public User toEntity(OAuth2UserInfo oAuth2UserInfo, BCryptPasswordEncoder bCryptPasswordEncoder) {
         return User.builder()
-                .name(oAuth2UserInfo.getName())
                 .nickname(oAuth2UserInfo.getNickname())
                 .username(oAuth2UserInfo.getUsername())
                 .password(bCryptPasswordEncoder.encode(oAuth2UserInfo.getName()))

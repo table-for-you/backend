@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 public class UserResponseDto {
 
     private final Long id;
-    private final String name;
     private final String username;
     private final String email;
     private final String nickname;
@@ -24,7 +23,6 @@ public class UserResponseDto {
     /* Entity -> dto */
     public UserResponseDto(User user) {
         this.id = user.getId();
-        this.name = user.getName();
         this.username = user.getUsername();
         this.email = user.getEmail();
         this.nickname = user.getNickname();

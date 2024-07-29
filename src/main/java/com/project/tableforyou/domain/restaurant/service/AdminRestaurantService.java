@@ -48,12 +48,12 @@ public class AdminRestaurantService {
         return restaurants.map(RestaurantManageDto::new);
     }
 
-    /* 등록된 가게 중 사장 이름으로 가게 불러오기 */
+    /* 등록된 가게 중 사장 닉네임으로 가게 불러오기 */
     @Transactional(readOnly = true)
     public Page<RestaurantManageDto> readApprovedRestaurantByOwnerName(String ownerName, Pageable pageable) {
 
         Page<Restaurant> restaurants =
-                restaurantRepository.findByStatusAndUser_Name(RestaurantStatus.APPROVED, ownerName, pageable);
+                restaurantRepository.findByStatusAndUser_Nickname(RestaurantStatus.APPROVED, ownerName, pageable);
         return restaurants.map(RestaurantManageDto::new);
     }
 

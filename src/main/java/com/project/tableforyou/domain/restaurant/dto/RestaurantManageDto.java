@@ -13,6 +13,6 @@ public class RestaurantManageDto {
     public RestaurantManageDto(Restaurant restaurant) {
         this.id = restaurant.getId();
         this.name = restaurant.getName();
-        this.ownerName = restaurant.getUser().getName();
+        this.ownerName = restaurant.getUser().getNickname();
     }
 }
