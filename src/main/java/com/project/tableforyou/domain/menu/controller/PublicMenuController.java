@@ -1,5 +1,6 @@
 package com.project.tableforyou.domain.menu.controller;
 
+import com.project.tableforyou.domain.menu.api.PublicMenuApi;
 import com.project.tableforyou.domain.menu.dto.MenuResponseDto;
 import com.project.tableforyou.domain.menu.service.MenuService;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +16,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/public/restaurants")
 @RequiredArgsConstructor
 @Slf4j
-public class PublicMenuController {
+public class PublicMenuController implements PublicMenuApi {
 
     private final MenuService menuService;
 
     /* 메뉴 불러오기. 페이징 처리 + 검색 기능 */
+    @Override
     @GetMapping("/{restaurantId}/menus")
     public ResponseEntity<?> readAllMenu(@PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
                                          @PathVariable(name = "restaurantId") Long restaurantId,

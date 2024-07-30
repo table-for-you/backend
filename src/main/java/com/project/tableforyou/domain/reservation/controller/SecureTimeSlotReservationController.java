@@ -1,7 +1,6 @@
 package com.project.tableforyou.domain.reservation.controller;
 
-import com.project.tableforyou.domain.reservation.dto.QueueReservationResDto;
-import com.project.tableforyou.domain.reservation.dto.TimeSlotReservationResDto;
+import com.project.tableforyou.domain.reservation.api.SecureTimeSlotReservationApi;
 import com.project.tableforyou.domain.reservation.entity.TimeSlot;
 import com.project.tableforyou.domain.reservation.service.TimeSlotReservationService;
 import com.project.tableforyou.domain.visit.service.VisitService;
@@ -23,12 +22,13 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/restaurants")
-public class SecureTimeSlotReservationController {
+public class SecureTimeSlotReservationController implements SecureTimeSlotReservationApi {
 
     private final TimeSlotReservationService timeSlotReservationService;
     private final VisitService visitService;
 
     /* 특정 시간대 예약하기 */
+    @Override
     @PostMapping("/{restaurantId}/timeslot-reservations")
     public ResponseEntity<?> saveReservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                           @PathVariable(name = "restaurantId") Long restaurantId,
@@ -42,6 +42,7 @@ public class SecureTimeSlotReservationController {
     }
 
     /* 예약을 했는지 확인 */
+    @Override
     @GetMapping("/{restaurantId}/timeslot-reservations-check")
     public ResponseEntity<?> checkUserReservation(@PathVariable(name = "restaurantId") Long restaurantId,
                                                         @AuthenticationPrincipal PrincipalDetails principalDetails,
@@ -53,6 +54,7 @@ public class SecureTimeSlotReservationController {
     }
 
     /* 예약 삭제하기 */
+    @Override
     @DeleteMapping("/{restaurantId}/timeslot-reservations")
     public ResponseEntity<?> deleteReservation(@PathVariable(name = "restaurantId") Long restaurantId,
                                                     @AuthenticationPrincipal PrincipalDetails principalDetails,

@@ -2,15 +2,14 @@ package com.project.tableforyou.domain.user.controller;
 
 import com.project.tableforyou.domain.reservation.dto.QueueReservationReqDto;
 import com.project.tableforyou.domain.reservation.dto.QueueReservationResDto;
-import com.project.tableforyou.domain.reservation.dto.TimeSlotReservationResDto;
 import com.project.tableforyou.domain.reservation.entity.TimeSlot;
 import com.project.tableforyou.domain.reservation.service.OwnerReservationService;
 import com.project.tableforyou.domain.reservation.service.QueueReservationService;
 import com.project.tableforyou.domain.reservation.service.TimeSlotReservationService;
-import com.project.tableforyou.domain.restaurant.dto.RestaurantNameDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantRequestDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantUpdateDto;
 import com.project.tableforyou.domain.restaurant.service.OwnerRestaurantService;
+import com.project.tableforyou.domain.user.apl.OwnerApi;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import com.project.tableforyou.security.auth.PrincipalDetails;
@@ -35,8 +34,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/owner/restaurants")
 @RequiredArgsConstructor
-@Slf4j
-public class OwnerController {
+public class OwnerController implements OwnerApi {
 
     private final OwnerRestaurantService ownerRestaurantService;
     private final QueueReservationService queueReservationService;
@@ -44,6 +42,7 @@ public class OwnerController {
     private final OwnerReservationService ownerReservationService;
 
     /* 가게 생성 */
+    @Override
     @PostMapping
     public ResponseEntity<?> createRestaurant(@Valid @RequestBody RestaurantRequestDto dto,
                                                  @AuthenticationPrincipal PrincipalDetails principalDetails) {
@@ -53,6 +52,7 @@ public class OwnerController {
     }
 
     /* 사장 가게 불러오기 */
+    @Override
     @GetMapping
     public ResponseEntity<?> readRestaurant(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
@@ -60,6 +60,7 @@ public class OwnerController {
     }
 
     /* 가게 업데이트 */
+    @Override
     @PutMapping("/{restaurantId}")
     public ResponseEntity<?> updateRestaurant(@Valid @RequestBody RestaurantUpdateDto restaurantUpdateDto,
                                                    @PathVariable(name = "restaurantId") Long restaurantId) {
@@ -70,6 +71,7 @@ public class OwnerController {
 
 
     /* 가게 삭제 */
+    @Override
     @DeleteMapping("/{restaurantId}")
     public ResponseEntity<?> deleteRestaurant(@PathVariable(name = "restaurantId") Long restaurantId) {
 
@@ -79,6 +81,7 @@ public class OwnerController {
     }
 
     /* 해당 가게 예약자 불러오기. (번호표) */
+    @Override
     @GetMapping("/{restaurantId}/queue-reservations")
     public ResponseEntity<?> readAllRestaurant(@PathVariable(name = "restaurantId") Long restaurantId,
                                                           @AuthenticationPrincipal PrincipalDetails principalDetails) {
@@ -89,6 +92,7 @@ public class OwnerController {
     }
 
     /* 예약 순서 미루기 (번호표) */
+    @Override
     @PutMapping("/{restaurantId}/queue-reservations/postponed-guest-booking/{username}")
     public ResponseEntity<?> postponedGuestBooking(@PathVariable(name = "restaurantId") Long restaurantId,
                                                         @PathVariable(name = "username") String username,
@@ -106,6 +110,7 @@ public class OwnerController {
     }
 
     /* 예약자 삭제 (번호표) */
+    @Override
     @DeleteMapping("/{restaurantId}/queue-reservations/{username}")
     public ResponseEntity<?> deleteReservation(@PathVariable(name = "restaurantId") Long restaurantId,
                                                     @PathVariable(name = "username") String username,
@@ -122,6 +127,7 @@ public class OwnerController {
     }
 
     /* 특정 시간 예약자 전체 불러오기 (특정 시간) */
+    @Override
     @GetMapping("/{restaurantId}/timeslot-reservations")
     public ResponseEntity<?> readAllTimeSlotReservation(@PathVariable(name = "restaurantId") Long restaurantId,
                                                                       @RequestParam(value = "time-slot") TimeSlot timeSlot,
@@ -133,6 +139,7 @@ public class OwnerController {
     }
 
     /* 예약 삭제하기 (특정 시간)*/
+    @Override
     @DeleteMapping("/{restaurantId}/timeslot-reservations/{username}")
     public ResponseEntity<?> deleteReservation(@PathVariable(name = "restaurantId") Long restaurantId,
                                                     @PathVariable(name = "username") String username,

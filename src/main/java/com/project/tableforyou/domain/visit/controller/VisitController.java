@@ -1,6 +1,6 @@
 package com.project.tableforyou.domain.visit.controller;
 
-import com.project.tableforyou.domain.visit.dto.VisitResponseDto;
+import com.project.tableforyou.domain.visit.api.VisitApi;
 import com.project.tableforyou.domain.visit.service.VisitService;
 import com.project.tableforyou.security.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -15,13 +15,14 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/users")
-public class VisitController {
+public class VisitController implements VisitApi {
 
     private final VisitService visitService;
 
     /* 사용자가 방문한 가게 불러오기 */
+    @Override
     @GetMapping("/restaurants")
-    public ResponseEntity<?> readVisitRestaurant(@AuthenticationPrincipal PrincipalDetails principalDetails){
+    public ResponseEntity<?> readVisitRestaurant(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         return ResponseEntity.ok(visitService.userVisitRestaurants(principalDetails.getUsername()));
     }
 }

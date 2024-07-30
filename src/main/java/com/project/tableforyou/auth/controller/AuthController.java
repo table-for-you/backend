@@ -1,5 +1,6 @@
 package com.project.tableforyou.auth.controller;
 
+import com.project.tableforyou.auth.api.AuthApi;
 import com.project.tableforyou.auth.dto.LoginDto;
 import com.project.tableforyou.auth.dto.UserRoleDto;
 import com.project.tableforyou.auth.service.AuthService;
@@ -32,11 +33,10 @@ import java.util.Map;
 import static com.project.tableforyou.utils.jwt.JwtProperties.REFRESH_COOKIE_VALUE;
 import static com.project.tableforyou.utils.jwt.JwtProperties.TOKEN_PREFIX;
 
-@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
-public class AuthController {
+public class AuthController implements AuthApi {
     
     private final JwtUtil jwtUtil;
     private final CookieUtil cookieUtil;
@@ -44,6 +44,7 @@ public class AuthController {
     private final AuthService authService;
 
     /* 로그인 */
+    @Override
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid LoginDto loginDto, HttpServletResponse response) {
 
@@ -67,6 +68,7 @@ public class AuthController {
     }
 
     /* accessToken 재발급 */
+    @Override
     @PostMapping("/reissue")
     public ResponseEntity<?> accessTokenReissue(HttpServletRequest request, HttpServletResponse response) {
 
@@ -97,6 +99,7 @@ public class AuthController {
     }
 
     /* 아이디 찾기 */
+    @Override
     @GetMapping("/find-id")
     public ResponseEntity<String> findingId(@RequestParam("email") @Valid @Email String email) {
 
@@ -105,6 +108,7 @@ public class AuthController {
     }
 
     /* 비밀번호 찾기 */
+    @Override
     @PostMapping("/find-pass")
     public ResponseEntity<String> findPass(@RequestParam("email") @Valid @Email String email,
                                            @RequestParam("username") String username) {
@@ -114,6 +118,7 @@ public class AuthController {
     }
 
     /* 사용자 권한 확인 */
+    @Override
     @GetMapping("/user-role")
     public ResponseEntity<UserRoleDto> getUserRole(@RequestHeader("Authorization") String token) {
 

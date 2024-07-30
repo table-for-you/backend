@@ -39,6 +39,14 @@ public class SecurityConfig {
     private final TokenBlackListService tokenBlackListService;
     private final SuccessLogoutHandler successLogoutHandler;
 
+    private static final String[] PUBLIC_ENDPOINTS = {
+            "/", "/index.html", "/css/**", "/js/**", "/public/**",
+            "/api/**","/swagger-resources/**", "/swagger-ui/**",
+            "/v3/api-docs/**", "/webjars/**", "/error"
+    };
+    private static final String[] OWNER_ENDPOINTS = {"/owner/**"};
+    private static final String[] ADMIN_ENDPOINTS = {"/admin/**"};
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -55,9 +63,9 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(authorize ->
                         authorize
-                                .requestMatchers("/", "/index.html", "/css/**", "/js/**", "/public/**", "/api/**").permitAll()
-                                .requestMatchers("/owner/**").hasAnyRole("OWNER", "ADMIN")
-                                .requestMatchers("/admin/**").hasAnyRole("ADMIN")
+                                .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+                                .requestMatchers(OWNER_ENDPOINTS).hasAnyRole("OWNER", "ADMIN")
+                                .requestMatchers(ADMIN_ENDPOINTS).hasAnyRole("ADMIN")
                                 .anyRequest().authenticated())
 
 

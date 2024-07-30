@@ -1,12 +1,12 @@
 package com.project.tableforyou.domain.reservation.controller;
 
+import com.project.tableforyou.domain.reservation.api.SecureQueueReservationApi;
 import com.project.tableforyou.domain.reservation.dto.QueueReservationReqDto;
 import com.project.tableforyou.domain.reservation.dto.QueueReservationResDto;
 import com.project.tableforyou.domain.reservation.service.QueueReservationService;
 import com.project.tableforyou.security.auth.PrincipalDetails;
 import com.project.tableforyou.utils.api.ApiUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -16,12 +16,12 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/restaurants")
-@Slf4j
-public class SecureQueueReservationController {
+public class SecureQueueReservationController implements SecureQueueReservationApi {
 
     private final QueueReservationService queueReservationService;
 
     /* 예약자 추가 */
+    @Override
     @PostMapping("/{restaurantId}/queue-reservations")
     public ResponseEntity<?> createReservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                          @PathVariable(name = "restaurantId") Long restaurantId) {
@@ -32,6 +32,7 @@ public class SecureQueueReservationController {
     }
 
     /* 가게에 대해 예약을 했는지 확인 */
+    @Override
     @GetMapping("/{restaurantId}/queue-reservations-check")
     public ResponseEntity<?> checkUserReservation(@PathVariable(name = "restaurantId") Long restaurantId,
                                                         @AuthenticationPrincipal PrincipalDetails principalDetails) {
@@ -40,6 +41,7 @@ public class SecureQueueReservationController {
     }
 
     /* 예약 순서 미루기 (사용자) */ // restaurant_id 에서 이름을 가져오기. reservation_id에서 booking 가져오기
+    @Override
     @PutMapping("/{restaurantId}/queue-reservations/postponed-guest-booking")
     public ResponseEntity<?> postponedGuestBooking(@PathVariable(name = "restaurantId") Long restaurantId,
                                                         @AuthenticationPrincipal PrincipalDetails principalDetails,
@@ -53,6 +55,7 @@ public class SecureQueueReservationController {
     }
 
     /* 예약자 삭제 (사용자) */
+    @Override
     @DeleteMapping("/{restaurantId}/queue-reservations")
     public ResponseEntity<?> deleteReservation(@PathVariable(name = "restaurantId") Long restaurantId,
                                                     @AuthenticationPrincipal PrincipalDetails principalDetails) {

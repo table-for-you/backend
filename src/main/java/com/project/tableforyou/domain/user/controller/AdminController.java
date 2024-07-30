@@ -1,17 +1,13 @@
 package com.project.tableforyou.domain.user.controller;
 
-import com.project.tableforyou.domain.restaurant.dto.PendingRestaurantDetailsDto;
-import com.project.tableforyou.domain.restaurant.dto.RestaurantManageDto;
 import com.project.tableforyou.domain.restaurant.service.AdminRestaurantService;
-import com.project.tableforyou.domain.user.dto.UserInfoDto;
-import com.project.tableforyou.domain.user.dto.UserResponseDto;
+import com.project.tableforyou.domain.user.apl.AdminApi;
 import com.project.tableforyou.domain.user.service.AdminService;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import com.project.tableforyou.utils.api.ApiUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -23,12 +19,13 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/admin")
-public class AdminController {
+public class AdminController implements AdminApi {
 
     private final AdminService adminService;
     private final AdminRestaurantService adminRestaurantService;
 
     /* 회원 전체 불러오기, 페이징 처리 */
+    @Override
     @GetMapping("/users")
     public ResponseEntity<?> readAllUser(@PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
                                      @RequestParam(required = false, value = "type") String type,
@@ -51,12 +48,14 @@ public class AdminController {
     }
 
     /* 회원 정보 불러오기 */
+    @Override
     @GetMapping("/users/{userId}")
     public ResponseEntity<?> readUser(@PathVariable(name = "userId") Long userId) {
         return ResponseEntity.ok(adminService.readUserByAdmin(userId));
     }
 
     /* 회원 삭제 */
+    @Override
     @DeleteMapping("/users/{userId}")
     public ResponseEntity<?> deleteUser(@PathVariable(name = "userId") Long userId) {
 
@@ -65,6 +64,7 @@ public class AdminController {
     }
 
     /* 등록 처리 중인 가게 불러오기 */
+    @Override
     @GetMapping("/pending-restaurants")
     public ResponseEntity<?> handlerRestaurant(
             @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
@@ -73,6 +73,7 @@ public class AdminController {
     }
 
     /* 등록 처리 중인 가게 자세히 불러오기 */
+    @Override
     @GetMapping("/pending-restaurants/{restaurantId}")
     public ResponseEntity<?> readPendingDetailsRestaurant(@PathVariable(name = "restaurantId") Long restaurantId) {
 
@@ -80,6 +81,7 @@ public class AdminController {
     }
 
     /* 등록된 가게 불러오기 */
+    @Override
     @GetMapping("/approved-restaurants")
     public ResponseEntity<?> approvedRestaurants(
             @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
@@ -97,7 +99,8 @@ public class AdminController {
         };
     }
 
-    /* 가게 추가 요청 승인*/
+    /* 가게 추가 요청 승인 */
+    @Override
     @PatchMapping("/restaurants/{restaurantId}")
     public ResponseEntity<?> approvalRestaurant(@PathVariable(name = "restaurantId") Long restaurantId) {
 
@@ -106,6 +109,7 @@ public class AdminController {
     }
 
     /* 가게 삭제 (승인 거절) */
+    @Override
     @DeleteMapping("/restaurants/{restaurantId}")
     public ResponseEntity<?> deleteRestaurant(@PathVariable(name = "restaurantId") Long restaurantId) {
 

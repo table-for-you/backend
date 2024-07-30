@@ -1,5 +1,6 @@
 package com.project.tableforyou.domain.menu.controller;
 
+import com.project.tableforyou.domain.menu.api.SecureMenuApi;
 import com.project.tableforyou.domain.menu.dto.MenuRequestDto;
 import com.project.tableforyou.domain.menu.dto.MenuResponseDto;
 import com.project.tableforyou.domain.menu.dto.MenuUpdateDto;
@@ -19,11 +20,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/restaurants")
 @RequiredArgsConstructor
 @Slf4j
-public class SecureMenuController {
+public class SecureMenuController implements SecureMenuApi {
 
     private final MenuService menuService;
 
     /* 메뉴 생성 */
+    @Override
     @PostMapping("/{restaurantId}/menus")
     public ResponseEntity<?> createMenu(@Valid @RequestBody MenuRequestDto menuDto,
                                          @PathVariable(name = "restaurantId") Long restaurantId) {
@@ -33,6 +35,7 @@ public class SecureMenuController {
     }
 
     /* 메뉴 업데이트 */
+    @Override
     @PutMapping("/{restaurantId}/menus/{menuId}")
     public ResponseEntity<?> updateMenu(@Valid@RequestBody MenuUpdateDto menuUpdateDto,
                                          @PathVariable(name = "restaurantId") Long restaurantId,
@@ -43,6 +46,7 @@ public class SecureMenuController {
     }
 
     /* 메뉴 삭제 */
+    @Override
     @DeleteMapping("/{restaurantId}/menus/{menuId}")
     public ResponseEntity<?> deleteMenu(@PathVariable(name = "restaurantId") Long restaurantId,
                                          @PathVariable(name = "menuId") Long menuId) {
