@@ -22,6 +22,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 @Configuration
@@ -29,7 +30,6 @@ import org.springframework.web.filter.CorsFilter;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CorsFilter corsFilter;
     private final PrincipalOAuth2UserService principalOAuth2UserService;
     private final JwtUtil jwtUtil;
     private final ObjectMapper objectMapper;
@@ -38,6 +38,7 @@ public class SecurityConfig {
     private final CustomLogoutHandler customLogoutHandler;
     private final TokenBlackListService tokenBlackListService;
     private final SuccessLogoutHandler successLogoutHandler;
+    private final CorsConfigurationSource corsConfigurationSource;
 
     private static final String[] PUBLIC_ENDPOINTS = {
             "/", "/index.html", "/css/**", "/js/**", "/public/**",
@@ -52,7 +53,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
 
-                .addFilter(corsFilter)
+                .cors((cors) -> cors.configurationSource(corsConfigurationSource))
 
                 .formLogin(AbstractHttpConfigurer::disable)
 
