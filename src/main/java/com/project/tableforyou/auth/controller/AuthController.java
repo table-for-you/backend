@@ -9,6 +9,7 @@ import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.TokenException;
 import com.project.tableforyou.security.auth.PrincipalDetails;
 import com.project.tableforyou.token.service.RefreshTokenService;
+import com.project.tableforyou.utils.api.ApiUtil;
 import com.project.tableforyou.utils.cookie.CookieUtil;
 import com.project.tableforyou.utils.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -101,28 +102,27 @@ public class AuthController implements AuthApi {
     /* 아이디 찾기 */
     @Override
     @GetMapping("/find-id")
-    public ResponseEntity<String> findingId(@RequestParam("email") @Valid @Email String email) {
+    public ResponseEntity<?> findingId(@RequestParam("email") @Valid @Email String email) {
 
-        String username = authService.findingId(email);
-        return ResponseEntity.ok(username);
+        return ResponseEntity.ok(ApiUtil.from(authService.findingId(email)));
     }
 
     /* 비밀번호 찾기 */
     @Override
     @PostMapping("/find-pass")
-    public ResponseEntity<String> findPass(@RequestParam("email") @Valid @Email String email,
+    public ResponseEntity<?> findPass(@RequestParam("email") @Valid @Email String email,
                                            @RequestParam("username") String username) {
 
         authService.findingPassword(username, email);
-        return ResponseEntity.ok("잠시 후 등록하신 메일로 임시 비밀번호가 도착합니다.");
+        return ResponseEntity.ok(ApiUtil.from("잠시 후 등록하신 메일로 임시 비밀번호가 도착합니다."));
     }
 
     /* 사용자 권한 확인 */
     @Override
     @GetMapping("/user-role")
-    public ResponseEntity<UserRoleDto> getUserRole(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> getUserRole(@RequestHeader("Authorization") String token) {
 
-        return ResponseEntity.ok(authService.findUserRoleByToken(token));
+        return ResponseEntity.ok(ApiUtil.from(authService.findUserRoleByToken(token)));
     }
 
 }
