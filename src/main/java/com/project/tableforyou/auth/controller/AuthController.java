@@ -6,6 +6,7 @@ import com.project.tableforyou.auth.dto.UserRoleDto;
 import com.project.tableforyou.auth.service.AuthService;
 import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
+import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import com.project.tableforyou.handler.exceptionHandler.exception.TokenException;
 import com.project.tableforyou.security.auth.PrincipalDetails;
 import com.project.tableforyou.token.service.RefreshTokenService;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.project.tableforyou.utils.jwt.JwtProperties.ACCESS_HEADER_VALUE;
 import static com.project.tableforyou.utils.jwt.JwtProperties.REFRESH_COOKIE_VALUE;
 import static com.project.tableforyou.utils.jwt.JwtProperties.TOKEN_PREFIX;
 
@@ -98,6 +101,22 @@ public class AuthController implements AuthApi {
 
         return ResponseEntity.ok(responseData);
     }
+
+    /* 로그아웃 */
+    @GetMapping("/logout")
+    public ResponseEntity<?> signOut(@RequestHeader(value = ACCESS_HEADER_VALUE, required = false) String accessToken,
+                                     @CookieValue(name = REFRESH_COOKIE_VALUE, required = false) String refreshToken,
+                                     HttpServletResponse response) {
+
+        if (accessToken == null || refreshToken == null) {
+            throw new CustomException(ErrorCode.TOKEN_NOT_FOUND);
+        }
+
+        authService.signOut(accessToken, refreshToken, response);
+
+        return ResponseEntity.ok(ApiUtil.from("로그아웃 되었습니다."));
+    }
+
 
     /* 아이디 찾기 */
     @Override

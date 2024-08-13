@@ -8,7 +8,11 @@ import com.project.tableforyou.domain.user.repository.UserRepository;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.mail.service.FindPassService;
+import com.project.tableforyou.token.service.RefreshTokenService;
+import com.project.tableforyou.token.service.TokenBlackListService;
+import com.project.tableforyou.utils.cookie.CookieUtil;
 import com.project.tableforyou.utils.jwt.JwtUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.project.tableforyou.utils.jwt.JwtProperties.REFRESH_COOKIE_VALUE;
 import static com.project.tableforyou.utils.jwt.JwtProperties.TOKEN_PREFIX;
 
 @Service
@@ -31,6 +36,9 @@ public class AuthService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final FindPassService findPassService;
+    private final CookieUtil cookieUtil;
+    private final RefreshTokenService refreshTokenService;
+    private final TokenBlackListService tokenBlackListService;
     private final JwtUtil jwtUtil;
     private final static int LOCK_LIMIT_COUNT = 5;
     private final static long LOCK_TIME = 5;
@@ -57,6 +65,17 @@ public class AuthService {
 
         resetLoginAttempt(findUser);    // 로그인 성공 시, 실패 횟수 초기화
         return findUser;
+    }
+
+    /* 로그아웃 */
+    public void signOut(String accessTokenInHeader, String refreshToken, HttpServletResponse response) {
+
+        cookieUtil.deleteCookie(REFRESH_COOKIE_VALUE, response);    // 쿠키값 삭제
+
+        refreshTokenService.delete(refreshToken);       // 로그아웃 시 redis에서 refreshToken 삭제
+
+        String accessToken = accessTokenInHeader.substring(TOKEN_PREFIX.length()).trim();
+        tokenBlackListService.save(accessToken);           // accessToken blackList에 저장
     }
 
     /* 아이디 찾기 메서드 */

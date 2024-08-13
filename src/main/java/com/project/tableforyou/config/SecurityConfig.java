@@ -1,12 +1,9 @@
 package com.project.tableforyou.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.tableforyou.handler.logoutHandler.CustomLogoutHandler;
-import com.project.tableforyou.handler.logoutHandler.SuccessLogoutHandler;
 import com.project.tableforyou.jwt.filter.JwtAuthenticationFilter;
 import com.project.tableforyou.jwt.filter.JwtExceptionFilter;
 import com.project.tableforyou.jwt.handler.OAuth2SuccessHandler;
-import com.project.tableforyou.security.auth.PrincipalDetailsService;
 import com.project.tableforyou.security.oauth.PrincipalOAuth2UserService;
 import com.project.tableforyou.token.service.TokenBlackListService;
 import com.project.tableforyou.utils.jwt.JwtUtil;
@@ -23,7 +20,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -35,9 +31,7 @@ public class SecurityConfig {
     private final ObjectMapper objectMapper;
     private final UserDetailsService userDetailsService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
-    private final CustomLogoutHandler customLogoutHandler;
     private final TokenBlackListService tokenBlackListService;
-    private final SuccessLogoutHandler successLogoutHandler;
     private final CorsConfigurationSource corsConfigurationSource;
 
     private static final String[] PUBLIC_ENDPOINTS = {
@@ -79,12 +73,7 @@ public class SecurityConfig {
                 .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, objectMapper, tokenBlackListService, userDetailsService),
                         UsernamePasswordAuthenticationFilter.class)
 
-                .addFilterBefore(new JwtExceptionFilter(objectMapper), JwtAuthenticationFilter.class)
-
-                .logout(logout ->
-                        logout
-                                .addLogoutHandler(customLogoutHandler)
-                                .logoutSuccessHandler(successLogoutHandler));
+                .addFilterBefore(new JwtExceptionFilter(objectMapper), JwtAuthenticationFilter.class);
 
 
         return http.build();
