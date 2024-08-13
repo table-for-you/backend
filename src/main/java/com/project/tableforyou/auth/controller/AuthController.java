@@ -103,8 +103,9 @@ public class AuthController implements AuthApi {
     }
 
     /* 로그아웃 */
+    @Override
     @GetMapping("/logout")
-    public ResponseEntity<?> signOut(@RequestHeader(value = ACCESS_HEADER_VALUE, required = false) String accessToken,
+    public ResponseEntity<?> logout(@RequestHeader(value = ACCESS_HEADER_VALUE, required = false) String accessToken,
                                      @CookieValue(name = REFRESH_COOKIE_VALUE, required = false) String refreshToken,
                                      HttpServletResponse response) {
 
