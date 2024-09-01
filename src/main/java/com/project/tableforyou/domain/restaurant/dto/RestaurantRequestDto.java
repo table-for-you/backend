@@ -41,6 +41,10 @@ public class RestaurantRequestDto {
     private String foodType;
     @Schema(description = "주차 가능 유무", example = "true")
     private boolean isParking;
+    @Schema(description = "위도", example = "128.823732447178")
+    private double latitude;
+    @Schema(description = "경도", example = "35.91401799249858")
+    private double longitude;
     private User user;
 
     /* dto -> Entity */
@@ -50,7 +54,8 @@ public class RestaurantRequestDto {
                 .time(time)
                 .name(name)
                 .region(region)
-                .location(location)
+                .latitude(latitude)
+                .longitude(longitude)
                 .status(RestaurantStatus.PENDING)
                 .tel(tel)
                 .description(description)

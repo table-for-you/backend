@@ -12,6 +12,8 @@ public class PendingRestaurantDetailsDto {
     private final String name;
     private final Region region;
     private final String location;
+    private final double latitude;
+    private final double longitude;
     private final String tel;
     private final String description;
     private final String restaurantImage;
@@ -24,6 +26,8 @@ public class PendingRestaurantDetailsDto {
         this.name = restaurant.getName();
         this.region = restaurant.getRegion();
         this.location = restaurant.getLocation();
+        this.latitude = restaurant.getLatitude();
+        this.longitude = restaurant.getLongitude();
         this.tel = restaurant.getTel();
         this.description = restaurant.getDescription();
         this.restaurantImage = restaurant.getRestaurantImage();

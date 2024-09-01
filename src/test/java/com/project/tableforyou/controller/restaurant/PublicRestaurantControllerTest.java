@@ -75,7 +75,6 @@ public class PublicRestaurantControllerTest {
     void createRestaurant() {
 
         this.user = User.builder()
-                .name("user1")
                 .nickname("사용자1")
                 .role(Role.OWNER)
                 .build();

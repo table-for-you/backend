@@ -52,7 +52,6 @@ public class PublicUserControllerTest {
     public void registerSuccessTest() throws Exception {
         // given
         SignUpDto userRequestDto = SignUpDto.builder()
-                .name("박대영")
                 .nickname("대영")
                 .username("daeyoung")
                 .password("QWEqwe123@")
@@ -78,7 +77,6 @@ public class PublicUserControllerTest {
     public void registerMissingTest() throws Exception {
         // given
         SignUpDto userRequestDto = SignUpDto.builder()
-                .name("박대영")
                 .nickname("대영")
                 .username("daeyoung")
                 .build();
@@ -105,7 +103,6 @@ public class PublicUserControllerTest {
     public void registerInvalidDataTest() throws Exception {
         // given
         SignUpDto userRequestDto = SignUpDto.builder()
-                .name("")
                 .nickname("대")
                 .username("@#$")
                 .password("1234")
@@ -124,7 +121,6 @@ public class PublicUserControllerTest {
         // then
         resultActions
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.name").value("이름은 필수 입력 값입니다."))
                 .andExpect(jsonPath("$.nickname").value("닉네임은 특수문자를 제외한 2~10자리여야 합니다."))
                 .andExpect(jsonPath("$.username").value("아이디는 특수문자를 제외한 4~20자리여야 합니다."))
                 .andExpect(jsonPath("$.password").value("비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자를 사용하세요."))

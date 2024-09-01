@@ -89,19 +89,16 @@ public class AdminControllerTest {
                 .build();
 
         test1 = User.builder()
-                .name("user1")
                 .nickname("사용자1")
                 .role(Role.OWNER)
                 .build();
 
         test2 = User.builder()
-                .name("user2")
                 .nickname("테스트1")
                 .role(Role.USER)
                 .build();
 
         test3 = User.builder()
-                .name("test1")
                 .nickname("테스트2")
                 .role(Role.USER)
                 .build();
@@ -113,7 +110,6 @@ public class AdminControllerTest {
                 .name("가게1")
                 .time("09:00~17:00")
                 .region(Region.DAEGU)
-                .location("대구 중구")
                 .user(test1)
                 .status(RestaurantStatus.PENDING)
                 .build();
@@ -123,7 +119,6 @@ public class AdminControllerTest {
                 .name("가게2")
                 .time("09:00~17:00")
                 .region(Region.DAEGU)
-                .location("대구 중구")
                 .user(test1)
                 .status(RestaurantStatus.PENDING)
                 .build();
@@ -133,7 +128,6 @@ public class AdminControllerTest {
                 .name("테스트가게1")
                 .time("09:00~17:00")
                 .region(Region.DAEGU)
-                .location("대구 중구")
                 .user(test2)
                 .status(RestaurantStatus.APPROVED)
                 .build();
@@ -143,7 +137,6 @@ public class AdminControllerTest {
                 .name("테스트가게2")
                 .time("09:00~17:00")
                 .region(Region.DAEGU)
-                .location("대구 중구")
                 .user(test2)
                 .status(RestaurantStatus.APPROVED)
                 .build();
@@ -180,39 +173,6 @@ public class AdminControllerTest {
                 .andExpect(jsonPath("$.content[0].name").value("user1"))
                 .andExpect(jsonPath("$.content[1].name").value("user2"))
                 .andExpect(jsonPath("$.content[2].name").value("test1"));
-    }
-
-    @Test
-    @DisplayName("이름으로 사용자 검색 테스트")
-    void readAllUserByNameTest() throws Exception {
-        // given
-        Page<UserInfoDto> users = new PageImpl<>(List.of(
-                new UserInfoDto(test1),
-                new UserInfoDto(test2)
-        ));
-
-        given(adminService.readAllUserByName(anyString(), any(Pageable.class))).willReturn(users);
-
-        // when
-        ResultActions resultActions = mockMvc.perform(
-                get("/admin/users")
-                        .with(user(principalDetails))
-                        .param("type", "name")
-                        .param("search-keyword", "user")
-                        .param("page", "0")
-                        .param("size", "3")
-                        .param("sort-by", "name")
-                        .param("direction", "ASC")
-        );
-
-        // then
-        resultActions
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", hasSize(2)))
-                .andExpect(jsonPath("$.content[0].name").value("user1"))
-                .andExpect(jsonPath("$.content[1].name").value("user2"));
-
     }
 
     @Test
@@ -422,9 +382,7 @@ public class AdminControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content", hasSize(2)))
                 .andExpect(jsonPath("$.content[0].name").value("테스트가게1"))
-                .andExpect(jsonPath("$.content[0].ownerName").value(test2.getName()))
-                .andExpect(jsonPath("$.content[1].name").value("테스트가게2"))
-                .andExpect(jsonPath("$.content[1].ownerName").value(test2.getName()));
+                .andExpect(jsonPath("$.content[1].name").value("테스트가게2"));
 
     }
 
@@ -487,9 +445,7 @@ public class AdminControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content", hasSize(2)))
-                .andExpect(jsonPath("$.content[0].ownerName").value(test1.getName()))
-                .andExpect(jsonPath("$.content[1].ownerName").value(test1.getName()));
+                .andExpect(jsonPath("$.content", hasSize(2)));
     }
 
     @Test

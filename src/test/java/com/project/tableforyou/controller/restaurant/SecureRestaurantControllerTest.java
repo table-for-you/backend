@@ -48,7 +48,6 @@ public class SecureRestaurantControllerTest {
 
     void createObject() {
         this.user = User.builder()
-                .name("user1")
                 .nickname("용자")
                 .role(Role.OWNER)
                 .build();

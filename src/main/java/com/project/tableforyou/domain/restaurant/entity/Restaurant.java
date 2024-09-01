@@ -55,6 +55,9 @@ public class Restaurant extends BaseTimeEntity {
     @NotNull
     private String location;
 
+    private double latitude;
+    private double longitude;
+
     private String tel;
 
     @Column(length = 100)

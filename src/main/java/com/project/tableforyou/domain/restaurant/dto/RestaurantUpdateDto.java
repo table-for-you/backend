@@ -40,4 +40,8 @@ public class RestaurantUpdateDto {
     private String foodType;
     @Schema(description = "주차 가능 유무", example = "true")
     private boolean isParking;
+    @Schema(description = "위도", example = "128.823732447178")
+    private double latitude;
+    @Schema(description = "경도", example = "35.91401799249858")
+    private double longitude;
 }

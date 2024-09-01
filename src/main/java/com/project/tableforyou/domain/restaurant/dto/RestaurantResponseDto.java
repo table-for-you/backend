@@ -2,6 +2,7 @@ package com.project.tableforyou.domain.restaurant.dto;
 
 import com.project.tableforyou.domain.restaurant.entity.Region;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 @Getter
@@ -16,6 +17,8 @@ public class RestaurantResponseDto {
     private final String name;
     private final Region region;
     private final String location;
+    private final double latitude;
+    private final double longitude;
     private final String tel;
     private final String description;
     private final String restaurantImage;
@@ -33,6 +36,8 @@ public class RestaurantResponseDto {
         this.name = restaurant.getName();
         this.region = restaurant.getRegion();
         this.location = restaurant.getLocation();
+        this.latitude = restaurant.getLatitude();
+        this.longitude = restaurant.getLongitude();
         this.tel = restaurant.getTel();
         this.description = restaurant.getDescription();
         this.restaurantImage = restaurant.getRestaurantImage();
