@@ -15,6 +15,7 @@ import lombok.*;
 public class RestaurantRequestDto {
 
     @Schema(description = "가게 총 좌석", example = "25")
+    @NotNull(message = "총 좌석은 필수 입력입니다.")
     private int totalSeats;
     @Schema(description = "가게 영업 시간", example = "09:00 ~ 19:00")
     @NotBlank(message = "영업 시간은 필수 입력 값입니다.")
