@@ -8,6 +8,7 @@ import lombok.Getter;
 public class RestaurantResponseDto {
 
     private final Long id;
+    private final Long ownerId;
     private final int usedSeats;
     private final int totalSeats;
     private final double rating;
@@ -24,6 +25,7 @@ public class RestaurantResponseDto {
     /* Entity -> dto */
     public RestaurantResponseDto(Restaurant restaurant) {
         this.id = restaurant.getId();
+        this.ownerId = restaurant.getUser().getId();
         this.usedSeats = restaurant.getUsedSeats();
         this.totalSeats = restaurant.getTotalSeats();
         this.rating = restaurant.getRating();

@@ -29,6 +29,7 @@ public interface PublicRestaurantApi {
                             @ExampleObject(value = """
                                         {
                                             "id": 1,
+                                            "ownerId": 1,
                                             "usedSeats": 20,
                                             "totalSeats": 50,
                                             "rating": 4.5,
