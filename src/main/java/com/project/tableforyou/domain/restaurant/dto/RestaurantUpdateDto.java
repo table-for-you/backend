@@ -38,4 +38,6 @@ public class RestaurantUpdateDto {
     private String restaurantImage;
     @Schema(description = "음식 유형", example = "양식")
     private String foodType;
+    @Schema(description = "주차 가능 유무", example = "true")
+    private boolean isParking;
 }

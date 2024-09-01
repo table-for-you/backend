@@ -38,6 +38,8 @@ public class RestaurantRequestDto {
     private String businessLicenseImage;
     @Schema(description = "음식 유형", example = "양식")
     private String foodType;
+    @Schema(description = "주차 가능 유무", example = "true")
+    private boolean isParking;
     private User user;
 
     /* dto -> Entity */
@@ -54,6 +56,7 @@ public class RestaurantRequestDto {
                 .restaurantImage(restaurantImage)
                 .businessLicenseImage(businessLicenseImage)
                 .foodType(foodType)
+                .isParking(isParking)
                 .user(user)
                 .build();
     }

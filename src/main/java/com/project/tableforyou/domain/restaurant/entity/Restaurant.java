@@ -68,6 +68,9 @@ public class Restaurant extends BaseTimeEntity {
 
     private String foodType;
 
+    @Column(name = "is_parking")
+    private boolean isParking;
+
     @OneToMany(mappedBy = "restaurant")
     private List<Menu> menus;
 
@@ -91,6 +94,7 @@ public class Restaurant extends BaseTimeEntity {
         this.description = dto.getDescription();
         this.restaurantImage = dto.getRestaurantImage();
         this.foodType = dto.getFoodType();
+        this.isParking = dto.isParking();
     }
 
     /* 가게 주인 ADMIN -> USER로 변경 (가게 생성) */
