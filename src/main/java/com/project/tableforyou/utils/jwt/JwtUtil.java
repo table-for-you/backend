@@ -82,4 +82,8 @@ public class JwtUtil {
                 .compact();     // 설정된 정보를 기반으로 JWT를 생성하고 문자열로 직렬화.
     }
 
+    public boolean isBase64URL(String token) {
+        return token.matches("^[0-9A-Za-z-_.]+$");
+    }
+
 }
