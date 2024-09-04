@@ -54,6 +54,7 @@ public class RestaurantRequestDto {
                 .time(time)
                 .name(name)
                 .region(region)
+                .location(location)
                 .latitude(latitude)
                 .longitude(longitude)
                 .status(RestaurantStatus.PENDING)
