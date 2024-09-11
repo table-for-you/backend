@@ -23,6 +23,7 @@ public class RestaurantResponseDto {
     private final String description;
     private final String restaurantImage;
     private final String foodType;
+    private final boolean isParking;
     private final int likeCount;
 
     /* Entity -> dto */
@@ -42,6 +43,7 @@ public class RestaurantResponseDto {
         this.description = restaurant.getDescription();
         this.restaurantImage = restaurant.getRestaurantImage();
         this.foodType = restaurant.getFoodType();
+        this.isParking = restaurant.isParking();
         this.likeCount = restaurant.getLikes().size();
     }
 }
