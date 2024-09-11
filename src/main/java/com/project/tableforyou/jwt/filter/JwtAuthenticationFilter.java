@@ -81,11 +81,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             handleExceptionToken(response, ErrorCode.ACCESS_TOKEN_EXPIRED);
             return null;
         }
-
-        if (!jwtUtil.isBase64URL(accessToken) || !"access".equals(jwtUtil.getCategory(accessToken))) {         // jwt에 담긴 category를 통해 access 가 맞는지 확인.
-            handleExceptionToken(response, ErrorCode.INVALID_ACCESS_TOKEN);
-            return null;
-        }
+        
         return accessToken;
     }
 
