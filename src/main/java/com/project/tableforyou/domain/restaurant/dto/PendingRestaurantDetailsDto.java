@@ -16,6 +16,7 @@ public class PendingRestaurantDetailsDto {
     private final double longitude;
     private final String tel;
     private final String description;
+    private final boolean isParking;
     private final String restaurantImage;
     private final String businessLicenseImage;
     private final String foodType;
