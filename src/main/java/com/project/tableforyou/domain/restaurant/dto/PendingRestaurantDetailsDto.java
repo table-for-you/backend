@@ -31,6 +31,7 @@ public class PendingRestaurantDetailsDto {
         this.longitude = restaurant.getLongitude();
         this.tel = restaurant.getTel();
         this.description = restaurant.getDescription();
+        this.isParking = restaurant.isParking();
         this.restaurantImage = restaurant.getRestaurantImage();
         this.businessLicenseImage = restaurant.getBusinessLicenseImage();
         this.foodType = restaurant.getFoodType();
