@@ -27,6 +27,9 @@ public class Menu extends BaseTimeEntity {
     @NotNull
     private String price;
 
+    @Column(name = "menu_image")
+    private String menuImage;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
@@ -34,5 +37,9 @@ public class Menu extends BaseTimeEntity {
     public void update(String name, String price) {
         this.name = name;
         this.price = price;
+    }
+
+    public void addMenuImage(String menuImage) {
+        this.menuImage = menuImage;
     }
 }

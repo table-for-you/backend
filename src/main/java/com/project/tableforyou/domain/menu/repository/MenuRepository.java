@@ -23,4 +23,11 @@ public interface MenuRepository extends JpaRepository<Menu, Long> {
     @Modifying
     @Query("delete from Menu m where m.id in :ids")
     void deleteAllMenuByIdInQuery(@Param("ids") List<Long> ids);
+
+    @Query("select m.menuImage from Menu m where m.id = :id")
+    String findMenuImageById(@Param("id") Long id);
+
+    @Modifying
+    @Query("update Menu m set m.menuImage = :menuImage where m.id = :id")
+    void updateMenuImageById(@Param("id") Long id, @Param("menuImage") String menuImage);
 }
