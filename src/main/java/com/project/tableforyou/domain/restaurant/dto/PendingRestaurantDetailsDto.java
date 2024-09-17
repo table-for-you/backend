@@ -1,8 +1,12 @@
 package com.project.tableforyou.domain.restaurant.dto;
 
+import com.project.tableforyou.domain.image.entity.Image;
 import com.project.tableforyou.domain.restaurant.entity.Region;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import lombok.Getter;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class PendingRestaurantDetailsDto {
@@ -17,8 +21,8 @@ public class PendingRestaurantDetailsDto {
     private final String tel;
     private final String description;
     private final boolean isParking;
-    private final String restaurantImage;
-    private final String businessLicenseImage;
+    private final String mainImage;
+    private final List<String> subImages;
     private final String foodType;
 
     public PendingRestaurantDetailsDto(Restaurant restaurant) {
@@ -32,8 +36,8 @@ public class PendingRestaurantDetailsDto {
         this.tel = restaurant.getTel();
         this.description = restaurant.getDescription();
         this.isParking = restaurant.isParking();
-        this.restaurantImage = restaurant.getRestaurantImage();
-        this.businessLicenseImage = restaurant.getBusinessLicenseImage();
+        this.mainImage = restaurant.getMainImage();
+        this.subImages = restaurant.getImages().stream().map(Image::getUrl).collect(Collectors.toList());
         this.foodType = restaurant.getFoodType();
     }
 }

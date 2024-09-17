@@ -33,10 +33,6 @@ public class RestaurantRequestDto {
     private String tel;
     @Schema(description = "가게 설명", example = "햄버거집 가게입니다.")
     private String description;
-    @Schema(description = "가게 사진", example = "http://example.com/image1.jpg")
-    private String restaurantImage;
-    @Schema(description = "사업자 등록증", example = "http://example.com/image2.jpg")
-    private String businessLicenseImage;
     @Schema(description = "음식 유형", example = "양식")
     private String foodType;
     @Schema(description = "주차 가능 유무", example = "true")
@@ -60,8 +56,6 @@ public class RestaurantRequestDto {
                 .status(RestaurantStatus.PENDING)
                 .tel(tel)
                 .description(description)
-                .restaurantImage(restaurantImage)
-                .businessLicenseImage(businessLicenseImage)
                 .foodType(foodType)
                 .isParking(isParking)
                 .user(user)

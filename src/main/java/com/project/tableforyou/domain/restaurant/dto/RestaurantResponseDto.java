@@ -1,9 +1,13 @@
 package com.project.tableforyou.domain.restaurant.dto;
 
+import com.project.tableforyou.domain.image.entity.Image;
 import com.project.tableforyou.domain.restaurant.entity.Region;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class RestaurantResponseDto {
@@ -13,6 +17,7 @@ public class RestaurantResponseDto {
     private final int usedSeats;
     private final int totalSeats;
     private final double rating;
+    private final int ratingNum;
     private final String time;
     private final String name;
     private final Region region;
@@ -21,7 +26,8 @@ public class RestaurantResponseDto {
     private final double longitude;
     private final String tel;
     private final String description;
-    private final String restaurantImage;
+    private final String mainImage;
+    private final List<String> subImages;
     private final String foodType;
     private final boolean isParking;
     private final int likeCount;
@@ -33,6 +39,7 @@ public class RestaurantResponseDto {
         this.usedSeats = restaurant.getUsedSeats();
         this.totalSeats = restaurant.getTotalSeats();
         this.rating = restaurant.getRating();
+        this.ratingNum = restaurant.getRatingNum();
         this.time = restaurant.getTime();
         this.name = restaurant.getName();
         this.region = restaurant.getRegion();
@@ -41,7 +48,8 @@ public class RestaurantResponseDto {
         this.longitude = restaurant.getLongitude();
         this.tel = restaurant.getTel();
         this.description = restaurant.getDescription();
-        this.restaurantImage = restaurant.getRestaurantImage();
+        this.mainImage = restaurant.getMainImage();
+        this.subImages = restaurant.getImages().stream().map(Image::getUrl).collect(Collectors.toList());
         this.foodType = restaurant.getFoodType();
         this.isParking = restaurant.isParking();
         this.likeCount = restaurant.getLikes().size();

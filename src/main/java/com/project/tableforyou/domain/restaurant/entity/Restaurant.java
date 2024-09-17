@@ -1,6 +1,7 @@
 package com.project.tableforyou.domain.restaurant.entity;
 
 import com.project.tableforyou.domain.BaseTimeEntity;
+import com.project.tableforyou.domain.image.entity.Image;
 import com.project.tableforyou.domain.like.entity.Like;
 import com.project.tableforyou.domain.menu.entity.Menu;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantUpdateDto;
@@ -63,16 +64,16 @@ public class Restaurant extends BaseTimeEntity {
     @Column(length = 100)
     private String description;
 
-    @Column(name = "restaurant_image")
-    private String restaurantImage;
-
-    @Column(name = "business_license_image")
-    private String businessLicenseImage;
+    @Column(name = "main_image")
+    private String mainImage;
 
     private String foodType;
 
     @Column(name = "is_parking")
     private boolean isParking;
+
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.REMOVE)
+    private List<Image> images;
 
     @OneToMany(mappedBy = "restaurant")
     private List<Menu> menus;
@@ -95,9 +96,12 @@ public class Restaurant extends BaseTimeEntity {
         this.location = dto.getLocation();
         this.tel = dto.getTel();
         this.description = dto.getDescription();
-        this.restaurantImage = dto.getRestaurantImage();
         this.foodType = dto.getFoodType();
         this.isParking = dto.isParking();
+    }
+
+    public void addMainImage(String mainImage) {
+        this.mainImage = mainImage;
     }
 
     /* 가게 주인 ADMIN -> USER로 변경 (가게 생성) */

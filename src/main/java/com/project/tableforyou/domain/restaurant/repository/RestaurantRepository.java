@@ -35,4 +35,11 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     @Modifying
     @Query("delete from Restaurant r where r.id in :ids")
     void deleteAllRestaurantByIdInQuery(@Param("ids") List<Long> ids);
+
+    @Query("select r.mainImage from Restaurant r where r.id = :id")
+    String findMainImageById(@Param("id") Long id);
+
+    @Modifying
+    @Query("update Restaurant r set r.mainImage = :mainImage where r.id = :id")
+    void updateMainImageById(@Param("id") Long id, @Param("mainImage") String mainImage);
 }

@@ -21,13 +21,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -44,11 +47,13 @@ public class OwnerController implements OwnerApi {
     /* 가게 생성 */
     @Override
     @PostMapping
-    public ResponseEntity<?> createRestaurant(@Valid @RequestBody RestaurantRequestDto dto,
-                                                 @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<?> createRestaurant(@Valid @RequestPart(value = "dto") RestaurantRequestDto dto,
+                                              @AuthenticationPrincipal PrincipalDetails principalDetails,
+                                              @RequestPart(value = "mainImage", required = false) MultipartFile mainImage,
+                                              @RequestPart(value = "subImages", required = false) List<MultipartFile> subImages) {
 
-
-        return ResponseEntity.ok(ApiUtil.from(ownerRestaurantService.saveRestaurant(principalDetails.getUsername(), dto)));
+        return ResponseEntity.ok(ApiUtil.from(ownerRestaurantService.saveRestaurant(
+                principalDetails.getUsername(), dto, mainImage, subImages)));
     }
 
     /* 사장 가게 불러오기 */
@@ -57,6 +62,25 @@ public class OwnerController implements OwnerApi {
     public ResponseEntity<?> readRestaurant(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         return ResponseEntity.ok(ownerRestaurantService.findByRestaurantOwner(principalDetails.getUsername()));
+    }
+
+    /* 가게 메인 이미지 업데이트 */
+    @PatchMapping("/{restaurantId}/main-image")
+    public ResponseEntity<?> updateMainImage(@PathVariable(name = "restaurantId") Long restaurantId,
+                                             @RequestPart(value = "mainImage") MultipartFile mainImage) {
+
+        ownerRestaurantService.updateMainImage(restaurantId, mainImage);
+        return ResponseEntity.ok(ApiUtil.from("가게 메인 이미지 수정 완료."));
+    }
+
+    /* 가게 서브 이미지 업데이트 */
+    @PatchMapping("/{restaurantId}/sub-image")
+    public ResponseEntity<?> updateSubImage(@PathVariable(name = "restaurantId") Long restaurantId,
+                                            @RequestPart(value = "deleteImageUrls", required = false) List<String> deleteImageUrls,
+                                            @RequestPart(value = "newImages", required = false) List<MultipartFile> newImages) {
+
+        ownerRestaurantService.updateSubImages(restaurantId, deleteImageUrls, newImages);
+        return ResponseEntity.ok(ApiUtil.from("가게 서브 이미지 수정 완료."));
     }
 
     /* 가게 업데이트 */
