@@ -104,7 +104,6 @@ public class Restaurant extends BaseTimeEntity {
         this.mainImage = mainImage;
     }
 
-    /* 가게 주인 ADMIN -> USER로 변경 (가게 생성) */
     public void statusUpdate(RestaurantStatus status) {
         this.status = status;
     }

@@ -479,7 +479,7 @@ public class AdminControllerTest {
         // given
         Long restaurantId = 1L;
 
-        doNothing().when(adminRestaurantService).approvalRestaurant(restaurantId);
+        doNothing().when(adminRestaurantService).updateRestaurantStatus(restaurantId, RestaurantStatus.APPROVED);
 
         // when
         ResultActions resultActions = mockMvc.perform(

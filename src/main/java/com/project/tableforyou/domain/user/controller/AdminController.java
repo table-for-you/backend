@@ -1,5 +1,6 @@
 package com.project.tableforyou.domain.user.controller;
 
+import com.project.tableforyou.domain.restaurant.entity.RestaurantStatus;
 import com.project.tableforyou.domain.restaurant.service.AdminRestaurantService;
 import com.project.tableforyou.domain.user.apl.AdminApi;
 import com.project.tableforyou.domain.user.service.AdminService;
@@ -99,16 +100,17 @@ public class AdminController implements AdminApi {
         };
     }
 
-    /* 가게 추가 요청 승인 */
+    /* 가게 상태 변경 (승인, 거절) */
     @Override
     @PatchMapping("/restaurants/{restaurantId}")
-    public ResponseEntity<?> approvalRestaurant(@PathVariable(name = "restaurantId") Long restaurantId) {
+    public ResponseEntity<?> updateRestaurantStatus(@PathVariable(name = "restaurantId") Long restaurantId,
+                                                    @RequestParam(value = "status") RestaurantStatus status) {
 
-        adminRestaurantService.approvalRestaurant(restaurantId);
-        return ResponseEntity.ok(ApiUtil.from("사용자 가게 등록 완료."));
+        adminRestaurantService.updateRestaurantStatus(restaurantId, status);
+        return ResponseEntity.ok(ApiUtil.from("가게 상태 변경 완료."));
     }
 
-    /* 가게 삭제 (승인 거절) */
+    /* 가게 삭제  */
     @Override
     @DeleteMapping("/restaurants/{restaurantId}")
     public ResponseEntity<?> deleteRestaurant(@PathVariable(name = "restaurantId") Long restaurantId) {

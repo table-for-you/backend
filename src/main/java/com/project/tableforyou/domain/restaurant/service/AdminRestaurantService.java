@@ -68,12 +68,12 @@ public class AdminRestaurantService {
 
     /* 가게 등록하기 */
     @Transactional
-    public void approvalRestaurant(Long restaurantId) {
+    public void updateRestaurantStatus(Long restaurantId, RestaurantStatus status) {
 
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
-        restaurant.statusUpdate(RestaurantStatus.APPROVED);
+        restaurant.statusUpdate(status);
     }
 
     /* 가게 삭제하기 */
