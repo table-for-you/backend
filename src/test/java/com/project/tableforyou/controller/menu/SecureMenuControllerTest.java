@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.multipart.MultipartFile;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -56,7 +57,7 @@ public class SecureMenuControllerTest {
                 .price("5,000")
                 .build();
 
-        given(menuService.saveMenu(eq(restaurantId), any(MenuRequestDto.class))).willReturn(1L);
+        given(menuService.saveMenu(eq(restaurantId), any(MenuRequestDto.class), any(MultipartFile.class))).willReturn(1L);
 
         // when
         ResultActions resultActions = mockMvc.perform(

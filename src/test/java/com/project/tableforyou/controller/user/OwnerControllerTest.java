@@ -34,6 +34,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -129,7 +130,9 @@ public class OwnerControllerTest {
                 .location("대구 중구")
                 .build();
 
-        given(ownerRestaurantService.saveRestaurant(eq(user.getUsername()), any(RestaurantRequestDto.class))).willReturn(1L);
+        given(ownerRestaurantService.saveRestaurant(
+                eq(user.getUsername()), any(RestaurantRequestDto.class), any(MultipartFile.class), any(List.class))
+        ).willReturn(1L);
 
         // when
         ResultActions resultActions = mockMvc.perform(
