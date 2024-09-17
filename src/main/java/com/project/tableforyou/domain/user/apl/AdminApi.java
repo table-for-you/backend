@@ -1,5 +1,6 @@
 package com.project.tableforyou.domain.user.apl;
 
+import com.project.tableforyou.domain.restaurant.entity.RestaurantStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -348,13 +349,13 @@ public interface AdminApi {
             @RequestParam(required = false, value = "type") String type,
             @RequestParam(required = false, value = "search-keyword") String searchKeyword);
 
-    @Operation(summary = "가게 추가 요청 승인하기 *", description = "가게 추가 요청을 승인하는 API입니다.")
+    @Operation(summary = "가게 상태 변경(승인, 거절) *", description = "가게 추가 요청에 대한 승인 또는 거절에 대한 API입니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "가게 추가 요청 성공",
+            @ApiResponse(responseCode = "200", description = "가게 상태 변경 성공",
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject(value = """
                                         {
-                                            "response": "사용자 가게 등록 완료."
+                                            "response": "가게 상태 변경 완료."
                                         }
                                     """)
                     })),
@@ -368,9 +369,10 @@ public interface AdminApi {
                                     """)
                     })),
     })
-    ResponseEntity<?> approvalRestaurant(@PathVariable(name = "restaurantId") Long restaurantId);
+    ResponseEntity<?> updateRestaurantStatus(@PathVariable(name = "restaurantId") Long restaurantId,
+                                         @RequestParam(value = "status") RestaurantStatus status);
 
-    @Operation(summary = "가게 삭제 (승인 거절) *", description = "가게 삭제 및 가게 추가 요청을 거절하는 API입니다.")
+    @Operation(summary = "가게 삭제 (승인 거절) *", description = "가게 삭제하는 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "가게 추가 요청 성공",
                     content = @Content(mediaType = "application/json", examples = {
