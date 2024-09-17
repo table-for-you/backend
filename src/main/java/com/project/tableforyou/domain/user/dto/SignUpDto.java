@@ -2,7 +2,6 @@ package com.project.tableforyou.domain.user.dto;
 
 import com.project.tableforyou.domain.user.entity.Role;
 import com.project.tableforyou.domain.user.entity.User;
-import com.project.tableforyou.security.oauth.provider.OAuth2UserInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -53,7 +52,7 @@ public class SignUpDto {
                 .build();
     }
 
-    public User toEntity(OAuth2UserInfo oAuth2UserInfo, BCryptPasswordEncoder bCryptPasswordEncoder) {
+   /* public User toEntity(OAuth2UserInfo oAuth2UserInfo, BCryptPasswordEncoder bCryptPasswordEncoder) {
         return User.builder()
                 .nickname(oAuth2UserInfo.getNickname())
                 .username(oAuth2UserInfo.getUsername())
@@ -61,5 +60,5 @@ public class SignUpDto {
                 .email(oAuth2UserInfo.getEmail())
                 .role(Role.USER)
                 .build();
-    }
+    }*/
 }

@@ -1,3 +1,4 @@
+/*
 package com.project.tableforyou.jwt.handler;
 
 import com.project.tableforyou.security.auth.PrincipalDetails;
@@ -50,4 +51,4 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.setStatus(HttpServletResponse.SC_OK);
 
     }
-}
+}*/

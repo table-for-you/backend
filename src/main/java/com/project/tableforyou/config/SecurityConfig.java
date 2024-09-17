@@ -3,8 +3,6 @@ package com.project.tableforyou.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.tableforyou.jwt.filter.JwtAuthenticationFilter;
 import com.project.tableforyou.jwt.filter.JwtExceptionFilter;
-import com.project.tableforyou.jwt.handler.OAuth2SuccessHandler;
-import com.project.tableforyou.security.oauth.PrincipalOAuth2UserService;
 import com.project.tableforyou.token.service.TokenBlackListService;
 import com.project.tableforyou.utils.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -26,11 +24,9 @@ import org.springframework.web.cors.CorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final PrincipalOAuth2UserService principalOAuth2UserService;
     private final JwtUtil jwtUtil;
     private final ObjectMapper objectMapper;
     private final UserDetailsService userDetailsService;
-    private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final TokenBlackListService tokenBlackListService;
     private final CorsConfigurationSource corsConfigurationSource;
 
@@ -62,13 +58,6 @@ public class SecurityConfig {
                                 .requestMatchers(OWNER_ENDPOINTS).hasAnyRole("OWNER", "ADMIN")
                                 .requestMatchers(ADMIN_ENDPOINTS).hasAnyRole("ADMIN")
                                 .anyRequest().authenticated())
-
-
-                .oauth2Login(oauth2 ->
-                        oauth2
-                                .userInfoEndpoint(endPoint ->
-                                        endPoint.userService(principalOAuth2UserService))
-                                .successHandler(oAuth2SuccessHandler))
 
                 .addFilterBefore(new JwtAuthenticationFilter(jwtUtil, objectMapper, tokenBlackListService, userDetailsService),
                         UsernamePasswordAuthenticationFilter.class)

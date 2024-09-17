@@ -1,3 +1,4 @@
+/*
 package com.project.tableforyou.security.oauth;
 
 import com.project.tableforyou.domain.user.dto.SignUpDto;
@@ -61,3 +62,4 @@ public class PrincipalOAuth2UserService extends DefaultOAuth2UserService {
         return user;
     }
 }
+*/

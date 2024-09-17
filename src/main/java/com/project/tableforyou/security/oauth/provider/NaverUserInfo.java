@@ -1,3 +1,4 @@
+/*
 package com.project.tableforyou.security.oauth.provider;
 
 import lombok.RequiredArgsConstructor;
@@ -39,3 +40,4 @@ public class NaverUserInfo implements OAuth2UserInfo {
         return (String) attributes.get("email");
     }
 }
+*/

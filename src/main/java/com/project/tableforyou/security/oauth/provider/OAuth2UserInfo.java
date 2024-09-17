@@ -1,3 +1,4 @@
+/*
 package com.project.tableforyou.security.oauth.provider;
 
 public interface OAuth2UserInfo {
@@ -10,3 +11,4 @@ public interface OAuth2UserInfo {
     String getEmail();
 
 }
+*/
