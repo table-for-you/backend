@@ -17,11 +17,17 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Tag(name = "[가게주인 API]", description = "가게주인 관련 API")
 public interface OwnerApi {
 
-    @Operation(summary = "가게 생성하기 *", description = "가게 생성하는 API입니다.")
+    @Operation(summary = "가게 생성하기 *", description = "가게 생성하는 API입니다." +
+            "이미지는 multipart/form-data 형식으로 보내주세요. 다른 정보는 application/json으로 보내면 됩니다." +
+            " 이미지가 없다면 빈값으로 보내주세요(없다고 안보내면 에러 뜸.)")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "가게 생성 성공",
                     content = @Content(mediaType = "application/json", examples = {
@@ -41,8 +47,10 @@ public interface OwnerApi {
                                     """)
                     }))
     })
-    ResponseEntity<?> createRestaurant(@Valid @RequestBody RestaurantRequestDto dto,
-                                       @AuthenticationPrincipal PrincipalDetails principalDetails);
+    ResponseEntity<?> createRestaurant(@Valid @RequestPart(value = "dto") RestaurantRequestDto dto,
+                                       @AuthenticationPrincipal PrincipalDetails principalDetails,
+                                       @RequestParam(value = "mainImage") MultipartFile mainImage,
+                                       @RequestParam(value = "subImages") List<MultipartFile> subImages);
 
     @Operation(summary = "사장의 가게 불러오기 *", description = "사장의 가게를 모두 불러오는 API입니다.")
     @ApiResponses({
@@ -64,6 +72,65 @@ public interface OwnerApi {
     })
     ResponseEntity<?> readRestaurant(@AuthenticationPrincipal PrincipalDetails principalDetails);
 
+    @Operation(summary = "가게 메인 이미지 업데이트하기 *", description = "가게 메인 이미지를 업데이트하는 API입니다." +
+            "이미지는 Multipart/form-data 형식으로 보내주세요. 이미지가 없다면 빈값으로 보내주세요(없다고 안보내면 에러 뜸.)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "가게 업데이트 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "response": "가게 메인 이미지 수정 완료."
+                                        }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "401", description = "해당 가게 사장 아님",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "status": 401,
+                                            "message": "접근 권한이 없습니다."
+                                        }
+                                    """)
+                    }))
+    })
+    ResponseEntity<?> updateMainImage(@PathVariable(name = "restaurantId") Long restaurantId,
+                                      @RequestPart(value = "mainImage") MultipartFile mainImage);
+
+    @Operation(summary = "가게 서브 이미지 업데이트하기 *", description = "가게 서브 이미지를 업데이트하는 API입니다." +
+            "이미지는 Multipart/form-data 형식으로 보내주세요. 삭제할 이미지는 List<String> 형식이고, 만약에 없다면 보내지 말아주세요.(빈 값으로 보내는게 아님)" +
+            " 이미지가 없다면 빈값으로 보내주세요(없다고 안보내면 에러 뜸.)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "가게 업데이트 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "response": "가게 서브 이미지 수정 완료."
+                                        }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "401", description = "해당 가게 사장 아님",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "status": 401,
+                                            "message": "접근 권한이 없습니다."
+                                        }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "404", description = "가게 없음",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "status": 404,
+                                            "message": "존재하지 않는 가게입니다."
+                                        }
+                                    """)
+                    }))
+    })
+    ResponseEntity<?> updateSubImage(@PathVariable(name = "restaurantId") Long restaurantId,
+                                     @RequestPart(value = "deleteImageUrls", required = false) List<String> deleteImageUrls,
+                                     @RequestPart(value = "newImages", required = false) List<MultipartFile> newImages);
+
     @Operation(summary = "가게 업데이트하기 *", description = "가게 정보를 업데이트하는 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "가게 업데이트 성공",
@@ -71,6 +138,15 @@ public interface OwnerApi {
                             @ExampleObject(value = """
                                         {
                                             "response": "가게 수정 완료."
+                                        }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "401", description = "해당 가게 사장 아님",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "status": 401,
+                                            "message": "접근 권한이 없습니다."
                                         }
                                     """)
                     })),
@@ -94,6 +170,15 @@ public interface OwnerApi {
                             @ExampleObject(value = """
                                         {
                                             "response": "가게 삭제 완료."
+                                        }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "401", description = "해당 가게 사장 아님",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "status": 401,
+                                            "message": "접근 권한이 없습니다."
                                         }
                                     """)
                     })),
