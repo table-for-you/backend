@@ -372,7 +372,7 @@ public interface AdminApi {
     ResponseEntity<?> updateRestaurantStatus(@PathVariable(name = "restaurantId") Long restaurantId,
                                          @RequestParam(value = "status") RestaurantStatus status);
 
-    @Operation(summary = "가게 삭제 (승인 거절) *", description = "가게 삭제하는 API입니다.")
+    @Operation(summary = "가게 삭제 *", description = "가게 삭제하는 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "가게 추가 요청 성공",
                     content = @Content(mediaType = "application/json", examples = {
