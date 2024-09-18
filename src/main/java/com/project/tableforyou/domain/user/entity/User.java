@@ -44,9 +44,6 @@ public class User extends BaseTimeEntity {
     @NotNull
     private String age;
 
-    private String provider;
-    private String providerId;
-
     @Enumerated(EnumType.STRING)
     private Role role;
 

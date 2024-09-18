@@ -33,10 +33,6 @@ public class SignUpDto {
     @Schema(description = "나이", example = "20")
     @NotBlank(message = "나이는 필수 입력 값입니다.")
     private String age;
-    @Schema(description = "프로바이더(사용x)", example = "naver")
-    private String provider;
-    @Schema(description = "프로바이더id(사용x)", example = "asd123")
-    private String providerId;
     @Schema(description = "역할(USER, OWNER)", example = "OWNER")
     private Role role;
 
