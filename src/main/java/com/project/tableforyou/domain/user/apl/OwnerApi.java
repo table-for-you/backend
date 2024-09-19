@@ -72,6 +72,26 @@ public interface OwnerApi {
     })
     ResponseEntity<?> readRestaurant(@AuthenticationPrincipal PrincipalDetails principalDetails);
 
+    @Operation(summary = "사장의 거절된 가게 불러오기 *", description = "사장의 거절된 가게를 모두 불러오는 API입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "거절된 가게 불러오기 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        [
+                                            {
+                                                "id": 1,
+                                                "name": "가게1"
+                                            },
+                                            {
+                                                "id": 2,
+                                                "name": "가게2"
+                                                }
+                                        ]
+                                    """)
+                    }))
+    })
+    ResponseEntity<?> readRejectedRestaurant(@AuthenticationPrincipal PrincipalDetails principalDetails);
+
     @Operation(summary = "가게 메인 이미지 업데이트하기 *", description = "가게 메인 이미지를 업데이트하는 API입니다." +
             "이미지는 Multipart/form-data 형식으로 보내주세요. 이미지가 없다면 빈값으로 보내주세요(없다고 안보내면 에러 뜸.)")
     @ApiResponses({
