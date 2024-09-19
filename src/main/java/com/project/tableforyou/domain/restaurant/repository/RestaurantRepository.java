@@ -1,5 +1,6 @@
 package com.project.tableforyou.domain.restaurant.repository;
 
+import com.project.tableforyou.domain.restaurant.entity.FoodType;
 import com.project.tableforyou.domain.restaurant.entity.Region;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import com.project.tableforyou.domain.restaurant.entity.RestaurantStatus;
@@ -21,6 +22,7 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     Page<Restaurant> findByLocationContainingAndStatus(String searchKeyword, RestaurantStatus status, Pageable pageable);
     Page<Restaurant> findByStatusAndUser_Nickname(RestaurantStatus status, String ownerName, Pageable pageable);
     Page<Restaurant> findByStatusAndNameContaining(RestaurantStatus status, String searchKeyword, Pageable pageable);
+    Page<Restaurant> findByFoodTypeAndStatus(FoodType foodType, RestaurantStatus status, Pageable pageable);
     List<Restaurant> findByUser_Username(String username);
 
     boolean existsByIdAndUser_Username(Long restaurantId, String ownerUsername);

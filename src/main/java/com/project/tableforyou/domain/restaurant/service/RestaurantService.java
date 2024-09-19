@@ -2,6 +2,7 @@ package com.project.tableforyou.domain.restaurant.service;
 
 import com.project.tableforyou.domain.restaurant.dto.RestaurantInfoDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantResponseDto;
+import com.project.tableforyou.domain.restaurant.entity.FoodType;
 import com.project.tableforyou.domain.restaurant.entity.Region;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import com.project.tableforyou.domain.restaurant.entity.RestaurantStatus;
@@ -60,6 +61,15 @@ public class RestaurantService {
         log.info("Finding all restaurants with searchKeyword: {}", searchKeyword);
         Page<Restaurant> restaurants =
                 restaurantRepository.findByLocationContainingAndStatus(searchKeyword, RestaurantStatus.APPROVED, pageable);
+        return restaurants.map(RestaurantInfoDto::new);
+    }
+
+    /* 음식 종류로 가게 불러오기 */
+    @Transactional(readOnly = true)
+    public Page<RestaurantInfoDto> readAllRestaurantByFoodType(String foodType, Pageable pageable) {
+
+        Page<Restaurant> restaurants  =
+                restaurantRepository.findByFoodTypeAndStatus(FoodType.valueOf(foodType), RestaurantStatus.APPROVED, pageable);
         return restaurants.map(RestaurantInfoDto::new);
     }
 

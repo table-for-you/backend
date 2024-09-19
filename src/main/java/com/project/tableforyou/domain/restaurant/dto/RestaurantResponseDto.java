@@ -1,6 +1,7 @@
 package com.project.tableforyou.domain.restaurant.dto;
 
 import com.project.tableforyou.domain.image.entity.Image;
+import com.project.tableforyou.domain.restaurant.entity.FoodType;
 import com.project.tableforyou.domain.restaurant.entity.Region;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -28,7 +29,7 @@ public class RestaurantResponseDto {
     private final String description;
     private final String mainImage;
     private final List<String> subImages;
-    private final String foodType;
+    private final FoodType foodType;
     private final boolean isParking;
     private final int likeCount;
 

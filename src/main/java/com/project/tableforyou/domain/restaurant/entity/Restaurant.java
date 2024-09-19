@@ -67,7 +67,8 @@ public class Restaurant extends BaseTimeEntity {
     @Column(name = "main_image")
     private String mainImage;
 
-    private String foodType;
+    @Enumerated(EnumType.STRING)
+    private FoodType foodType;
 
     @Column(name = "is_parking")
     private boolean isParking;

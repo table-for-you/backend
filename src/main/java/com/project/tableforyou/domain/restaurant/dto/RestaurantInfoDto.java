@@ -1,5 +1,6 @@
 package com.project.tableforyou.domain.restaurant.dto;
 
+import com.project.tableforyou.domain.restaurant.entity.FoodType;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import lombok.Getter;
 
@@ -12,7 +13,7 @@ public class RestaurantInfoDto {
     private final int ratingNum;
     private final boolean isParking;
     private final String mainImage;
-    private final String foodType;
+    private final FoodType foodType;
 
     public RestaurantInfoDto(Restaurant restaurant) {
         this.id = restaurant.getId();

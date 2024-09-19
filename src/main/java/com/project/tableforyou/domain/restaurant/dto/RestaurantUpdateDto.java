@@ -1,5 +1,6 @@
 package com.project.tableforyou.domain.restaurant.dto;
 
+import com.project.tableforyou.domain.restaurant.entity.FoodType;
 import com.project.tableforyou.domain.restaurant.entity.Region;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -35,7 +36,7 @@ public class RestaurantUpdateDto {
     @Schema(description = "가게 설명", example = "햄버거집 가게입니다.")
     private String description;
     @Schema(description = "음식 유형", example = "양식")
-    private String foodType;
+    private FoodType foodType;
     @Schema(description = "주차 가능 유무", example = "true")
     private boolean isParking;
     @Schema(description = "위도", example = "128.823732447178")
