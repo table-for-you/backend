@@ -98,6 +98,10 @@ public class OwnerRestaurantService {
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
         restaurant.update(restaurantUpdateDto);
+
+        if (restaurant.getStatus() == RestaurantStatus.REJECT) {
+            restaurant.updateStatus(RestaurantStatus.PENDING);
+        }
         log.info("Restaurant updated successfully with name: {}", restaurantId);
 
     }
