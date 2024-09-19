@@ -18,7 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface AdminApi {
 
     @Operation(summary = "회원 전체 불러오기 + 검색 *", description = "전체 회원을 불러오는 API입니다." +
-                                                            "<br>type에 따라 nickname, role을 기준으로 검색을 할 수 있습니다.")
+            "<br>type에 따라 nickname(닉네임), role(권한)을 기준으로 검색을 할 수 있습니다." +
+            "<br>또한, sortBy는 어떤 것으로 정렬을 할 것인지(name, id, rating 등), direction는 내림차순(DESC), 오름차순(ASC)가 있습니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "회원 리스트 가져오기 성공",
                     content = @Content(mediaType = "application/json", examples = {
@@ -238,7 +239,7 @@ public interface AdminApi {
                                             "description": "가게 설명",
                                             "restaurantImage": "http://example.com/image1.jpg",
                                             "businessLicenseImage": "http://example.com/image2.jpg",
-                                            "foodType": "양식"
+                                            "foodType": "KOREAN"
                                         }
                                     """)
                     })),
@@ -255,7 +256,7 @@ public interface AdminApi {
     ResponseEntity<?> readPendingDetailsRestaurant(@PathVariable(name = "restaurantId") Long restaurantId);
 
     @Operation(summary = "등록된 가게 불러오기 *", description = "등록된 가게를 불러오는 API입니다." +
-                                                            "검색 type으로는 restaurant, owner이 있습니다.")
+            "<br>검색 type으로는 restaurant(가게 이름), owner(가게 주인의 닉네임)가 있습니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "등록 처리중인 가게 리스트 가져오기 성공",
                     content = @Content(mediaType = "application/json", examples = {
