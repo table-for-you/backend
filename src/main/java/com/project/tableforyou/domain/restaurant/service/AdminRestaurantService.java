@@ -1,5 +1,6 @@
 package com.project.tableforyou.domain.restaurant.service;
 
+import com.project.tableforyou.domain.Notification.service.NotificationService;
 import com.project.tableforyou.domain.restaurant.dto.PendingRestaurantDetailsDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantManageDto;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminRestaurantService {
 
     private final RestaurantRepository restaurantRepository;
+    private final NotificationService notificationService;
     private final AssociatedEntityService associatedEntityService;
 
     /* 등록 처리 중인 가게 불러오기 */
@@ -74,6 +76,7 @@ public class AdminRestaurantService {
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
         restaurant.statusUpdate(status);
+        notificationService.createNotification(status, restaurantId, restaurant.getUser());
     }
 
     /* 가게 삭제하기 */
