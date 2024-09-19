@@ -64,6 +64,14 @@ public class OwnerController implements OwnerApi {
         return ResponseEntity.ok(ownerRestaurantService.findByRestaurantOwner(principalDetails.getUsername()));
     }
 
+    /* 승인 거절된 가게 불러오기 */
+    @Override
+    @GetMapping("/rejected")
+    public ResponseEntity<?> readRejectedRestaurant(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        return ResponseEntity.ok(ownerRestaurantService.findByRejectedRestaurant(principalDetails.getUsername()));
+    }
+
     /* 가게 메인 이미지 업데이트 */
     @PatchMapping("/{restaurantId}/main-image")
     public ResponseEntity<?> updateMainImage(@PathVariable(name = "restaurantId") Long restaurantId,

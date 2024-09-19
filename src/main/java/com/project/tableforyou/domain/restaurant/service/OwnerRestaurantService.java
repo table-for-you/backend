@@ -7,6 +7,7 @@ import com.project.tableforyou.domain.restaurant.dto.RestaurantNameDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantRequestDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantUpdateDto;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
+import com.project.tableforyou.domain.restaurant.entity.RestaurantStatus;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
 import com.project.tableforyou.domain.s3.ImageType;
 import com.project.tableforyou.domain.s3.service.S3Service;
@@ -75,6 +76,15 @@ public class OwnerRestaurantService {
     public List<RestaurantNameDto> findByRestaurantOwner(String username) {
 
         List<Restaurant> restaurants = restaurantRepository.findByUser_Username(username);
+        return restaurants.stream().map(RestaurantNameDto::new).collect(Collectors.toList());
+    }
+
+    /* 승인 거절된 가게 불러오기 */
+    @Transactional(readOnly = true)
+    public List<RestaurantNameDto> findByRejectedRestaurant(String username) {
+
+        List<Restaurant> restaurants =
+                restaurantRepository.findByUser_UsernameAndStatus(username, RestaurantStatus.REJECT);
         return restaurants.stream().map(RestaurantNameDto::new).collect(Collectors.toList());
     }
 

@@ -24,6 +24,7 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     Page<Restaurant> findByStatusAndNameContaining(RestaurantStatus status, String searchKeyword, Pageable pageable);
     Page<Restaurant> findByFoodTypeAndStatus(FoodType foodType, RestaurantStatus status, Pageable pageable);
     List<Restaurant> findByUser_Username(String username);
+    List<Restaurant> findByUser_UsernameAndStatus(String username, RestaurantStatus status);
 
     boolean existsByIdAndUser_Username(Long restaurantId, String ownerUsername);
 
