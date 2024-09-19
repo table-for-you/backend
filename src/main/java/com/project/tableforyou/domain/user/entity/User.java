@@ -2,11 +2,19 @@ package com.project.tableforyou.domain.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.tableforyou.domain.BaseTimeEntity;
+import com.project.tableforyou.domain.Notification.entity.Notification;
 import com.project.tableforyou.domain.like.entity.Like;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import com.project.tableforyou.domain.visit.entity.Visit;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -58,6 +66,10 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "visitor")
     @JsonIgnore
     private List<Visit> visits;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @JsonIgnore
+    private List<Notification> notifications;
 
     /* 계정 잠금을 위한 필드 */
     private int loginAttempt;
