@@ -20,6 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,6 +29,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@DynamicUpdate
 @Entity
 public class User extends BaseTimeEntity {
     @Id
