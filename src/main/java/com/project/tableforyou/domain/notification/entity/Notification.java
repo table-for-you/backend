@@ -1,4 +1,4 @@
-package com.project.tableforyou.domain.Notification.entity;
+package com.project.tableforyou.domain.notification.entity;
 
 import com.project.tableforyou.domain.restaurant.entity.RestaurantStatus;
 import com.project.tableforyou.domain.user.entity.User;

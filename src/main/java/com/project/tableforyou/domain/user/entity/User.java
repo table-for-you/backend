@@ -2,7 +2,7 @@ package com.project.tableforyou.domain.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.tableforyou.domain.BaseTimeEntity;
-import com.project.tableforyou.domain.Notification.entity.Notification;
+import com.project.tableforyou.domain.notification.entity.Notification;
 import com.project.tableforyou.domain.like.entity.Like;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import com.project.tableforyou.domain.visit.entity.Visit;

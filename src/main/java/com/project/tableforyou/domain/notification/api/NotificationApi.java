@@ -1,4 +1,4 @@
-package com.project.tableforyou.domain.Notification.api;
+package com.project.tableforyou.domain.notification.api;
 
 import com.project.tableforyou.security.auth.PrincipalDetails;
 import io.swagger.v3.oas.annotations.Operation;

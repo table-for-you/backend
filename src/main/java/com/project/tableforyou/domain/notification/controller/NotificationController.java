@@ -1,7 +1,7 @@
-package com.project.tableforyou.domain.Notification.controller;
+package com.project.tableforyou.domain.notification.controller;
 
-import com.project.tableforyou.domain.Notification.api.NotificationApi;
-import com.project.tableforyou.domain.Notification.service.NotificationService;
+import com.project.tableforyou.domain.notification.api.NotificationApi;
+import com.project.tableforyou.domain.notification.service.NotificationService;
 import com.project.tableforyou.security.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

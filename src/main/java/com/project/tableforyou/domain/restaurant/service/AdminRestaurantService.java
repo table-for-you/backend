@@ -1,6 +1,6 @@
 package com.project.tableforyou.domain.restaurant.service;
 
-import com.project.tableforyou.domain.Notification.service.NotificationService;
+import com.project.tableforyou.domain.notification.service.NotificationService;
 import com.project.tableforyou.domain.restaurant.dto.PendingRestaurantDetailsDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantManageDto;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;

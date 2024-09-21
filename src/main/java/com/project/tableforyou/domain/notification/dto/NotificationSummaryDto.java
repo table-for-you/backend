@@ -1,25 +1,25 @@
-package com.project.tableforyou.domain.Notification.dto;
+package com.project.tableforyou.domain.notification.dto;
 
-import com.project.tableforyou.domain.Notification.entity.Notification;
+import com.project.tableforyou.domain.notification.entity.Notification;
 import com.project.tableforyou.domain.restaurant.entity.RestaurantStatus;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
-public class NotificationDetailsDto {
-    // 추가해라
+public class NotificationSummaryDto {
+
+    private final Long id;
     private final String content;
     private final RestaurantStatus status;
-    private final Long restaurantId;
+    private final boolean isRead;
     private final LocalDateTime createdTime;
 
-
-    public NotificationDetailsDto(Notification notification) {
-
+    public NotificationSummaryDto(Notification notification) {
+        this.id = notification.getId();
         this.content = notification.getContent();
         this.status = notification.getStatus();
-        this.restaurantId = notification.getRestaurantId();
+        this.isRead = notification.isRead();
         this.createdTime = notification.getCreatedTime();
     }
 }

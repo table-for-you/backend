@@ -1,9 +1,9 @@
-package com.project.tableforyou.domain.Notification.service;
+package com.project.tableforyou.domain.notification.service;
 
-import com.project.tableforyou.domain.Notification.dto.NotificationDetailsDto;
-import com.project.tableforyou.domain.Notification.dto.NotificationSummaryDto;
-import com.project.tableforyou.domain.Notification.entity.Notification;
-import com.project.tableforyou.domain.Notification.repository.NotificationRepository;
+import com.project.tableforyou.domain.notification.dto.NotificationDetailsDto;
+import com.project.tableforyou.domain.notification.dto.NotificationSummaryDto;
+import com.project.tableforyou.domain.notification.entity.Notification;
+import com.project.tableforyou.domain.notification.repository.NotificationRepository;
 import com.project.tableforyou.domain.restaurant.entity.RestaurantStatus;
 import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
