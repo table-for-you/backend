@@ -213,12 +213,7 @@ public interface PublicRestaurantApi {
                     })),
 
     })
-    void updateFullUsedSeats(@PathVariable(name = "restaurantId") Long restaurantId,
+    ResponseEntity<?> updateFullUsedSeats(@PathVariable(name = "restaurantId") Long restaurantId,
                              @RequestParam("increase") boolean increase,
                              HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
-
-    @Operation(summary = "좌석 업데이트 (실제 호출 x)", description = "좌석 업데이트를 하는 API입니다." +
-    "<br>실제 호출하지 않고, 좌석 업데이트(/public/restaurants/{restaurantId}/update-used-seats)에 의해 자동 호출됩니다.")
-    ResponseEntity<?> updateUsedSeats(@PathVariable(name = "restaurantId") Long restaurantId,
-                                      @PathVariable(name = "value") int value);
 }

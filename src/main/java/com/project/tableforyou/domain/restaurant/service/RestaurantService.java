@@ -9,10 +9,12 @@ import com.project.tableforyou.domain.restaurant.entity.RestaurantStatus;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
+import com.project.tableforyou.utils.api.ApiUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,9 +85,21 @@ public class RestaurantService {
         return restaurants.map(RestaurantInfoDto::new);
     }
 
-    /* 가게 좌석 업데이트 */
     @Transactional
-    public void updateUsedSeats(Long restaurantId, int value) {    // 가게에 user를 추가해야 하지 않나? 그리고 인원이 줄면 어떻게 user을 없애지? 그리고 예약자를 줄이고 여기로 다시 보내야하는데
+    public void updateUsedSeats(Long restaurantId, int value) {
+        RestaurantResponseDto restaurantDto = readRestaurant(restaurantId);
+
+        if (value == 1 && restaurantDto.getUsedSeats() < restaurantDto.getTotalSeats()) {   // 좌석 증가 가능
+            updateUsedSeatsById(restaurantId, value);
+        } else if (value == -1 && restaurantDto.getUsedSeats() > 0) {                       // 좌성 감소 가능
+            updateUsedSeatsById(restaurantId, value);
+        } else {
+            throw new CustomException(ErrorCode.INVALID_PARAMETER);
+        }
+    }
+
+    /* 가게 좌석 업데이트 */
+    private void updateUsedSeatsById(Long restaurantId, int value) {
         restaurantRepository.updateUsedSeats(restaurantId, value);
         log.info("Restaurant usedSeat updated successfully with restaurant: {}", restaurantId);
     }
