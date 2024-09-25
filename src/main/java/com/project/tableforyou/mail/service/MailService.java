@@ -1,20 +1,24 @@
 package com.project.tableforyou.mail.service;
 
 import com.project.tableforyou.mail.MailType;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.io.UnsupportedEncodingException;
 
 @Service
 @Slf4j
-@Transactional
 @RequiredArgsConstructor
 @EnableAsync    // 비동기 처리 활성화.
 public class MailService {
@@ -26,6 +30,7 @@ public class MailService {
     private static final String PASS_SUBJECT = "[TableForYou] 임시 비밀번호입니다.";
     private static final String PASS_TEXT = "[TableForYou] \n 로그인 한 후 회원 정보 수정에서 비밀번호를 변경해 주세요. \n" +
             "임시 비밀번호 : ";
+    private static final String MAIL_SENDER = "Table-For-You";
 
     /* apprication.yml에 지정한 값 들고오기. */
     @Value("${spring.mail.username}")
@@ -36,40 +41,43 @@ public class MailService {
     @Async  // 비동기 처리.
     public void sendMail(String email, String content, MailType type) {
 
-        SimpleMailMessage message = null;
-
-        switch (type) {
-            case CODE -> message = getCodeMessage(email, content);
-            case PASS -> message = getPassMessage(email, content);
-        }
+        MimeMessage message = null;
 
         try {
+            switch (type) {
+                case CODE -> message = getCodeMessage(email, content);
+                case PASS -> message = getPassMessage(email, content);
+            }
             javaMailSender.send(message);
-        } catch (MailException e) {
+        } catch (MessagingException | UnsupportedEncodingException e) {
             log.error("Failed to send email: {}", e.getMessage());
         }
     }
 
     /* Code Message 만들기. */
-    private SimpleMailMessage getCodeMessage(String email, String code) {
+    private MimeMessage getCodeMessage(String email, String code) throws MessagingException, UnsupportedEncodingException {
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
-        message.setSubject(CODE_SUBJECT);
-        message.setText(CODE_TEXT + code);
-        message.setFrom(emailUsername);
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        helper.setTo(email);
+        helper.setSubject(CODE_SUBJECT);
+        helper.setText(CODE_TEXT + code, true);
+        helper.setFrom(new InternetAddress(emailUsername, MAIL_SENDER, "UTF-8"));
 
         return message;
     }
 
     /* Pass Message 만들기. */
-    private SimpleMailMessage getPassMessage(String email, String pass) {
+    private MimeMessage getPassMessage(String email, String pass) throws MessagingException, UnsupportedEncodingException {
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
-        message.setSubject(PASS_SUBJECT);
-        message.setText(PASS_TEXT + pass);
-        message.setFrom(emailUsername);
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        helper.setTo(email);
+        helper.setSubject(PASS_SUBJECT);
+        helper.setText(PASS_TEXT + pass, true);
+        helper.setFrom(new InternetAddress(emailUsername, MAIL_SENDER, "UTF-8"));
 
         return message;
     }
