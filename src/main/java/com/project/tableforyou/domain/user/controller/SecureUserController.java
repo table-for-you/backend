@@ -62,7 +62,7 @@ public class SecureUserController implements SecureUserApi {
     @DeleteMapping
     public ResponseEntity<?> deleteUser(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        userService.deleteUser(principalDetails.getUsername());
+        userService.deleteUser(principalDetails.getId());
         return ResponseEntity.ok(ApiUtil.from("회원 삭제 성공."));
     }
 

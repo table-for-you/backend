@@ -59,17 +59,7 @@ public class AdminService {
     @Transactional
     public void deleteUserByAdmin(Long userId) {
 
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new CustomException(ErrorCode.USER_NOT_FOUND));
-
-        associatedEntityService.deleteAllLikeByUser(user);  // 회원 좋아요 삭제
-        associatedEntityService.deleteAllVisitByUser(user); // 회원 방문가게 삭제
-
-        if (user.getRole().equals(Role.OWNER)) {     // 사장이라면 회원 가게 삭제
-            associatedEntityService.deleteAllRestaurantByUser(user);
-        }
-
-
-        userRepository.delete(user);
+        associatedEntityService.deleteAllByUserId(userId);
+        userRepository.deleteById(userId);
     }
 }

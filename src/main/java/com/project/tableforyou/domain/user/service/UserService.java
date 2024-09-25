@@ -65,19 +65,10 @@ public class UserService {
 
     /* 회원 삭제 */
     @Transactional
-    public void deleteUser(String username) {
+    public void deleteUser(Long userId) {
 
-        User user = userRepository.findByUsername(username).orElseThrow(() ->
-                new CustomException(ErrorCode.USER_NOT_FOUND));
-
-        associatedEntityService.deleteAllLikeByUser(user);  // 회원 좋아요 삭제
-        associatedEntityService.deleteAllVisitByUser(user); // 회원 방문가게 삭제
-
-        if (user.getRole().equals(Role.OWNER)) {      // 사장이라면 회원 가게 삭제
-            associatedEntityService.deleteAllRestaurantByUser(user);
-        }
-
-        userRepository.delete(user);
+        associatedEntityService.deleteAllByUserId(userId);
+        userRepository.deleteById(userId);
     }
 
     /* 비밀번호 검사 */

@@ -149,22 +149,8 @@ public class OwnerRestaurantService {
     @Transactional
     public void deleteRestaurant(Long restaurantId) {         // 다른 사용자가 삭제하는 경우 확인해보기. 만약 그런다면 findByUserIdAndId 사용. 그냥 권한 설정 하면 될듯?
 
-        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
-                new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
+        associatedEntityService.deleteAllByRestaurantId(restaurantId);
 
-        associatedEntityService.deleteAllLikeByRestaurant(restaurant);  // 가게의 좋아요 삭제
-        associatedEntityService.deleteAllMenuByRestaurant(restaurant);  // 가게의 메뉴 삭제
-        associatedEntityService.deleteAllVisitByRestaurant(restaurant); // 방문객 삭제
-
-        s3Service.deleteImage(restaurant.getMainImage());
-
-        List<String> subImageUrls = imageRepository.findImageUrlsByRestaurantId(restaurantId);
-        if (!subImageUrls.isEmpty()) {
-            for (String url : subImageUrls) {
-                s3Service.deleteImage(url);
-            }
-        }
-
-        restaurantRepository.delete(restaurant);
+        restaurantRepository.deleteById(restaurantId);
     }
 }

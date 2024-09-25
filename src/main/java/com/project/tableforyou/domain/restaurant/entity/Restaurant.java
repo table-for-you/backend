@@ -75,7 +75,7 @@ public class Restaurant extends BaseTimeEntity {
     @Column(name = "is_parking")
     private boolean isParking;
 
-    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "restaurant")
     private List<Image> images;
 
     @OneToMany(mappedBy = "restaurant")

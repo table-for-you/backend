@@ -17,6 +17,14 @@ public interface VisitRepository extends JpaRepository<Visit, Long> {
     void deleteByVisitor_UsernameAndRestaurant_Id(String username, Long restaurantId);
 
     @Modifying
-    @Query("delete from Visit v where v.id in :ids")
-    void deleteAllVisitByIdInQuery(@Param("ids") List<Long> ids);
+    @Query("DELETE FROM Visit v WHERE v.visitor.id = :visitorId")
+    void deleteByVisitorId(@Param("visitorId") Long visitorId);
+
+    @Modifying
+    @Query("DELETE FROM Visit v WHERE v.restaurant.id = :restaurantId")
+    void deleteByRestaurantId(@Param("restaurantId") Long restaurantId);
+
+    @Modifying
+    @Query("DELETE FROM Visit v WHERE v.restaurant.id IN (SELECT r.id FROM Restaurant r WHERE r.user.id = :userId)")
+    void deleteRestaurantVisitorByUserId(@Param("userId") Long userId);
 }

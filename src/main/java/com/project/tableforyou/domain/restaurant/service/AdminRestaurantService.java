@@ -81,13 +81,7 @@ public class AdminRestaurantService {
     @Transactional
     public void deleteRestaurant(Long restaurantId) {
 
-        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
-                new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
-
-        associatedEntityService.deleteAllLikeByRestaurant(restaurant);  // 가게의 좋아요 삭제
-        associatedEntityService.deleteAllMenuByRestaurant(restaurant);  // 가게의 메뉴 삭제
-        associatedEntityService.deleteAllVisitByRestaurant(restaurant); // 방문객 삭제
-
-        restaurantRepository.delete(restaurant);
+        associatedEntityService.deleteAllByRestaurantId(restaurantId);
+        restaurantRepository.deleteById(restaurantId);
     }
 }

@@ -69,7 +69,7 @@ public class User extends BaseTimeEntity {
     @JsonIgnore
     private List<Visit> visits;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Notification> notifications;
 

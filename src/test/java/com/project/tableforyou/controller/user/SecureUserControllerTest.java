@@ -204,7 +204,7 @@ public class SecureUserControllerTest {
     @DisplayName("회원 삭제 성공 테스트")
     public void userDeleteTest() throws Exception {
         // given
-        doNothing().when(userService).deleteUser(user.getUsername());   // 반환형이 void이기에 doNoting, doThrow 등 사용
+        doNothing().when(userService).deleteUser(user.getId());   // 반환형이 void이기에 doNoting, doThrow 등 사용
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -224,7 +224,7 @@ public class SecureUserControllerTest {
     @DisplayName("회원 삭제 실패 테스트 - 사용자 없음")
     public void userDeleteFailUserNotFoundTest() throws Exception {
         // given
-        doThrow(new CustomException(ErrorCode.USER_NOT_FOUND)).when(userService).deleteUser(user.getUsername());
+        doThrow(new CustomException(ErrorCode.USER_NOT_FOUND)).when(userService).deleteUser(user.getId());
 
         // when
         ResultActions resultActions = mockMvc.perform(

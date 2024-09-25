@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,6 +24,7 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     Page<Restaurant> findByFoodTypeAndStatus(FoodType foodType, RestaurantStatus status, Pageable pageable);
     List<Restaurant> findByUser_Username(String username);
     List<Restaurant> findByUser_UsernameAndStatus(String username, RestaurantStatus status);
+    List<Restaurant> findByUser_Id(Long userId);
 
     boolean existsByIdAndUser_Username(Long restaurantId, String ownerUsername);
 
@@ -36,8 +36,8 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     String findUsernameByRestaurantId(@Param("restaurantId") Long restaurantId);
 
     @Modifying
-    @Query("delete from Restaurant r where r.id in :ids")
-    void deleteAllRestaurantByIdInQuery(@Param("ids") List<Long> ids);
+    @Query("DELETE FROM Restaurant r WHERE r.user.id = :userId")
+    void deleteByUserId(@Param("userId") Long userId);
 
     @Query("select r.mainImage from Restaurant r where r.id = :id")
     String findMainImageById(@Param("id") Long id);
