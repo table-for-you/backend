@@ -9,18 +9,14 @@ import com.project.tableforyou.domain.restaurant.entity.RestaurantStatus;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
-import com.project.tableforyou.utils.api.ApiUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
@@ -29,7 +25,6 @@ public class RestaurantService {
     @Transactional(readOnly = true)
     public RestaurantResponseDto readRestaurant(Long restaurantId) {
 
-        log.info("Finding restaurant by name: {}", restaurantId);
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
         return new RestaurantResponseDto(restaurant);
@@ -39,8 +34,6 @@ public class RestaurantService {
     @Transactional(readOnly = true)
     public Page<RestaurantInfoDto> readAllRestaurant(Pageable pageable) {
 
-        log.info("Finding all restaurants");
-
         Page<Restaurant> restaurants = restaurantRepository.findByStatus(RestaurantStatus.APPROVED, pageable);
         return restaurants.map(RestaurantInfoDto::new);
     }
@@ -48,8 +41,6 @@ public class RestaurantService {
     /* 지역별 가게 불러오기 */
     @Transactional(readOnly = true)
     public Page<RestaurantInfoDto> readAllRestaurantByRegion(String region, Pageable pageable) {
-
-        log.info("Finding by region");
 
         Page<Restaurant> restaurants =
                 restaurantRepository.findByRegionAndStatus(Region.valueOf(region), RestaurantStatus.APPROVED, pageable);
@@ -60,7 +51,6 @@ public class RestaurantService {
     @Transactional(readOnly = true)
     public Page<RestaurantInfoDto> readAllRestaurantByLocation(String searchKeyword, Pageable pageable) {
 
-        log.info("Finding all restaurants with searchKeyword: {}", searchKeyword);
         Page<Restaurant> restaurants =
                 restaurantRepository.findByLocationContainingAndStatus(searchKeyword, RestaurantStatus.APPROVED, pageable);
         return restaurants.map(RestaurantInfoDto::new);
@@ -79,7 +69,6 @@ public class RestaurantService {
     @Transactional(readOnly = true)
     public Page<RestaurantInfoDto> restaurantPageSearchList(String searchKeyword, Pageable pageable) {
 
-        log.info("Finding all restaurants with searchKeyword: {}", searchKeyword);
         Page<Restaurant> restaurants = restaurantRepository.
                 findByStatusAndNameContainingOrDescriptionContaining(RestaurantStatus.APPROVED, searchKeyword, searchKeyword, pageable);
         return restaurants.map(RestaurantInfoDto::new);
@@ -101,7 +90,6 @@ public class RestaurantService {
     /* 가게 좌석 업데이트 */
     private void updateUsedSeatsById(Long restaurantId, int value) {
         restaurantRepository.updateUsedSeats(restaurantId, value);
-        log.info("Restaurant usedSeat updated successfully with restaurant: {}", restaurantId);
     }
 
     /* 평점 업데이트 */
@@ -121,6 +109,5 @@ public class RestaurantService {
 
 
         restaurant.updateRating(nowRating, nowRatingNum);
-        log.info("Restaurant rating updated successfully with name: {}", restaurantId);
     }
 }

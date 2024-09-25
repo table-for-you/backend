@@ -1,8 +1,6 @@
 package com.project.tableforyou.domain.reservation.service;
 
-import com.project.tableforyou.domain.reservation.dto.QueueReservationResDto;
 import com.project.tableforyou.domain.reservation.dto.TimeSlotReservationResDto;
-import com.project.tableforyou.domain.reservation.entity.QueueReservation;
 import com.project.tableforyou.domain.reservation.entity.TimeSlot;
 import com.project.tableforyou.domain.reservation.entity.TimeSlotReservation;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;

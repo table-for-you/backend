@@ -3,13 +3,10 @@ package com.project.tableforyou.domain.reservation.service;
 import com.project.tableforyou.domain.reservation.dto.QueueReservationReqDto;
 import com.project.tableforyou.domain.reservation.dto.QueueReservationResDto;
 import com.project.tableforyou.domain.reservation.entity.QueueReservation;
-import com.project.tableforyou.domain.restaurant.entity.Restaurant;
-import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import com.project.tableforyou.utils.redis.RedisUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,7 +16,6 @@ import java.util.stream.Collectors;
 import static com.project.tableforyou.utils.redis.RedisProperties.RESERVATION_KEY_PREFIX;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class QueueReservationService {
 
@@ -28,8 +24,6 @@ public class QueueReservationService {
 
     /* 가게 번호표 예약자 추가 */
     public void saveQueueReservation(String username, Long restaurantId) {
-
-        log.info("Creating Reservation");
 
         String key = RESERVATION_KEY_PREFIX + QUEUE + restaurantId;
 
@@ -44,7 +38,6 @@ public class QueueReservationService {
                 .build();
 
         redisUtil.hashPutQueue(key, queueReservation);
-        log.info("Reservation created with username: {}", username);
     }
 
     /* 예약을 했는지 확인. */
@@ -56,7 +49,6 @@ public class QueueReservationService {
     /* 예약자 줄어들 때. */
     public String decreaseBooking(List<QueueReservationResDto> reservations, Long restaurantId) {
 
-        log.info("Decreasing bookings for reservations");
         String username = null;
 
         String key = RESERVATION_KEY_PREFIX + QUEUE + restaurantId;
@@ -67,7 +59,6 @@ public class QueueReservationService {
             if (storedQueueReservation.getBooking() == 1) {
                 username = storedQueueReservation.getUsername();
                 redisUtil.hashDel(key, storedQueueReservation.getUsername());
-                log.info("Reservation with username {} deleted", storedQueueReservation.getUsername());
             } else {
                 // 예약 번호가 1이 아닌 경우 예약 번호 감소
                 storedQueueReservation.updateBooking(storedQueueReservation.getBooking() - 1);
@@ -75,14 +66,11 @@ public class QueueReservationService {
             }
 
         }
-        log.info("Bookings decreased successfully");
         return username;
     }
 
     /* 예약 미루기(미루기할 시 store 예약자 수에 대한 조건 + 뒤에 있던 사람들 앞으로 당기기 - decreaseBooking) */
     public void postponedGuestBooking(Long restaurantId, String username, QueueReservationReqDto ReservationDto) {
-
-        log.info("Postponing guest booking for reservation with username: {}", username);
 
         String key = RESERVATION_KEY_PREFIX + QUEUE + restaurantId;
 
@@ -102,7 +90,6 @@ public class QueueReservationService {
     /* 해당 가게의 모든 예약자 가져오기 */
     public List<QueueReservationResDto> findAllQueueReservations(Long restaurantId) {
 
-        log.info("Finding all reservations by restaurant: {}", restaurantId);
         String key = RESERVATION_KEY_PREFIX + QUEUE + restaurantId;
 
         // Redis에서 모든 예약 정보 가져오기
@@ -111,19 +98,14 @@ public class QueueReservationService {
 
     /* 예약자 삭제(중간사람 삭제 시 뒤에 있던 사람들 앞으로 당기기 - decreaseBooking) */
     public void deleteQueueReservation(Long restaurantId, String username) {
-        log.info("Deleting reservation with username {} from restaurant {}", username, restaurantId);
 
         // Redis에서 해당 가게의 예약 정보를 가져옵니다.
         String key = RESERVATION_KEY_PREFIX + QUEUE + restaurantId;
         QueueReservation queueReservation = redisUtil.hashGetQueue(key, username);
 
         // 해당 예약이 존재하는 경우 삭제합니다.
-        if (queueReservation != null) {
+        if (queueReservation != null)
             redisUtil.hashDel(key, username);
-            log.info("Reservation with username {} from restaurant {} deleted from Redis", username, restaurantId);
-        } else {
-            log.warn("Reservation with username {} from restaurant {} not found in Redis", username, restaurantId);
-        }
     }
 
     /* 예약자 List를 받기위한 메서드. */

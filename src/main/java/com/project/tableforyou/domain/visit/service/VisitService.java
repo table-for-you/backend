@@ -1,6 +1,5 @@
 package com.project.tableforyou.domain.visit.service;
 
-import com.project.tableforyou.domain.restaurant.dto.RestaurantInfoDto;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
 import com.project.tableforyou.domain.user.entity.User;

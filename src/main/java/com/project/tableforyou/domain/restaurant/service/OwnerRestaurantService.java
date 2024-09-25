@@ -1,6 +1,7 @@
 package com.project.tableforyou.domain.restaurant.service;
 
 import com.project.tableforyou.aop.annotation.VerifyAuthentication;
+import com.project.tableforyou.domain.common.service.AssociatedEntityService;
 import com.project.tableforyou.domain.image.entity.Image;
 import com.project.tableforyou.domain.image.repository.ImageRepository;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantNameDto;
@@ -13,11 +14,9 @@ import com.project.tableforyou.domain.s3.ImageType;
 import com.project.tableforyou.domain.s3.service.S3Service;
 import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.domain.user.repository.UserRepository;
-import com.project.tableforyou.domain.common.service.AssociatedEntityService;
-import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
+import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,7 +25,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class OwnerRestaurantService {
 
@@ -42,7 +40,6 @@ public class OwnerRestaurantService {
                                MultipartFile mainImage,
                                List<MultipartFile> subImages) {
 
-        log.info("Creating Restaurant by user username: {}", username);
         User user = userRepository.findByUsername(username).orElseThrow(() ->
                 new CustomException(ErrorCode.USER_NOT_FOUND));
 
@@ -67,7 +64,6 @@ public class OwnerRestaurantService {
             }
         }
 
-        log.info("Restaurant created with ID: {}", restaurant.getId());
         return restaurant.getId();
     }
 
@@ -93,7 +89,6 @@ public class OwnerRestaurantService {
     @Transactional
     public void updateRestaurant(Long restaurantId, RestaurantUpdateDto restaurantUpdateDto) {
 
-        log.info("Updating Restaurant with name: {}", restaurantId);
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
@@ -102,8 +97,6 @@ public class OwnerRestaurantService {
         if (restaurant.getStatus() == RestaurantStatus.REJECT) {
             restaurant.updateStatus(RestaurantStatus.PENDING);
         }
-        log.info("Restaurant updated successfully with name: {}", restaurantId);
-
     }
 
     /* 가게 메인 이미지 업데이트 */
@@ -156,7 +149,6 @@ public class OwnerRestaurantService {
     @Transactional
     public void deleteRestaurant(Long restaurantId) {         // 다른 사용자가 삭제하는 경우 확인해보기. 만약 그런다면 findByUserIdAndId 사용. 그냥 권한 설정 하면 될듯?
 
-        log.info("Deleting Restaurant with name: {}", restaurantId);
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
@@ -174,6 +166,5 @@ public class OwnerRestaurantService {
         }
 
         restaurantRepository.delete(restaurant);
-        log.info("Restaurant deleted successfully with name: {}", restaurantId);
     }
 }

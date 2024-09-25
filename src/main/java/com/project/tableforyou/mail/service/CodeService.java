@@ -6,7 +6,6 @@ import com.project.tableforyou.handler.exceptionHandler.exception.CustomExceptio
 import com.project.tableforyou.mail.MailType;
 import com.project.tableforyou.utils.redis.RedisUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
@@ -19,7 +18,6 @@ import static com.project.tableforyou.utils.redis.RedisProperties.CODE_KEY_PREFI
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class CodeService {
 
     private final UserRepository userRepository;
@@ -56,7 +54,7 @@ public class CodeService {
     private boolean checkRetryEmail(String email) {
 
         String key = CODE_KEY_PREFIX + email;
-        if(!redisUtil.setExisted(key)) {
+        if (!redisUtil.setExisted(key)) {
             return true;
         } else {
             long expireTime = redisUtil.getExpire(key, TimeUnit.SECONDS);
@@ -74,7 +72,6 @@ public class CodeService {
             }
             return sb.toString();
         } catch (NoSuchAlgorithmException e) {
-            log.info("Failed to create secure random instance", e);
             throw new RuntimeException("Failed to generate secure random number", e);
         }
     }
@@ -91,13 +88,10 @@ public class CodeService {
 
         if(storedCode != null && storedCode.equals(code)) {     // 유효시간 지나지 않음 + 입력 코드 일치
             redisUtil.del(key);
-            log.info("Authentication code verified successfully: {}", email);
             return true;
         } else if(storedCode == null) {     // 유효시간 지나서 redis에 없음
-            log.warn("Authentication code has expired: {}", email);
             throw new CustomException(ErrorCode.CODE_EXPIRED);
         } else {                            // 코드 일치하지 않음
-            log.warn("Authentication code mismatch");
             throw new CustomException(ErrorCode.INVALID_CODE);
         }
     }

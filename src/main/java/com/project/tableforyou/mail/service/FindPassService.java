@@ -6,7 +6,6 @@ import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import com.project.tableforyou.mail.MailType;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +16,6 @@ import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class FindPassService {
 
     private final UserRepository userRepository;
@@ -51,7 +49,6 @@ public class FindPassService {
 
             return sb.toString();
         } catch (NoSuchAlgorithmException e) {
-            log.info("Failed to create secure random instance", e);
             throw new RuntimeException("Failed to generate secure random number", e);
         }
     }

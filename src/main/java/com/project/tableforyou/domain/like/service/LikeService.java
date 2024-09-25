@@ -34,7 +34,7 @@ public class LikeService {
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
-        if(likeRepository.existsByUserAndRestaurant(user, restaurant)) {
+        if (likeRepository.existsByUserAndRestaurant(user, restaurant)) {
             throw new CustomException(ErrorCode.ALREADY_LIKE_RESTAURANT);
         }
 

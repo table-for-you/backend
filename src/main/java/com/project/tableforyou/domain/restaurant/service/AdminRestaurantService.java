@@ -1,23 +1,21 @@
 package com.project.tableforyou.domain.restaurant.service;
 
+import com.project.tableforyou.domain.common.service.AssociatedEntityService;
 import com.project.tableforyou.domain.notification.service.NotificationService;
 import com.project.tableforyou.domain.restaurant.dto.PendingRestaurantDetailsDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantManageDto;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import com.project.tableforyou.domain.restaurant.entity.RestaurantStatus;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
-import com.project.tableforyou.domain.common.service.AssociatedEntityService;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class AdminRestaurantService {
 

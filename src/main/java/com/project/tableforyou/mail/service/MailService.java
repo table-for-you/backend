@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MailService {
 
     private final JavaMailSender javaMailSender;
+
     private static final String CODE_SUBJECT = "[TableForYou] 인증번호 메일입니다.";
     private static final String CODE_TEXT = "[TableForYou] \n 인증번호 : ";
     private static final String PASS_SUBJECT = "[TableForYou] 임시 비밀번호입니다.";
@@ -44,7 +45,6 @@ public class MailService {
 
         try {
             javaMailSender.send(message);
-            log.info("Successfully sent verification email to {}", email);
         } catch (MailException e) {
             log.error("Failed to send email: {}", e.getMessage());
         }

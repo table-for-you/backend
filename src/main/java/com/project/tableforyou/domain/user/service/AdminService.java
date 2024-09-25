@@ -9,14 +9,12 @@ import com.project.tableforyou.domain.user.repository.UserRepository;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class AdminService {
 
@@ -27,7 +25,6 @@ public class AdminService {
     @Transactional(readOnly = true)
     public Page<UserInfoDto> readAllUser(Pageable pageable) {
 
-        log.info("Finding all users");
         Page<User> users = userRepository.findAll(pageable);
         return users.map(UserInfoDto::new);
     }
@@ -36,7 +33,6 @@ public class AdminService {
     @Transactional(readOnly = true)
     public UserResponseDto readUserByAdmin(Long userId) {
 
-        log.info("Finding user by userId: {}", userId);
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new CustomException(ErrorCode.USER_NOT_FOUND));
 

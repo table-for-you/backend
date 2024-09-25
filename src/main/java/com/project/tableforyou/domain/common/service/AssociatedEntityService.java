@@ -10,7 +10,6 @@ import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.domain.visit.entity.Visit;
 import com.project.tableforyou.domain.visit.repository.VisitRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class AssociatedEntityService {
 
     private final LikeRepository likeRepository;
@@ -35,7 +33,6 @@ public class AssociatedEntityService {
 
         if (!likeIds.isEmpty()) {
             likeRepository.deleteAllLikeByIdInQuery(likeIds);
-            log.info("Associated Like deleted successfully for username: {}", foundUser.getUsername());
         }
     }
 
@@ -48,7 +45,6 @@ public class AssociatedEntityService {
 
         if (!likeIds.isEmpty()) {
             likeRepository.deleteAllLikeByIdInQuery(likeIds);
-            log.info("Associated Like deleted successfully for restaurant: {}", foundRestaurant.getName());
         }
     }
 
@@ -68,7 +64,6 @@ public class AssociatedEntityService {
 
         if (!restaurantIds.isEmpty()) {
             restaurantRepository.deleteAllRestaurantByIdInQuery(restaurantIds);
-            log.info("Associated restaurants deleted successfully for username: {}", foundUser.getUsername());
         }
     }
 
@@ -80,7 +75,6 @@ public class AssociatedEntityService {
 
         if (!menuIds.isEmpty()) {
             menuRepository.deleteAllMenuByIdInQuery(menuIds);
-            log.info("Associated menus deleted successfully for restaurant: {}", restaurant.getName());
         }
     }
 
@@ -92,7 +86,6 @@ public class AssociatedEntityService {
 
         if (!visitIds.isEmpty()) {
             visitRepository.deleteAllVisitByIdInQuery(visitIds);
-            log.info("Associated visits deleted successfully for username: {}", foundUser.getUsername());
         }
     }
 
@@ -104,7 +97,6 @@ public class AssociatedEntityService {
 
         if (!visitIds.isEmpty()) {
             visitRepository.deleteAllVisitByIdInQuery(visitIds);
-            log.info("Associated visits deleted successfully for restaurant: {}", foundRestaurant.getName());
         }
     }
 }
