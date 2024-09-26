@@ -40,11 +40,12 @@ public class SecureMenuController implements SecureMenuApi {
 
     /* 메뉴 이미지 업데이트 */
     @Override
-    @PatchMapping("/menus/{menuId}/menu-image")
-    public ResponseEntity<?> updateMenuImage(@PathVariable(name = "menuId") Long menuId,
+    @PatchMapping("/{restaurantId}/menus/{menuId}/menu-image")
+    public ResponseEntity<?> updateMenuImage(@PathVariable(name = "restaurantId") Long restaurantId,
+                                             @PathVariable(name = "menuId") Long menuId,
                                              @RequestPart(value = "menuImage") MultipartFile menuImage) {
 
-        menuService.updateMenuImage(menuId, menuImage);
+        menuService.updateMenuImage(restaurantId ,menuId, menuImage);
         return ResponseEntity.ok(ApiUtil.from("메뉴 이미지 수정 완료."));
     }
 

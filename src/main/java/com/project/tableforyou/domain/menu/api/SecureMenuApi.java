@@ -80,7 +80,8 @@ public interface SecureMenuApi {
                                     """)
                     })),
     })
-    ResponseEntity<?> updateMenuImage(@PathVariable(name = "menuId") Long menuId,
+    ResponseEntity<?> updateMenuImage(@PathVariable(name = "restaurantId") Long restaurantId,
+                                      @PathVariable(name = "menuId") Long menuId,
                                       @RequestPart(value = "menuImage") MultipartFile menuImage);
 
     @Operation(summary = "메뉴 업데이트하기 *", description = "메뉴를 업데이트하는 API입니다.")

@@ -67,7 +67,7 @@ public class MenuService {
     /* 메뉴 사진 업데이트 */
     @VerifyAuthentication
     @Transactional
-    public void updateMenuImage(Long menuId, MultipartFile menuImage) {
+    public void updateMenuImage(Long restaurantId, Long menuId, MultipartFile menuImage) {
 
         String currentMenuImage = menuRepository.findMenuImageById(menuId);
         s3Service.deleteImage(currentMenuImage);
