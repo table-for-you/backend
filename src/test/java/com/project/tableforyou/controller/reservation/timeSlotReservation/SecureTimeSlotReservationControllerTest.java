@@ -70,9 +70,10 @@ public class SecureTimeSlotReservationControllerTest {
     void createReservationTest() throws Exception {
         // given
         Long restaurantId = 1L;
+        String date = "2024-07-26";
         TimeSlot timeSlot = TimeSlot.TEN_AM;
 
-        doNothing().when(timeSlotReservationService).saveTimeSlotReservation(principalDetails.getUsername(), restaurantId, timeSlot);
+        doNothing().when(timeSlotReservationService).saveTimeSlotReservation(principalDetails.getUsername(), restaurantId, date, timeSlot);
         doNothing().when(visitService).saveVisitRestaurant(principalDetails.getUsername(), restaurantId);
 
         // when
@@ -95,9 +96,10 @@ public class SecureTimeSlotReservationControllerTest {
     void checkUserReservationTrueTest() throws Exception {
         // given
         Long restaurantId = 1L;
+        String date = "2024-07-26";
         TimeSlot timeSlot = TimeSlot.TEN_AM;
 
-        given(timeSlotReservationService.isUserAlreadyInTimeSlot(principalDetails.getUsername(), restaurantId, timeSlot))
+        given(timeSlotReservationService.isUserAlreadyInTimeSlot(principalDetails.getUsername(), restaurantId, date, timeSlot))
                 .willReturn(true);
 
         // when
@@ -120,9 +122,10 @@ public class SecureTimeSlotReservationControllerTest {
     void checkUserReservationFalseTest() throws Exception {
         // given
         Long restaurantId = 1L;
+        String date = "2024-07-26";
         TimeSlot timeSlot = TimeSlot.TEN_AM;
 
-        given(timeSlotReservationService.isUserAlreadyInTimeSlot(principalDetails.getUsername(), restaurantId, timeSlot))
+        given(timeSlotReservationService.isUserAlreadyInTimeSlot(principalDetails.getUsername(), restaurantId, date, timeSlot))
                 .willReturn(false);
 
         // when
@@ -145,10 +148,11 @@ public class SecureTimeSlotReservationControllerTest {
     void deleteReservationTest() throws Exception {
         // given
         Long restaurantId = 1L;
+        String date = "2024-07-26";
         TimeSlot timeSlot = TimeSlot.TEN_AM;
 
         doNothing().when(timeSlotReservationService)
-                .deleteTimeSlotReservation(restaurantId, principalDetails.getUsername(), timeSlot);
+                .deleteTimeSlotReservation(restaurantId, principalDetails.getUsername(), date, timeSlot);
         doNothing().when(visitService).deleteVisitRestaurant(principalDetails.getUsername(), restaurantId);
 
         // when
@@ -171,10 +175,11 @@ public class SecureTimeSlotReservationControllerTest {
     void deleteReservationFailedTest() throws Exception {
         // given
         Long restaurantId = 1L;
+        String date = "2024-07-26";
         TimeSlot timeSlot = TimeSlot.TEN_AM;
 
         doThrow(new CustomException(ErrorCode.RESERVATION_NOT_FOUND)).when(timeSlotReservationService)
-                .deleteTimeSlotReservation(restaurantId, principalDetails.getUsername(), timeSlot);
+                .deleteTimeSlotReservation(restaurantId, principalDetails.getUsername(), date, timeSlot);
 
         // when
         ResultActions resultActions = mockMvc.perform(

@@ -42,9 +42,10 @@ public class PublicTimeSlotReservationControllerTest {
     void checkTimeReservationNotFullTest() throws Exception {
         // given
         Long restaurantId = 1L;
+        String date = "2024-07-26";
         TimeSlot timeSlot = TimeSlot.TEN_AM;
 
-        given(timeSlotReservationService.checkTimeSlotReservationFull(restaurantId, timeSlot)).willReturn(false);
+        given(timeSlotReservationService.checkTimeSlotReservationFull(restaurantId, date));
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -66,9 +67,10 @@ public class PublicTimeSlotReservationControllerTest {
     void checkTimeReservationFullTest() throws Exception {
         // given
         Long restaurantId = 1L;
+        String date = "2024-07-26";
         TimeSlot timeSlot = TimeSlot.TEN_AM;
 
-        given(timeSlotReservationService.checkTimeSlotReservationFull(restaurantId, timeSlot)).willReturn(true);
+        given(timeSlotReservationService.checkTimeSlotReservationFull(restaurantId, date));
 
         // when
         ResultActions resultActions = mockMvc.perform(

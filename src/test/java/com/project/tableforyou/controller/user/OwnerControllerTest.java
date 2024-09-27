@@ -39,6 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
@@ -502,7 +503,7 @@ public class OwnerControllerTest {
                         .build())
         );
         given(ownerReservationService.isOwnerRestaurant(restaurantId, user.getUsername())).willReturn(true);
-        given(timeSlotReservationService.findAllTimeSlotReservations(eq(restaurantId), any(TimeSlot.class))).willReturn(reservations);
+        given(timeSlotReservationService.findAllTimeSlotReservations(eq(restaurantId), anyString(), any(TimeSlot.class))).willReturn(reservations);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -562,7 +563,7 @@ public class OwnerControllerTest {
 
 
         doNothing().when(timeSlotReservationService)
-                .deleteTimeSlotReservation(eq(restaurantId), eq(user.getUsername()), any(TimeSlot.class));
+                .deleteTimeSlotReservation(eq(restaurantId), eq(user.getUsername()), anyString(), any(TimeSlot.class));
 
         // when
         ResultActions resultActions = mockMvc.perform(
