@@ -338,6 +338,7 @@ public interface OwnerApi {
                     }))
     })
     ResponseEntity<?> readAllTimeSlotReservation(@PathVariable(name = "restaurantId") Long restaurantId,
+                                                 @RequestParam(value = "date") String date,
                                                  @RequestParam(value = "time-slot") TimeSlot timeSlot,
                                                  @AuthenticationPrincipal PrincipalDetails principalDetails);
 
@@ -364,6 +365,7 @@ public interface OwnerApi {
     })
     ResponseEntity<?> deleteReservation(@PathVariable(name = "restaurantId") Long restaurantId,
                                         @PathVariable(name = "username") String username,
+                                        @RequestParam(value = "date") String date,
                                         @RequestParam(value = "time-slot") TimeSlot timeSlot,
                                         @AuthenticationPrincipal PrincipalDetails principalDetails);
 }

@@ -35,5 +35,6 @@ public interface PublicTimeSlotReservationApi {
                     })),
     })
     ResponseEntity<?> checkTimeReservationFull(@PathVariable(name = "restaurantId") Long restaurantId,
+                                               @RequestParam(value = "date") String date,
                                                @RequestParam(value = "time-slot") TimeSlot timeSlot);
 }

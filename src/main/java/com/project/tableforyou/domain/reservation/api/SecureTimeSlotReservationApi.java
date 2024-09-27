@@ -38,6 +38,7 @@ public interface SecureTimeSlotReservationApi {
     })
     ResponseEntity<?> saveReservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                       @PathVariable(name = "restaurantId") Long restaurantId,
+                                      @RequestParam(value = "date") String date,
                                       @RequestParam(value = "time-slot") TimeSlot timeSlot);
 
     @Operation(summary = "가게에 대해 예약을 했는지 확인하기 (특정 시간) *", description = "특정 시간대에 대해서 가게에 대해 예약을 했는지 확인하는 API입니다.")
@@ -53,6 +54,7 @@ public interface SecureTimeSlotReservationApi {
     })
     ResponseEntity<?> checkUserReservation(@PathVariable(name = "restaurantId") Long restaurantId,
                                            @AuthenticationPrincipal PrincipalDetails principalDetails,
+                                           @RequestParam(value = "date") String date,
                                            @RequestParam(value = "time-slot") TimeSlot timeSlot);
 
     @Operation(summary = "예약자 삭제하기 (특정 시간) *", description = "(예약자 직접) 특정 시간에 대해 예약을 삭제하는 API입니다.")
@@ -77,5 +79,6 @@ public interface SecureTimeSlotReservationApi {
     })
     ResponseEntity<?> deleteReservation(@PathVariable(name = "restaurantId") Long restaurantId,
                                         @AuthenticationPrincipal PrincipalDetails principalDetails,
+                                        @RequestParam(value = "date") String date,
                                         @RequestParam(value = "time-slot") TimeSlot timeSlot);
 }
