@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,10 +60,11 @@ public class TimeSlotReservationService {
 
         String key = RESERVATION_KEY_PREFIX + restaurantId + TIME_SLOT + date + "_";
 
-        Map<TimeSlot, Integer> timeSlotBooleanMap = new HashMap<>();
+        Map<TimeSlot, Integer> timeSlotBooleanMap = new LinkedHashMap<>();
         int size;
 
         for (TimeSlot slot : TimeSlot.values()) {
+            System.out.println(slot);
             size = redisUtil.hashSize(key + slot);
             timeSlotBooleanMap.put(slot, size);
         }
