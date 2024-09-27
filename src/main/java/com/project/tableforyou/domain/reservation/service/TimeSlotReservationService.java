@@ -21,14 +21,16 @@ public class TimeSlotReservationService {
 
     private final RestaurantRepository restaurantRepository;
     private final RedisUtil redisUtil;
+
     private static final String TIME_SLOT = ":timeslot:";
+    private static final long TIME_RESERVATION_TTL = 7*24*60*60;
 
     /* 시간대별 가게 예약 */
-    public void saveTimeSlotReservation(String username, Long restaurantId, TimeSlot timeSlot) {
+    public void saveTimeSlotReservation(String username, Long restaurantId, String date, TimeSlot timeSlot) {
 
-        String key = RESERVATION_KEY_PREFIX + restaurantId + TIME_SLOT + timeSlot;
+        String key = RESERVATION_KEY_PREFIX + restaurantId + TIME_SLOT + date + "_" + timeSlot;
 
-        if (isUserAlreadyInTimeSlot(username, restaurantId, timeSlot))
+        if (isUserAlreadyInTimeSlot(username, restaurantId, date, timeSlot))
             throw new CustomException(ErrorCode.ALREADY_USER_RESERVATION);
 
         TimeSlotReservation timeSlotReservation = TimeSlotReservation.builder()
@@ -37,11 +39,12 @@ public class TimeSlotReservationService {
                 .build();
 
         redisUtil.hashPutTimeSlot(key, timeSlotReservation);
+        redisUtil.expire(key, TIME_RESERVATION_TTL);
     }
 
     /* 예약을 했는지 확인. */
-    public boolean isUserAlreadyInTimeSlot(String username, Long restaurantId, TimeSlot timeSlot) {
-        String key = RESERVATION_KEY_PREFIX + restaurantId + TIME_SLOT + timeSlot;
+    public boolean isUserAlreadyInTimeSlot(String username, Long restaurantId, String date, TimeSlot timeSlot) {
+        String key = RESERVATION_KEY_PREFIX + restaurantId + TIME_SLOT + date + "_" +  timeSlot;
         return redisUtil.hashExisted(key, username);
     }
 
@@ -49,29 +52,29 @@ public class TimeSlotReservationService {
     * 특정 시간 예약 상태 확인
     * true = full
     */
-    public boolean checkTimeSlotReservationFull(Long restaurantId, TimeSlot timeSlot) {
+    public boolean checkTimeSlotReservationFull(Long restaurantId, String date, TimeSlot timeSlot) {
 
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
-        String key = RESERVATION_KEY_PREFIX + restaurantId + TIME_SLOT + timeSlot;
+        String key = RESERVATION_KEY_PREFIX + restaurantId + TIME_SLOT + date + "_" +  timeSlot;
         int size = redisUtil.hashSize(key);
 
         return restaurant.getTotalSeats()/2 - size <= 0;
     }
 
     /* 특정 시간대 모든 예약자 가져오기 */
-    public List<TimeSlotReservationResDto> findAllTimeSlotReservations(Long restaurantId, TimeSlot timeSlot) {
+    public List<TimeSlotReservationResDto> findAllTimeSlotReservations(Long restaurantId, String date, TimeSlot timeSlot) {
 
-        String key = RESERVATION_KEY_PREFIX + restaurantId + TIME_SLOT + timeSlot;
+        String key = RESERVATION_KEY_PREFIX + restaurantId + TIME_SLOT + date + "_" +  timeSlot;
 
         return redisUtil.getTimeSlotEntries(key);
     }
 
     /* 예약자 삭제 */
-    public void deleteTimeSlotReservation(Long restaurantId, String username, TimeSlot timeSlot) {
+    public void deleteTimeSlotReservation(Long restaurantId, String username, String date, TimeSlot timeSlot) {
 
-        String key = RESERVATION_KEY_PREFIX + restaurantId + TIME_SLOT + timeSlot;
+        String key = RESERVATION_KEY_PREFIX + restaurantId + TIME_SLOT + date + "_" +  timeSlot;
         TimeSlotReservation timeSlotReservation = redisUtil.hashGetTimeSlot(key, username);
 
         // 해당 예약이 존재하는 경우 삭제합니다.

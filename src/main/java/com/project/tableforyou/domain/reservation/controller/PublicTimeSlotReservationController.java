@@ -23,8 +23,13 @@ public class PublicTimeSlotReservationController implements PublicTimeSlotReserv
     @Override
     @GetMapping("/{restaurantId}/timeslot-reservations-full-check")
     public ResponseEntity<?> checkTimeReservationFull(@PathVariable(name = "restaurantId") Long restaurantId,
-                                                            @RequestParam(value = "time-slot") TimeSlot timeSlot) {
+                                                      @RequestParam(value = "date") String date,
+                                                      @RequestParam(value = "time-slot") TimeSlot timeSlot) {
 
-        return ResponseEntity.ok(ApiUtil.from(timeSlotReservationService.checkTimeSlotReservationFull(restaurantId, timeSlot)));
+        return ResponseEntity.ok(ApiUtil.from(timeSlotReservationService.checkTimeSlotReservationFull(
+                restaurantId,
+                date,
+                timeSlot
+        )));
     }
 }

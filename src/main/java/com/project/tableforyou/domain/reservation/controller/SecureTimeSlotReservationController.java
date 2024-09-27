@@ -31,10 +31,16 @@ public class SecureTimeSlotReservationController implements SecureTimeSlotReserv
     @Override
     @PostMapping("/{restaurantId}/timeslot-reservations")
     public ResponseEntity<?> saveReservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                          @PathVariable(name = "restaurantId") Long restaurantId,
-                                                          @RequestParam(value = "time-slot") TimeSlot timeSlot) {
+                                             @PathVariable(name = "restaurantId") Long restaurantId,
+                                             @RequestParam(value = "date") String date,
+                                             @RequestParam(value = "time-slot") TimeSlot timeSlot) {
 
-        timeSlotReservationService.saveTimeSlotReservation(principalDetails.getUsername(), restaurantId, timeSlot);
+        timeSlotReservationService.saveTimeSlotReservation(
+                principalDetails.getUsername(),
+                restaurantId,
+                date,
+                timeSlot
+        );
 
         visitService.saveVisitRestaurant(principalDetails.getUsername(), restaurantId);
 
@@ -45,22 +51,29 @@ public class SecureTimeSlotReservationController implements SecureTimeSlotReserv
     @Override
     @GetMapping("/{restaurantId}/timeslot-reservations-check")
     public ResponseEntity<?> checkUserReservation(@PathVariable(name = "restaurantId") Long restaurantId,
-                                                        @AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                        @RequestParam(value = "time-slot") TimeSlot timeSlot) {
+                                                  @AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                  @RequestParam(value = "date") String date,
+                                                  @RequestParam(value = "time-slot") TimeSlot timeSlot) {
 
 
         return ResponseEntity.ok(ApiUtil.from(timeSlotReservationService
-                .isUserAlreadyInTimeSlot(principalDetails.getUsername(), restaurantId, timeSlot)));
+                .isUserAlreadyInTimeSlot(principalDetails.getUsername(), restaurantId, date, timeSlot)));
     }
 
     /* 예약 삭제하기 */
     @Override
     @DeleteMapping("/{restaurantId}/timeslot-reservations")
     public ResponseEntity<?> deleteReservation(@PathVariable(name = "restaurantId") Long restaurantId,
-                                                    @AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                    @RequestParam(value = "time-slot") TimeSlot timeSlot) {
+                                               @AuthenticationPrincipal PrincipalDetails principalDetails,
+                                               @RequestParam(value = "date") String date,
+                                               @RequestParam(value = "time-slot") TimeSlot timeSlot) {
 
-        timeSlotReservationService.deleteTimeSlotReservation(restaurantId, principalDetails.getUsername(), timeSlot);
+        timeSlotReservationService.deleteTimeSlotReservation(
+                restaurantId,
+                principalDetails.getUsername(),
+                date,
+                timeSlot
+        );
 
         visitService.deleteVisitRestaurant(principalDetails.getUsername(), restaurantId);
 

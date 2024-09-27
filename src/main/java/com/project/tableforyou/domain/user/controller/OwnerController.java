@@ -16,7 +16,6 @@ import com.project.tableforyou.security.auth.PrincipalDetails;
 import com.project.tableforyou.utils.api.ApiUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -162,10 +161,11 @@ public class OwnerController implements OwnerApi {
     @Override
     @GetMapping("/{restaurantId}/timeslot-reservations")
     public ResponseEntity<?> readAllTimeSlotReservation(@PathVariable(name = "restaurantId") Long restaurantId,
-                                                                      @RequestParam(value = "time-slot") TimeSlot timeSlot,
-                                                                      @AuthenticationPrincipal PrincipalDetails principalDetails) {
+                                                        @RequestParam(value = "date") String date,
+                                                        @RequestParam(value = "time-slot") TimeSlot timeSlot,
+                                                        @AuthenticationPrincipal PrincipalDetails principalDetails) {
         if (ownerReservationService.isOwnerRestaurant(restaurantId, principalDetails.getUsername()))
-            return ResponseEntity.ok(timeSlotReservationService.findAllTimeSlotReservations(restaurantId, timeSlot));
+            return ResponseEntity.ok(timeSlotReservationService.findAllTimeSlotReservations(restaurantId, date, timeSlot));
         else
             throw new CustomException(ErrorCode.UNAUTHORIZED);
     }
@@ -174,12 +174,13 @@ public class OwnerController implements OwnerApi {
     @Override
     @DeleteMapping("/{restaurantId}/timeslot-reservations/{username}")
     public ResponseEntity<?> deleteReservation(@PathVariable(name = "restaurantId") Long restaurantId,
-                                                    @PathVariable(name = "username") String username,
-                                                    @RequestParam(value = "time-slot") TimeSlot timeSlot,
-                                                    @AuthenticationPrincipal PrincipalDetails principalDetails) {
+                                               @PathVariable(name = "username") String username,
+                                               @RequestParam(value = "date") String date,
+                                               @RequestParam(value = "time-slot") TimeSlot timeSlot,
+                                               @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         if (ownerReservationService.isOwnerRestaurant(restaurantId, principalDetails.getUsername())) {
-            timeSlotReservationService.deleteTimeSlotReservation(restaurantId, username, timeSlot);
+            timeSlotReservationService.deleteTimeSlotReservation(restaurantId, username, date, timeSlot);
             return ResponseEntity.ok(ApiUtil.from("예약자 삭제 성공."));
         } else
             throw new CustomException(ErrorCode.UNAUTHORIZED);
