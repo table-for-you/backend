@@ -14,13 +14,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Tag(name = "[(권한 필요 x) 특정 시간 예약 API]", description = "권한이 필요없는 특정 시간대 예약 관련 API")
 public interface PublicTimeSlotReservationApi {
 
-    @Operation(summary = "특정 시간대 예약 다 찼는지 확인하기", description = "특정 시간대에 예약이 다 찼는지 확인하는 API입니다.")
+    @Operation(summary = "날짜별 시간대 예약 가능한지 확인하기", description = "날짜별 시간대에 예약이 가능한지 확인하는 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "예약 상태 확인 성공",
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject(value = """
                                         {
-                                            "response": "true"
+                                            "TWELVE_PM": true,
+                                            "SEVEN_PM": true,
+                                            "SIX_PM": true,
+                                            "NINE_AM": true,
+                                            "ONE_PM": true,
+                                            "TWO_PM": false,
+                                            "THREE_PM": true,
+                                            "FOUR_PM": true,
+                                            "EIGHT_PM": true,
+                                            "TEN_AM": true,
+                                            "FIVE_PM": true,
+                                            "ELEVEN_AM": true
                                         }
                                     """)
                     })),
@@ -35,6 +46,5 @@ public interface PublicTimeSlotReservationApi {
                     })),
     })
     ResponseEntity<?> checkTimeReservationFull(@PathVariable(name = "restaurantId") Long restaurantId,
-                                               @RequestParam(value = "date") String date,
-                                               @RequestParam(value = "time-slot") TimeSlot timeSlot);
+                                               @RequestParam(value = "date") String date);
 }
