@@ -20,7 +20,9 @@ import static com.project.tableforyou.utils.redis.RedisProperties.RESERVATION_KE
 public class QueueReservationService {
 
     private final RedisUtil redisUtil;
+
     private static final String QUEUE = "queue:";
+    private static final long QUEUE_RESERVATION_TTL = 10*60*60;
 
     /* 가게 번호표 예약자 추가 */
     public void saveQueueReservation(String username, Long restaurantId) {
@@ -38,6 +40,7 @@ public class QueueReservationService {
                 .build();
 
         redisUtil.hashPutQueue(key, queueReservation);
+        redisUtil.expire(key, QUEUE_RESERVATION_TTL);
     }
 
     /* 예약을 했는지 확인. */
