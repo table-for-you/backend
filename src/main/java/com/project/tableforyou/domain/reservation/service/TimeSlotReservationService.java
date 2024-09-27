@@ -55,21 +55,16 @@ public class TimeSlotReservationService {
      * 특정 시간 예약 상태 확인
      * true = full
      */
-    public Map<TimeSlot, Boolean> checkTimeSlotReservationFull(Long restaurantId, String date) {
-
-        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
-                new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
+    public Map<TimeSlot, Integer> checkTimeSlotReservationFull(Long restaurantId, String date) {
 
         String key = RESERVATION_KEY_PREFIX + restaurantId + TIME_SLOT + date + "_";
 
-        Map<TimeSlot, Boolean> timeSlotBooleanMap = new HashMap<>();
+        Map<TimeSlot, Integer> timeSlotBooleanMap = new HashMap<>();
         int size;
-        boolean isPossible;
 
         for (TimeSlot slot : TimeSlot.values()) {
             size = redisUtil.hashSize(key + slot);
-            isPossible = restaurant.getTotalSeats() / 2 - size > 0;
-            timeSlotBooleanMap.put(slot, isPossible);
+            timeSlotBooleanMap.put(slot, size);
         }
 
         return timeSlotBooleanMap;

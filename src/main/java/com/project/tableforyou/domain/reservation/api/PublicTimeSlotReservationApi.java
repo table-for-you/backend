@@ -20,30 +20,21 @@ public interface PublicTimeSlotReservationApi {
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject(value = """
                                         {
-                                            "TWELVE_PM": true,
-                                            "SEVEN_PM": true,
-                                            "SIX_PM": true,
-                                            "NINE_AM": true,
-                                            "ONE_PM": true,
-                                            "TWO_PM": false,
-                                            "THREE_PM": true,
-                                            "FOUR_PM": true,
-                                            "EIGHT_PM": true,
-                                            "TEN_AM": true,
-                                            "FIVE_PM": true,
-                                            "ELEVEN_AM": true
+                                            "TWELVE_PM": 0,
+                                            "SEVEN_PM": 3,
+                                            "SIX_PM": 1,
+                                            "NINE_AM": 2,
+                                            "ONE_PM": 0,
+                                            "TWO_PM": 4,
+                                            "THREE_PM": 5,
+                                            "FOUR_PM": 4,
+                                            "EIGHT_PM": 0,
+                                            "TEN_AM": 2,
+                                            "FIVE_PM": 4,
+                                            "ELEVEN_AM": 5
                                         }
                                     """)
-                    })),
-            @ApiResponse(responseCode = "404", description = "가게 없음",
-                    content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(value = """
-                                        {
-                                            "status": 404,
-                                            "message": "존재하지 않는 가게입니다."
-                                        }
-                                    """)
-                    })),
+                    }))
     })
     ResponseEntity<?> checkTimeReservationFull(@PathVariable(name = "restaurantId") Long restaurantId,
                                                @RequestParam(value = "date") String date);
