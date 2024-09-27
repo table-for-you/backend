@@ -197,13 +197,8 @@ public interface PublicRestaurantApi {
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject(name = "increaseSeats", value = """
                                         {
-                                            "response": "가게 좌석 증가 완료."
+                                            "response": "가게 좌석 변경 완료"
                                         }
-                                    """),
-                            @ExampleObject(name = "decreaseSeats", value = """
-                                        {
-                                            "response": "가게 좌석 감소 완료."
-                                        }username + "님 입장"
                                     """),
                             @ExampleObject(name = "decreaseAndExistsReservation", value = """
                                         {
