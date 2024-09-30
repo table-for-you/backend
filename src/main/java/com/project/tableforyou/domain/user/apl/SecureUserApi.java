@@ -1,5 +1,6 @@
 package com.project.tableforyou.domain.user.apl;
 
+import com.project.tableforyou.domain.user.dto.FcmTokenRequestDto;
 import com.project.tableforyou.domain.user.dto.PasswordDto;
 import com.project.tableforyou.domain.user.dto.UserUpdateDto;
 import com.project.tableforyou.security.auth.PrincipalDetails;
@@ -139,4 +140,27 @@ public interface SecureUserApi {
                     }))
     })
     ResponseEntity<?> getRestaurantLike(@AuthenticationPrincipal PrincipalDetails principalDetails);
+
+    @Operation(summary = "fcmToken 저장 *", description = "fcmToken 저장히는 API입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "fcmToken 저장 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "response": "fcmToken 저장 완료."
+                                        }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "404", description = "사용자 없음",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "status": 404,
+                                            "message": "존재하지 않는 회원입니다."
+                                        }
+                                    """)
+                    }))
+    })
+    ResponseEntity<?> saveFcmToken(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                   @RequestBody FcmTokenRequestDto fcmTokenRequestDto);
 }
