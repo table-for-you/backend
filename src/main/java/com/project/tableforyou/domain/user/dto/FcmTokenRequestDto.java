@@ -1,0 +1,2 @@
+package com.project.tableforyou.domain.user.dto;public class FcmTokenRequestDto {
+}

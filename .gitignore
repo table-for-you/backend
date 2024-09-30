@@ -41,3 +41,4 @@ docker-compose.yml
 redis/conf
 redis/data
 database/
+/src/main/resources/table-for-you-71dec-firebase-adminsdk-ixi74-7adbb3e3cb.json
