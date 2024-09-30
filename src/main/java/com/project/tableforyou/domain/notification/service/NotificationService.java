@@ -1,5 +1,7 @@
 package com.project.tableforyou.domain.notification.service;
 
+import com.project.tableforyou.fcm.service.FcmService;
+import com.project.tableforyou.fcm.util.FcmProperties;
 import com.project.tableforyou.domain.notification.dto.NotificationDetailsDto;
 import com.project.tableforyou.domain.notification.dto.NotificationSummaryDto;
 import com.project.tableforyou.domain.notification.entity.Notification;
@@ -19,20 +21,30 @@ import org.springframework.transaction.annotation.Transactional;
 public class NotificationService {
 
     private final NotificationRepository notificationRepository;
-
-    private static final String RESTAURANT_APPROVED_CONTENT = "가게가 승인되었습니다!";
-    private static final String RESTAURANT_REJECT_CONTENT = "가게가 승인 거절되었습니다.";
+    private final FcmService fcmService;
 
     /* 알림 생성 */
     @Transactional
-    public void createNotification(RestaurantStatus status, Long restaurantId, User owner) {
+    public void createRestaurantStatusNotification(String fcmToken, RestaurantStatus status, Long restaurantId, User owner) {
 
         String content = "";
-        if (status == RestaurantStatus.APPROVED)
-            content = RESTAURANT_APPROVED_CONTENT;
+        if (status == RestaurantStatus.APPROVED) {
+            content = FcmProperties.RESTAURANT_APPROVED_TITLE;
+            /*fcmService.sendNotification(
+                    fcmToken,
+                    FcmProperties.RESTAURANT_APPROVED_TITLE,
+                    FcmProperties.RESTAURANT_APPROVED_CONTENT
+            );*/
+        }
 
-        if (status == RestaurantStatus.REJECT)
-            content = RESTAURANT_REJECT_CONTENT;
+        if (status == RestaurantStatus.REJECT) {
+            content = FcmProperties.RESTAURANT_REJECT_TITLE;
+            /*fcmService.sendNotification(
+                    fcmToken,
+                    FcmProperties.RESTAURANT_REJECT_TITLE,
+                    FcmProperties.RESTAURANT_REJECT_CONTENT
+            );*/
+        }
 
         notificationRepository.save(
                 Notification.builder()
@@ -41,6 +53,23 @@ public class NotificationService {
                         .status(status)
                         .user(owner)
                         .build());
+    }
+
+    /* 알림 생성 및 FCM 전송 */
+    @Transactional
+    public void createReservationNotification(String fcmToken, String title, String content, Long restaurantId, User user) {
+
+        // FCM 알림 전송
+        //fcmService.sendNotification(fcmToken, title, content);
+
+        // 알림 저장
+        notificationRepository.save(
+                Notification.builder()
+                        .content(content)
+                        .restaurantId(restaurantId)
+                        .user(user)
+                        .build()
+        );
     }
 
     /* 알림 목록 들고오기 */
