@@ -1,6 +1,6 @@
 package com.project.tableforyou.domain.restaurant.service;
 
-import com.project.tableforyou.aop.annotation.VerifyAuthentication;
+import com.project.tableforyou.common.aop.annotation.VerifyAuthentication;
 import com.project.tableforyou.domain.common.service.AssociatedEntityService;
 import com.project.tableforyou.domain.image.entity.Image;
 import com.project.tableforyou.domain.image.repository.ImageRepository;
@@ -10,12 +10,12 @@ import com.project.tableforyou.domain.restaurant.dto.RestaurantUpdateDto;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import com.project.tableforyou.domain.restaurant.entity.RestaurantStatus;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
-import com.project.tableforyou.domain.s3.ImageType;
-import com.project.tableforyou.domain.s3.service.S3Service;
+import com.project.tableforyou.common.s3.ImageType;
+import com.project.tableforyou.common.s3.service.S3Service;
 import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.domain.user.repository.UserRepository;
-import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
-import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
+import com.project.tableforyou.common.handler.exceptionHandler.error.ErrorCode;
+import com.project.tableforyou.common.handler.exceptionHandler.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

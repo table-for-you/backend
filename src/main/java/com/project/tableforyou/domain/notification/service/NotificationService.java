@@ -1,15 +1,15 @@
 package com.project.tableforyou.domain.notification.service;
 
-import com.project.tableforyou.fcm.service.FcmService;
-import com.project.tableforyou.fcm.util.FcmProperties;
+import com.project.tableforyou.common.fcm.service.FcmService;
+import com.project.tableforyou.common.fcm.util.FcmProperties;
 import com.project.tableforyou.domain.notification.dto.NotificationDetailsDto;
 import com.project.tableforyou.domain.notification.dto.NotificationSummaryDto;
 import com.project.tableforyou.domain.notification.entity.Notification;
 import com.project.tableforyou.domain.notification.repository.NotificationRepository;
 import com.project.tableforyou.domain.restaurant.entity.RestaurantStatus;
 import com.project.tableforyou.domain.user.entity.User;
-import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
-import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
+import com.project.tableforyou.common.handler.exceptionHandler.error.ErrorCode;
+import com.project.tableforyou.common.handler.exceptionHandler.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -2,7 +2,7 @@ package com.project.tableforyou.domain.restaurant.controller;
 
 import com.project.tableforyou.domain.restaurant.api.SecureRestaurantApi;
 import com.project.tableforyou.domain.restaurant.service.RestaurantService;
-import com.project.tableforyou.utils.api.ApiUtil;
+import com.project.tableforyou.common.utils.api.ApiUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

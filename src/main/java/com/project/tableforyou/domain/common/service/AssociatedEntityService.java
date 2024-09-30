@@ -5,7 +5,7 @@ import com.project.tableforyou.domain.like.repository.LikeRepository;
 import com.project.tableforyou.domain.menu.repository.MenuRepository;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
-import com.project.tableforyou.domain.s3.service.S3Service;
+import com.project.tableforyou.common.s3.service.S3Service;
 import com.project.tableforyou.domain.visit.repository.VisitRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

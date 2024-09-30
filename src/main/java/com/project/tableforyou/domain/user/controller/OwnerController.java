@@ -12,11 +12,11 @@ import com.project.tableforyou.domain.restaurant.service.OwnerRestaurantService;
 import com.project.tableforyou.domain.restaurant.service.RestaurantService;
 import com.project.tableforyou.domain.user.apl.OwnerApi;
 import com.project.tableforyou.domain.visit.service.VisitService;
-import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
-import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
+import com.project.tableforyou.common.handler.exceptionHandler.error.ErrorCode;
+import com.project.tableforyou.common.handler.exceptionHandler.exception.CustomException;
 import com.project.tableforyou.security.auth.PrincipalDetails;
-import com.project.tableforyou.utils.api.ApiUtil;
-import com.project.tableforyou.utils.redis.RedisUtil;
+import com.project.tableforyou.common.utils.api.ApiUtil;
+import com.project.tableforyou.common.utils.redis.RedisUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static com.project.tableforyou.utils.redis.RedisProperties.RESERVATION_KEY_PREFIX;
+import static com.project.tableforyou.common.utils.redis.RedisProperties.RESERVATION_KEY_PREFIX;
 
 @RestController
 @RequestMapping("/owner/restaurants")

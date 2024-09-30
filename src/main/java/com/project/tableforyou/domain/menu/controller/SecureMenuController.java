@@ -4,7 +4,7 @@ import com.project.tableforyou.domain.menu.api.SecureMenuApi;
 import com.project.tableforyou.domain.menu.dto.MenuRequestDto;
 import com.project.tableforyou.domain.menu.dto.MenuUpdateDto;
 import com.project.tableforyou.domain.menu.service.MenuService;
-import com.project.tableforyou.utils.api.ApiUtil;
+import com.project.tableforyou.common.utils.api.ApiUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

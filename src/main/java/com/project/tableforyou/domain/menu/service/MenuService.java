@@ -1,6 +1,6 @@
 package com.project.tableforyou.domain.menu.service;
 
-import com.project.tableforyou.aop.annotation.VerifyAuthentication;
+import com.project.tableforyou.common.aop.annotation.VerifyAuthentication;
 import com.project.tableforyou.domain.menu.dto.MenuRequestDto;
 import com.project.tableforyou.domain.menu.dto.MenuResponseDto;
 import com.project.tableforyou.domain.menu.dto.MenuUpdateDto;
@@ -8,12 +8,11 @@ import com.project.tableforyou.domain.menu.entity.Menu;
 import com.project.tableforyou.domain.menu.repository.MenuRepository;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
-import com.project.tableforyou.domain.s3.ImageType;
-import com.project.tableforyou.domain.s3.service.S3Service;
-import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
-import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
+import com.project.tableforyou.common.s3.ImageType;
+import com.project.tableforyou.common.s3.service.S3Service;
+import com.project.tableforyou.common.handler.exceptionHandler.exception.CustomException;
+import com.project.tableforyou.common.handler.exceptionHandler.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

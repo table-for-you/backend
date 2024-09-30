@@ -1,10 +1,10 @@
 package com.project.tableforyou.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.tableforyou.jwt.filter.JwtAuthenticationFilter;
-import com.project.tableforyou.jwt.filter.JwtExceptionFilter;
-import com.project.tableforyou.token.service.TokenBlackListService;
-import com.project.tableforyou.utils.jwt.JwtUtil;
+import com.project.tableforyou.common.jwt.filter.JwtAuthenticationFilter;
+import com.project.tableforyou.common.jwt.filter.JwtExceptionFilter;
+import com.project.tableforyou.security.token.service.TokenBlackListService;
+import com.project.tableforyou.common.utils.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

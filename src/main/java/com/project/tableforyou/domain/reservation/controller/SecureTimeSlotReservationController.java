@@ -5,7 +5,7 @@ import com.project.tableforyou.domain.reservation.entity.TimeSlot;
 import com.project.tableforyou.domain.reservation.service.TimeSlotReservationService;
 import com.project.tableforyou.domain.visit.service.VisitService;
 import com.project.tableforyou.security.auth.PrincipalDetails;
-import com.project.tableforyou.utils.api.ApiUtil;
+import com.project.tableforyou.common.utils.api.ApiUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

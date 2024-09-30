@@ -3,7 +3,7 @@ package com.project.tableforyou.domain.user.controller;
 import com.project.tableforyou.domain.user.apl.PublicUserApi;
 import com.project.tableforyou.domain.user.dto.SignUpDto;
 import com.project.tableforyou.domain.user.service.UserService;
-import com.project.tableforyou.utils.api.ApiUtil;
+import com.project.tableforyou.common.utils.api.ApiUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

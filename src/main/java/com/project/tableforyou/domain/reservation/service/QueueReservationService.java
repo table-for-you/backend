@@ -7,10 +7,10 @@ import com.project.tableforyou.domain.reservation.entity.QueueReservation;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
 import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.domain.user.repository.UserRepository;
-import com.project.tableforyou.fcm.util.FcmProperties;
-import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
-import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
-import com.project.tableforyou.utils.redis.RedisUtil;
+import com.project.tableforyou.common.fcm.util.FcmProperties;
+import com.project.tableforyou.common.handler.exceptionHandler.error.ErrorCode;
+import com.project.tableforyou.common.handler.exceptionHandler.exception.CustomException;
+import com.project.tableforyou.common.utils.redis.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.project.tableforyou.utils.redis.RedisProperties.RESERVATION_KEY_PREFIX;
+import static com.project.tableforyou.common.utils.redis.RedisProperties.RESERVATION_KEY_PREFIX;
 
 @Service
 @RequiredArgsConstructor

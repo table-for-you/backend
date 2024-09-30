@@ -1,7 +1,6 @@
 package com.project.tableforyou.controller.restaurant;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.tableforyou.domain.reservation.service.QueueReservationService;
 import com.project.tableforyou.domain.restaurant.controller.PublicRestaurantController;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantInfoDto;
@@ -12,13 +11,12 @@ import com.project.tableforyou.domain.restaurant.entity.RestaurantStatus;
 import com.project.tableforyou.domain.restaurant.service.RestaurantService;
 import com.project.tableforyou.domain.user.entity.Role;
 import com.project.tableforyou.domain.user.entity.User;
-import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
-import com.project.tableforyou.utils.redis.RedisUtil;
+import com.project.tableforyou.common.handler.exceptionHandler.error.ErrorCode;
+import com.project.tableforyou.common.utils.redis.RedisUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
@@ -33,7 +31,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.project.tableforyou.utils.redis.RedisProperties.RESERVATION_KEY_PREFIX;
+import static com.project.tableforyou.common.utils.redis.RedisProperties.RESERVATION_KEY_PREFIX;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;

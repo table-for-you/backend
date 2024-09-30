@@ -5,7 +5,7 @@ import com.project.tableforyou.domain.reservation.dto.QueueReservationReqDto;
 import com.project.tableforyou.domain.reservation.dto.QueueReservationResDto;
 import com.project.tableforyou.domain.reservation.service.QueueReservationService;
 import com.project.tableforyou.security.auth.PrincipalDetails;
-import com.project.tableforyou.utils.api.ApiUtil;
+import com.project.tableforyou.common.utils.api.ApiUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
