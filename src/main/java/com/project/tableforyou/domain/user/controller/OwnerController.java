@@ -9,11 +9,14 @@ import com.project.tableforyou.domain.reservation.service.TimeSlotReservationSer
 import com.project.tableforyou.domain.restaurant.dto.RestaurantRequestDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantUpdateDto;
 import com.project.tableforyou.domain.restaurant.service.OwnerRestaurantService;
+import com.project.tableforyou.domain.restaurant.service.RestaurantService;
 import com.project.tableforyou.domain.user.apl.OwnerApi;
+import com.project.tableforyou.domain.visit.service.VisitService;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import com.project.tableforyou.security.auth.PrincipalDetails;
 import com.project.tableforyou.utils.api.ApiUtil;
+import com.project.tableforyou.utils.redis.RedisUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -33,15 +36,20 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static com.project.tableforyou.utils.redis.RedisProperties.RESERVATION_KEY_PREFIX;
+
 @RestController
 @RequestMapping("/owner/restaurants")
 @RequiredArgsConstructor
 public class OwnerController implements OwnerApi {
 
     private final OwnerRestaurantService ownerRestaurantService;
+    private final OwnerReservationService ownerReservationService;
     private final QueueReservationService queueReservationService;
     private final TimeSlotReservationService timeSlotReservationService;
-    private final OwnerReservationService ownerReservationService;
+    private final RedisUtil redisUtil;
+    private final RestaurantService restaurantService;
+    private final VisitService visitService;
 
     /* 가게 생성 */
     @Override
@@ -109,6 +117,32 @@ public class OwnerController implements OwnerApi {
         ownerRestaurantService.deleteRestaurant(restaurantId);
         return ResponseEntity.ok(ApiUtil.from("가게 삭제 완료."));
 
+    }
+
+    /* 좌석 업데이트 */
+    @Override
+    @PatchMapping("/{restaurantId}/update-used-seats")
+    public ResponseEntity<?> updateFullUsedSeats(@PathVariable(name = "restaurantId") Long restaurantId,
+                                                 @RequestParam("increase") boolean increase) {
+
+        int value = increase ? 1 : -1;
+
+        String key = RESERVATION_KEY_PREFIX + "queue:" + restaurantId;
+
+        if (value == -1 && redisUtil.hashSize(key) != 0) {   // 좌석이 다 차서 예약자에서 인원을 가져올 때. (인원이 줄면) redis값을 가져와 있는지 확인한 후 보내기
+            List<QueueReservationResDto> reservations =
+                    queueReservationService.getQueueReservations(restaurantId, null, null);
+            String username = queueReservationService.decreaseBooking(reservations, restaurantId);
+
+            visitService.saveVisitRestaurant(username, restaurantId);   // 사용자가 방문 가게 목록에 저장
+
+            return ResponseEntity.ok(ApiUtil.from(username + "님 입장"));
+        }
+        else {                                                          // 좌석이 덜 찼을 때
+            restaurantService.updateUsedSeats(restaurantId, value);
+
+            return ResponseEntity.ok(ApiUtil.from("가게 좌석 변경 성공."));
+        }
     }
 
     /* 해당 가게 예약자 불러오기. (번호표) */
