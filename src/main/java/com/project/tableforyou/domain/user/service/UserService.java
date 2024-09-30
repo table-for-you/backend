@@ -1,6 +1,7 @@
 package com.project.tableforyou.domain.user.service;
 
 import com.project.tableforyou.domain.common.service.AssociatedEntityService;
+import com.project.tableforyou.domain.user.dto.FcmTokenRequestDto;
 import com.project.tableforyou.domain.user.dto.PasswordDto;
 import com.project.tableforyou.domain.user.dto.SignUpDto;
 import com.project.tableforyou.domain.user.dto.UserResponseDto;
@@ -78,6 +79,15 @@ public class UserService {
                 new CustomException(ErrorCode.USER_NOT_FOUND));
 
         return bCryptPasswordEncoder.matches(passwordDto.getPassword(), user.getPassword());
+    }
+
+    /* fcmToken 저장 */
+    @Transactional
+    public void saveFcmToken(Long userId, FcmTokenRequestDto fcmTokenRequestDto) {
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        user.addFcmToken(fcmTokenRequestDto.getFcmToken());
     }
 
     /* 아이디 중복 확인 */

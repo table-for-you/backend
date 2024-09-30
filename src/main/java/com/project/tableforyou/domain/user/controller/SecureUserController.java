@@ -2,6 +2,7 @@ package com.project.tableforyou.domain.user.controller;
 
 import com.project.tableforyou.domain.like.service.LikeService;
 import com.project.tableforyou.domain.user.apl.SecureUserApi;
+import com.project.tableforyou.domain.user.dto.FcmTokenRequestDto;
 import com.project.tableforyou.domain.user.dto.PasswordDto;
 import com.project.tableforyou.domain.user.dto.UserUpdateDto;
 import com.project.tableforyou.domain.user.service.UserService;
@@ -28,7 +29,6 @@ public class SecureUserController implements SecureUserApi {
 
     private final UserService userService;
     private final LikeService likeService;
-
 
     /* 회원 불러오기 */
     @Override
@@ -72,5 +72,14 @@ public class SecureUserController implements SecureUserApi {
     public ResponseEntity<?> getRestaurantLike(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         return ResponseEntity.ok(likeService.getRestaurantLike(principalDetails.getUsername()));
+    }
+
+    /* fcmToken 저장 */
+    @PostMapping("/fcm-token")
+    public ResponseEntity<?> saveFcmToken(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                          @RequestBody FcmTokenRequestDto fcmTokenRequestDto) {
+
+        userService.saveFcmToken(principalDetails.getId(), fcmTokenRequestDto);
+        return ResponseEntity.ok(ApiUtil.from("fcmToken 저장 완료."));
     }
 }

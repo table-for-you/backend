@@ -54,6 +54,9 @@ public class User extends BaseTimeEntity {
     @NotNull
     private String age;
 
+    @Column(name = "fcm_token")
+    private String fcmToken;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -106,6 +109,11 @@ public class User extends BaseTimeEntity {
     /* 로그인 잠금 해제 */
     public void acceptLogin() {
         this.lockTime = null;
+    }
+
+    /* fcmToken 저장 */
+    public void addFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 }
 
