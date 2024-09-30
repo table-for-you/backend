@@ -1,8 +1,13 @@
 package com.project.tableforyou.domain.reservation.service;
 
+import com.project.tableforyou.domain.notification.service.NotificationService;
 import com.project.tableforyou.domain.reservation.dto.QueueReservationReqDto;
 import com.project.tableforyou.domain.reservation.dto.QueueReservationResDto;
 import com.project.tableforyou.domain.reservation.entity.QueueReservation;
+import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
+import com.project.tableforyou.domain.user.entity.User;
+import com.project.tableforyou.domain.user.repository.UserRepository;
+import com.project.tableforyou.fcm.util.FcmProperties;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import com.project.tableforyou.utils.redis.RedisUtil;
@@ -20,6 +25,9 @@ import static com.project.tableforyou.utils.redis.RedisProperties.RESERVATION_KE
 public class QueueReservationService {
 
     private final RedisUtil redisUtil;
+    private final UserRepository userRepository;
+    private final RestaurantRepository restaurantRepository;
+    private final NotificationService notificationService;
 
     private static final String QUEUE = "queue:";
     private static final long QUEUE_RESERVATION_TTL = 10*60*60;
@@ -41,6 +49,19 @@ public class QueueReservationService {
 
         redisUtil.hashPutQueue(key, queueReservation);
         redisUtil.expire(key, QUEUE_RESERVATION_TTL);
+
+        String restaurantName = restaurantRepository.findRestaurantNameByRestaurantId(restaurantId);
+        User foundUser = userRepository.findByUsername(username).orElseThrow(() ->
+                new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        // FCM 알림 및 알림 저장
+        notificationService.createReservationNotification(
+                foundUser.getFcmToken(),
+                FcmProperties.RESERVATION_TITLE,
+                restaurantName + FcmProperties.QUEUE_RESERVATION_CONTENT,
+                restaurantId,
+                foundUser
+        );
     }
 
     /* 예약을 했는지 확인. */
@@ -62,10 +83,36 @@ public class QueueReservationService {
             if (storedQueueReservation.getBooking() == 1) {
                 username = storedQueueReservation.getUsername();
                 redisUtil.hashDel(key, storedQueueReservation.getUsername());
+
+                User foundUser = userRepository.findByUsername(username).orElseThrow(() ->
+                        new CustomException(ErrorCode.USER_NOT_FOUND));
+                String restaurantName = restaurantRepository.findRestaurantNameByRestaurantId(restaurantId);
+
+                notificationService.createReservationNotification(
+                        foundUser.getFcmToken(),
+                        FcmProperties.RESTAURANT_ENTER_TITLE,
+                        restaurantName + FcmProperties.RESTAURANT_ENTER_CONTENT,
+                        restaurantId,
+                        foundUser
+                );
             } else {
                 // 예약 번호가 1이 아닌 경우 예약 번호 감소
                 storedQueueReservation.updateBooking(storedQueueReservation.getBooking() - 1);
                 redisUtil.hashPutQueue(key, storedQueueReservation);
+
+                if (storedQueueReservation.getBooking() == 5) {     // 5번이면, 예약 입장 대기.
+                    User foundUser = userRepository.findByUsername(storedQueueReservation.getUsername()).orElseThrow(() ->
+                            new CustomException(ErrorCode.USER_NOT_FOUND));
+                    String restaurantName = restaurantRepository.findRestaurantNameByRestaurantId(restaurantId);
+
+                    notificationService.createReservationNotification(
+                            foundUser.getFcmToken(),
+                            FcmProperties.RESTAURANT_WAIT_TITLE,
+                            restaurantName + FcmProperties.RESTAURANT_WAIT_CONTENT,
+                            restaurantId,
+                            foundUser
+                    );
+                }
             }
 
         }
@@ -109,6 +156,19 @@ public class QueueReservationService {
         // 해당 예약이 존재하는 경우 삭제합니다.
         if (queueReservation != null)
             redisUtil.hashDel(key, username);
+
+        String restaurantName = restaurantRepository.findRestaurantNameByRestaurantId(restaurantId);
+        User foundUser = userRepository.findByUsername(username).orElseThrow(() ->
+                new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        // FCM 알림 및 알림 저장
+        notificationService.createReservationNotification(
+                foundUser.getFcmToken(),
+                FcmProperties.CANCEL_RESERVATION_TITLE,
+                restaurantName + FcmProperties.CANCEL_RESERVATION_CONTENT,
+                restaurantId,
+                foundUser
+        );
     }
 
     /* 예약자 List를 받기위한 메서드. */

@@ -1,18 +1,19 @@
 package com.project.tableforyou.domain.reservation.service;
 
+import com.project.tableforyou.fcm.util.FcmProperties;
+import com.project.tableforyou.domain.notification.service.NotificationService;
 import com.project.tableforyou.domain.reservation.dto.TimeSlotReservationResDto;
 import com.project.tableforyou.domain.reservation.entity.TimeSlot;
 import com.project.tableforyou.domain.reservation.entity.TimeSlotReservation;
-import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
 import com.project.tableforyou.domain.user.entity.User;
+import com.project.tableforyou.domain.user.repository.UserRepository;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import com.project.tableforyou.utils.redis.RedisUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,8 +24,10 @@ import static com.project.tableforyou.utils.redis.RedisProperties.RESERVATION_KE
 @Service
 public class TimeSlotReservationService {
 
-    private final RestaurantRepository restaurantRepository;
     private final RedisUtil redisUtil;
+    private final UserRepository userRepository;
+    private final RestaurantRepository restaurantRepository;
+    private final NotificationService notificationService;
 
     private static final String TIME_SLOT = ":timeslot:";
     private static final long TIME_RESERVATION_TTL = 7 * 24 * 60 * 60;
@@ -44,6 +47,18 @@ public class TimeSlotReservationService {
 
         redisUtil.hashPutTimeSlot(key, timeSlotReservation);
         redisUtil.expire(key, TIME_RESERVATION_TTL);
+
+        String restaurantName = restaurantRepository.findRestaurantNameByRestaurantId(restaurantId);
+        User foundUser = userRepository.findByUsername(username).orElseThrow(() ->
+                new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        notificationService.createReservationNotification(
+                foundUser.getFcmToken(),
+                FcmProperties.RESERVATION_TITLE,
+                restaurantName + FcmProperties.TIME_RESERVATION_CONTENT + date + "_" + timeSlot,
+                restaurantId,
+                foundUser
+        );
     }
 
     /* 예약을 했는지 확인. */
@@ -64,7 +79,6 @@ public class TimeSlotReservationService {
         int size;
 
         for (TimeSlot slot : TimeSlot.values()) {
-            System.out.println(slot);
             size = redisUtil.hashSize(key + slot);
             timeSlotBooleanMap.put(slot, size);
         }
@@ -92,5 +106,17 @@ public class TimeSlotReservationService {
         } else {
             throw new CustomException(ErrorCode.RESERVATION_NOT_FOUND);
         }
+
+        String restaurantName = restaurantRepository.findRestaurantNameByRestaurantId(restaurantId);
+        User foundUser = userRepository.findByUsername(username).orElseThrow(() ->
+                new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        notificationService.createReservationNotification(
+                foundUser.getFcmToken(),
+                FcmProperties.CANCEL_RESERVATION_TITLE,
+                restaurantName + FcmProperties.CANCEL_RESERVATION_CONTENT,
+                restaurantId,
+                foundUser
+        );
     }
 }

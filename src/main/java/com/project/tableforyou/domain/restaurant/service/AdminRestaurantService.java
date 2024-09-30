@@ -1,12 +1,14 @@
 package com.project.tableforyou.domain.restaurant.service;
 
 import com.project.tableforyou.domain.common.service.AssociatedEntityService;
+import com.project.tableforyou.fcm.service.FcmService;
 import com.project.tableforyou.domain.notification.service.NotificationService;
 import com.project.tableforyou.domain.restaurant.dto.PendingRestaurantDetailsDto;
 import com.project.tableforyou.domain.restaurant.dto.RestaurantManageDto;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import com.project.tableforyou.domain.restaurant.entity.RestaurantStatus;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
+import com.project.tableforyou.domain.user.repository.UserRepository;
 import com.project.tableforyou.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.handler.exceptionHandler.exception.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ public class AdminRestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final NotificationService notificationService;
     private final AssociatedEntityService associatedEntityService;
+    private final UserRepository userRepository;
 
     /* 등록 처리 중인 가게 불러오기 */
     @Transactional(readOnly = true)
@@ -66,7 +69,7 @@ public class AdminRestaurantService {
         return restaurants.map(RestaurantManageDto::new);
     }
 
-    /* 가게 등록하기 */
+    /* 가게 상태 변경 (등록, 거절) */
     @Transactional
     public void updateRestaurantStatus(Long restaurantId, RestaurantStatus status) {
 
@@ -74,7 +77,8 @@ public class AdminRestaurantService {
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
         restaurant.statusUpdate(status);
-        notificationService.createNotification(status, restaurantId, restaurant.getUser());
+        String fcmToken = userRepository.findFcmTokenByRestaurantId(restaurantId);
+        notificationService.createRestaurantStatusNotification(fcmToken, status, restaurantId, restaurant.getUser());
     }
 
     /* 가게 삭제하기 */
