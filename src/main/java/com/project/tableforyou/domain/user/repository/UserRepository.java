@@ -29,4 +29,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("update User u set u.loginAttempt = u.loginAttempt + 1 where u.username = :username")
     void updateLoginAttempt(@Param("username") String username);
 
+    @Query("SELECT u.fcmToken FROM User u WHERE u.username = :username")
+    String findFcmTokenByUsername(@Param("username") String username);
+
+    @Query("SELECT u.fcmToken FROM Restaurant r JOIN r.user u WHERE r.id = :restaurantId")
+    String findFcmTokenByRestaurantId(@Param("restaurantId") Long restaurantId);
+
 }
