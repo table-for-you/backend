@@ -1,23 +1,17 @@
 package com.project.tableforyou.domain.restaurant.api;
 
-import com.project.tableforyou.domain.restaurant.dto.RestaurantResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.io.IOException;
 
 @Tag(name = "[(권한 필요 x) 가게 API]", description = "권한이 필요없는 가게 관련 API")
 public interface PublicRestaurantApi {
@@ -188,27 +182,4 @@ public interface PublicRestaurantApi {
                     })),
     })
     ResponseEntity<?> waiting(@PathVariable(name = "restaurantId") Long restaurantId);
-
-    @Operation(summary = "좌석 업데이트", description = "가게 좌석을 업데이트 API입니다." +
-                                        "<br>좌석 증가시 increase는 true, 감소시 increase는 false." +
-    "이 외는 서버에서 처리합니다. (가게 좌석 증가 + 가게 다 찼을 시, 번호표 예약으로 자동 이동, 가게 좌석 감소 + 가게 다 찼을 시, 다음 예약 순번 자동으로 불러오기")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "좌석 업데이트 성공",
-                    content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(name = "increaseSeats", value = """
-                                        {
-                                            "response": "가게 좌석 변경 완료"
-                                        }
-                                    """),
-                            @ExampleObject(name = "decreaseAndExistsReservation", value = """
-                                        {
-                                            "response": "test님 입장"
-                                        }
-                                    """)
-                    })),
-
-    })
-    ResponseEntity<?> updateFullUsedSeats(@PathVariable(name = "restaurantId") Long restaurantId,
-                             @RequestParam("increase") boolean increase,
-                             HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
 }

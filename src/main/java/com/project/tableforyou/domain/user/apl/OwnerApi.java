@@ -214,6 +214,29 @@ public interface OwnerApi {
     })
     ResponseEntity<?> deleteRestaurant(@PathVariable(name = "restaurantId") Long restaurantId);
 
+    @Operation(summary = "좌석 업데이트", description = "가게 좌석을 업데이트 API입니다." +
+            "<br>좌석 증가시 increase는 true, 감소시 increase는 false." +
+            "이 외는 서버에서 처리합니다. (가게 좌석 증가 + 가게 다 찼을 시, 번호표 예약으로 자동 이동, 가게 좌석 감소 + 가게 다 찼을 시, 다음 예약 순번 자동으로 불러오기")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "좌석 업데이트 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(name = "increaseSeats", value = """
+                                        {
+                                            "response": "가게 좌석 변경 완료"
+                                        }
+                                    """),
+                            @ExampleObject(name = "decreaseAndExistsReservation", value = """
+                                        {
+                                            "response": "test님 입장"
+                                        }
+                                    """)
+                    })),
+
+    })
+    ResponseEntity<?> updateFullUsedSeats(@PathVariable(name = "restaurantId") Long restaurantId,
+                                          @RequestParam("increase") boolean increase);
+
+
     @Operation(summary = "해당 가게 예약자 불러오기 (번호표) *", description = "번호표에 대한 가게 예약자를 불러오는 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "가게 예약자 불러오기 성공",
