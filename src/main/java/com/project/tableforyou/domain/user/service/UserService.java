@@ -59,8 +59,6 @@ public class UserService {
         userUpdateDto.setPassword(bCryptPasswordEncoder.encode(userUpdateDto.getPassword()));
 
         user.update(userUpdateDto.getNickname(), userUpdateDto.getPassword());
-
-        principalDetailsService.updateUserCache(user);  // 정보 업데이트 시 사용자 캐시 업데이트
     }
 
     /* 회원 삭제 */

@@ -22,10 +22,4 @@ public class PrincipalDetailsService implements UserDetailsService {
                 new UsernameNotFoundException("User not found with username: " + username));
         return new PrincipalDetails(user);
     }
-
-    /* 회원의 정보가 업데이트 된다면, 캐싱된 정보도 업데이트 */
-    @CachePut(value = "users", key = "#user.username")
-    public PrincipalDetails updateUserCache(User user) {
-        return new PrincipalDetails(user);
-    }
 }
