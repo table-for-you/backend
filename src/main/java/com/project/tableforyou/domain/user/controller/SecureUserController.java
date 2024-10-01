@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -73,7 +74,7 @@ public class SecureUserController implements SecureUserApi {
     }
 
     /* fcmToken 저장 */
-    @PostMapping("/fcm-token")
+    @PatchMapping("/fcm-token")
     public ResponseEntity<?> saveFcmToken(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                           @RequestBody FcmTokenRequestDto fcmTokenRequestDto) {
 
