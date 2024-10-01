@@ -42,7 +42,7 @@ public class SecureQueueReservationController implements SecureQueueReservationA
 
     /* 예약 순서 미루기 (사용자) */ // restaurant_id 에서 이름을 가져오기. reservation_id에서 booking 가져오기
     @Override
-    @PutMapping("/{restaurantId}/queue-reservations/postponed-guest-booking")
+    @PatchMapping("/{restaurantId}/queue-reservations/postponed-guest-booking")
     public ResponseEntity<?> postponedGuestBooking(@PathVariable(name = "restaurantId") Long restaurantId,
                                                         @AuthenticationPrincipal PrincipalDetails principalDetails,
                                                         @RequestBody QueueReservationReqDto reservationDto) {
