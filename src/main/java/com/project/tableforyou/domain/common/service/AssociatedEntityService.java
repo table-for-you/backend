@@ -57,7 +57,9 @@ public class AssociatedEntityService {
         String mainImage = restaurantRepository.findMainImageById(restaurantId);
         List<String> menuImages = menuRepository.findMenuImagesByRestaurantId(restaurantId);
 
-        s3Service.deleteImage(mainImage);
+        if (mainImage != null)
+            s3Service.deleteImage(mainImage);
+
         images.forEach(s3Service::deleteImage);
         menuImages.forEach(s3Service::deleteImage);
 
