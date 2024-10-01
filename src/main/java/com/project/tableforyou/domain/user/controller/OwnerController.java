@@ -1,22 +1,17 @@
 package com.project.tableforyou.domain.user.controller;
 
-import com.project.tableforyou.domain.reservation.dto.QueueReservationReqDto;
-import com.project.tableforyou.domain.reservation.dto.QueueReservationResDto;
-import com.project.tableforyou.domain.reservation.entity.TimeSlot;
-import com.project.tableforyou.domain.reservation.service.OwnerReservationService;
-import com.project.tableforyou.domain.reservation.service.QueueReservationService;
-import com.project.tableforyou.domain.reservation.service.TimeSlotReservationService;
-import com.project.tableforyou.domain.restaurant.dto.RestaurantRequestDto;
-import com.project.tableforyou.domain.restaurant.dto.RestaurantUpdateDto;
-import com.project.tableforyou.domain.restaurant.service.OwnerRestaurantService;
-import com.project.tableforyou.domain.restaurant.service.RestaurantService;
-import com.project.tableforyou.domain.user.apl.OwnerApi;
-import com.project.tableforyou.domain.visit.service.VisitService;
 import com.project.tableforyou.common.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.common.handler.exceptionHandler.exception.CustomException;
-import com.project.tableforyou.security.auth.PrincipalDetails;
 import com.project.tableforyou.common.utils.api.ApiUtil;
-import com.project.tableforyou.common.utils.redis.RedisUtil;
+import com.project.tableforyou.domain.reservation.dto.QueueReservationReqDto;
+import com.project.tableforyou.domain.reservation.entity.TimeSlot;
+import com.project.tableforyou.domain.reservation.service.OwnerReservationFacade;
+import com.project.tableforyou.domain.reservation.service.OwnerReservationService;
+import com.project.tableforyou.domain.restaurant.dto.RestaurantRequestDto;
+import com.project.tableforyou.domain.restaurant.dto.RestaurantUpdateDto;
+import com.project.tableforyou.domain.restaurant.service.OwnerRestaurantFacade;
+import com.project.tableforyou.domain.user.apl.OwnerApi;
+import com.project.tableforyou.security.auth.PrincipalDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -36,20 +31,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static com.project.tableforyou.common.utils.redis.RedisProperties.RESERVATION_KEY_PREFIX;
-
 @RestController
 @RequestMapping("/owner/restaurants")
 @RequiredArgsConstructor
 public class OwnerController implements OwnerApi {
 
-    private final OwnerRestaurantService ownerRestaurantService;
     private final OwnerReservationService ownerReservationService;
-    private final QueueReservationService queueReservationService;
-    private final TimeSlotReservationService timeSlotReservationService;
-    private final RedisUtil redisUtil;
-    private final RestaurantService restaurantService;
-    private final VisitService visitService;
+    private final OwnerRestaurantFacade ownerRestaurantFacade;
+    private final OwnerReservationFacade ownerReservationFacade;
 
     /* 가게 생성 */
     @Override
@@ -59,8 +48,12 @@ public class OwnerController implements OwnerApi {
                                               @RequestPart(value = "mainImage", required = false) MultipartFile mainImage,
                                               @RequestPart(value = "subImages", required = false) List<MultipartFile> subImages) {
 
-        return ResponseEntity.ok(ApiUtil.from(ownerRestaurantService.saveRestaurant(
-                principalDetails.getUsername(), dto, mainImage, subImages)));
+        return ResponseEntity.ok(ApiUtil.from(ownerRestaurantFacade.createRestaurant(
+                principalDetails.getUsername(),
+                dto,
+                mainImage,
+                subImages
+        )));
     }
 
     /* 사장 가게 불러오기 */
@@ -68,7 +61,9 @@ public class OwnerController implements OwnerApi {
     @GetMapping
     public ResponseEntity<?> readRestaurant(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        return ResponseEntity.ok(ownerRestaurantService.findByRestaurantOwner(principalDetails.getUsername()));
+        return ResponseEntity.ok(ownerRestaurantFacade.getRestaurantsByOwner(
+                principalDetails.getUsername()
+        ));
     }
 
     /* 승인 거절된 가게 불러오기 */
@@ -76,7 +71,9 @@ public class OwnerController implements OwnerApi {
     @GetMapping("/rejected")
     public ResponseEntity<?> readRejectedRestaurant(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        return ResponseEntity.ok(ownerRestaurantService.findByRejectedRestaurant(principalDetails.getUsername()));
+        return ResponseEntity.ok(ownerRestaurantFacade.getRejectedRestaurants(
+                principalDetails.getUsername()
+        ));
     }
 
     /* 가게 메인 이미지 업데이트 */
@@ -84,7 +81,7 @@ public class OwnerController implements OwnerApi {
     public ResponseEntity<?> updateMainImage(@PathVariable(name = "restaurantId") Long restaurantId,
                                              @RequestPart(value = "mainImage") MultipartFile mainImage) {
 
-        ownerRestaurantService.updateMainImage(restaurantId, mainImage);
+        ownerRestaurantFacade.updateMainImage(restaurantId, mainImage);
         return ResponseEntity.ok(ApiUtil.from("가게 메인 이미지 수정 완료."));
     }
 
@@ -94,7 +91,7 @@ public class OwnerController implements OwnerApi {
                                             @RequestPart(value = "deleteImageUrls", required = false) List<String> deleteImageUrls,
                                             @RequestPart(value = "newImages", required = false) List<MultipartFile> newImages) {
 
-        ownerRestaurantService.updateSubImages(restaurantId, deleteImageUrls, newImages);
+        ownerRestaurantFacade.updateSubImages(restaurantId, deleteImageUrls, newImages);
         return ResponseEntity.ok(ApiUtil.from("가게 서브 이미지 수정 완료."));
     }
 
@@ -104,17 +101,16 @@ public class OwnerController implements OwnerApi {
     public ResponseEntity<?> updateRestaurant(@Valid @RequestBody RestaurantUpdateDto restaurantUpdateDto,
                                                    @PathVariable(name = "restaurantId") Long restaurantId) {
 
-        ownerRestaurantService.updateRestaurant(restaurantId, restaurantUpdateDto);
+        ownerRestaurantFacade.updateRestaurant(restaurantId, restaurantUpdateDto);
         return ResponseEntity.ok(ApiUtil.from("가게 수정 완료."));
     }
-
 
     /* 가게 삭제 */
     @Override
     @DeleteMapping("/{restaurantId}")
     public ResponseEntity<?> deleteRestaurant(@PathVariable(name = "restaurantId") Long restaurantId) {
 
-        ownerRestaurantService.deleteRestaurant(restaurantId);
+        ownerRestaurantFacade.deleteRestaurant(restaurantId);
         return ResponseEntity.ok(ApiUtil.from("가게 삭제 완료."));
 
     }
@@ -122,27 +118,14 @@ public class OwnerController implements OwnerApi {
     /* 좌석 업데이트 */
     @Override
     @PatchMapping("/{restaurantId}/update-used-seats")
-    public ResponseEntity<?> updateFullUsedSeats(@PathVariable(name = "restaurantId") Long restaurantId,
+    public ResponseEntity<?> updateFullUsedSeats(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                 @PathVariable(name = "restaurantId") Long restaurantId,
                                                  @RequestParam("increase") boolean increase) {
 
-        int value = increase ? 1 : -1;
-
-        String key = RESERVATION_KEY_PREFIX + "queue:" + restaurantId;
-
-        if (value == -1 && redisUtil.hashSize(key) != 0) {   // 좌석이 다 차서 예약자에서 인원을 가져올 때. (인원이 줄면) redis값을 가져와 있는지 확인한 후 보내기
-            List<QueueReservationResDto> reservations =
-                    queueReservationService.getQueueReservations(restaurantId, null, null);
-            String username = queueReservationService.decreaseBooking(reservations, restaurantId);
-
-            visitService.saveVisitRestaurant(username, restaurantId);   // 사용자가 방문 가게 목록에 저장
-
-            return ResponseEntity.ok(ApiUtil.from(username + "님 입장"));
-        }
-        else {                                                          // 좌석이 덜 찼을 때
-            restaurantService.updateUsedSeats(restaurantId, value);
-
-            return ResponseEntity.ok(ApiUtil.from("가게 좌석 변경 성공."));
-        }
+        if (ownerReservationService.isOwnerRestaurant(restaurantId, principalDetails.getUsername())) {
+            return ResponseEntity.ok(ApiUtil.from(ownerReservationFacade.updateUsedSeats(restaurantId, increase)));
+        } else
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
     }
 
     /* 해당 가게 예약자 불러오기. (번호표) */
@@ -151,24 +134,25 @@ public class OwnerController implements OwnerApi {
     public ResponseEntity<?> readAllRestaurant(@PathVariable(name = "restaurantId") Long restaurantId,
                                                           @AuthenticationPrincipal PrincipalDetails principalDetails) {
         if (ownerReservationService.isOwnerRestaurant(restaurantId, principalDetails.getUsername()))
-            return ResponseEntity.ok(queueReservationService.findAllQueueReservations(restaurantId));
+            return ResponseEntity.ok(ownerReservationFacade.getQueueReservations(restaurantId));
         else
             throw new CustomException(ErrorCode.UNAUTHORIZED);
     }
 
     /* 예약 순서 미루기 (번호표) */
     @Override
-    @PutMapping("/{restaurantId}/queue-reservations/postponed-guest-booking/{username}")
+    @PatchMapping("/{restaurantId}/queue-reservations/postponed-guest-booking/{username}")
     public ResponseEntity<?> postponedGuestBooking(@PathVariable(name = "restaurantId") Long restaurantId,
                                                         @PathVariable(name = "username") String username,
                                                         @RequestBody QueueReservationReqDto reservationDto,
                                                         @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         if (ownerReservationService.isOwnerRestaurant(restaurantId, principalDetails.getUsername())) {
-            List<QueueReservationResDto> decreaseReservation =
-                    queueReservationService.getQueueReservations(restaurantId, username, reservationDto);
-            queueReservationService.decreaseBooking(decreaseReservation, restaurantId);
-            queueReservationService.postponedGuestBooking(restaurantId, username, reservationDto);
+            ownerReservationFacade.postponeReservation(
+                    restaurantId,
+                    username,
+                    reservationDto
+            );
             return ResponseEntity.ok(ApiUtil.from("예약자 미루기 + 앞당기기 성공."));
         } else
             throw new CustomException(ErrorCode.UNAUTHORIZED);
@@ -182,10 +166,10 @@ public class OwnerController implements OwnerApi {
                                                     @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         if (ownerReservationService.isOwnerRestaurant(restaurantId, principalDetails.getUsername())) {
-            List<QueueReservationResDto> decreaseReservation =
-                    queueReservationService.getQueueReservations(restaurantId, username, null);
-            queueReservationService.deleteQueueReservation(restaurantId, username);
-            queueReservationService.decreaseBooking(decreaseReservation, restaurantId);
+            ownerReservationFacade.deleteQueueReservation(
+                    restaurantId,
+                    username
+            );
             return ResponseEntity.ok(ApiUtil.from("예약자 삭제 성공."));
         } else
             throw new CustomException(ErrorCode.UNAUTHORIZED);
@@ -199,7 +183,11 @@ public class OwnerController implements OwnerApi {
                                                         @RequestParam(value = "time-slot") TimeSlot timeSlot,
                                                         @AuthenticationPrincipal PrincipalDetails principalDetails) {
         if (ownerReservationService.isOwnerRestaurant(restaurantId, principalDetails.getUsername()))
-            return ResponseEntity.ok(timeSlotReservationService.findAllTimeSlotReservations(restaurantId, date, timeSlot));
+            return ResponseEntity.ok(ownerReservationFacade.getTimeSlotReservations(
+                    restaurantId,
+                    date,
+                    timeSlot
+            ));
         else
             throw new CustomException(ErrorCode.UNAUTHORIZED);
     }
@@ -214,7 +202,12 @@ public class OwnerController implements OwnerApi {
                                                @AuthenticationPrincipal PrincipalDetails principalDetails) {
 
         if (ownerReservationService.isOwnerRestaurant(restaurantId, principalDetails.getUsername())) {
-            timeSlotReservationService.deleteTimeSlotReservation(restaurantId, username, date, timeSlot);
+            ownerReservationFacade.deleteTimeSlotReservation(
+                    restaurantId,
+                    username,
+                    date,
+                    timeSlot
+            );
             return ResponseEntity.ok(ApiUtil.from("예약자 삭제 성공."));
         } else
             throw new CustomException(ErrorCode.UNAUTHORIZED);

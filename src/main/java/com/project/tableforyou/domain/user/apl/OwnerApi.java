@@ -233,7 +233,8 @@ public interface OwnerApi {
                     })),
 
     })
-    ResponseEntity<?> updateFullUsedSeats(@PathVariable(name = "restaurantId") Long restaurantId,
+    ResponseEntity<?> updateFullUsedSeats(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                          @PathVariable(name = "restaurantId") Long restaurantId,
                                           @RequestParam("increase") boolean increase);
 
 
