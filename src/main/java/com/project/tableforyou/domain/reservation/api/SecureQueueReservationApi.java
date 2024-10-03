@@ -39,20 +39,6 @@ public interface SecureQueueReservationApi {
     ResponseEntity<?> createReservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                         @PathVariable(name = "restaurantId") Long restaurantId);
 
-    @Operation(summary = "가게에 대해 예약을 했는지 확인하기 (번호표) *", description = "번호표에 대해서 가게에 예약을 했는지 확인하는 API입니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "예약 확인 성공",
-                    content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(value = """
-                                        {
-                                            "response": "true"
-                                        }
-                                    """)
-                    })),
-    })
-    ResponseEntity<?> checkUserReservation(@PathVariable(name = "restaurantId") Long restaurantId,
-                                           @AuthenticationPrincipal PrincipalDetails principalDetails);
-
     @Operation(summary = "예약 순서 미루기 (번호표) *", description = "(예약자 직접) 번호표에 대해 예약 순서 미루는 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "예약 미루기 성공",
@@ -99,4 +85,27 @@ public interface SecureQueueReservationApi {
     })
     ResponseEntity<?> deleteReservation(@PathVariable(name = "restaurantId") Long restaurantId,
                                         @AuthenticationPrincipal PrincipalDetails principalDetails);
+
+    @Operation(summary = "자신의 예약 번호 불러오기 (번호표) *", description = "자신의 예약 번호를 불러오는 API입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "예약 번호 불러오기 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "response": 2
+                                        }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "404", description = "해당 예약번호 없음",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "status": 404,
+                                            "message": "해당하는 예약번호가 없습니다."
+                                        }
+                                    """)
+                    }))
+    })
+    ResponseEntity<?> getMyBookingNum(@PathVariable(name = "restaurantId") Long restaurantId,
+                                      @AuthenticationPrincipal PrincipalDetails principalDetails);
 }

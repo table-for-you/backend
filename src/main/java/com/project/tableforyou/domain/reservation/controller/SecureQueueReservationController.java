@@ -31,15 +31,6 @@ public class SecureQueueReservationController implements SecureQueueReservationA
 
     }
 
-    /* 가게에 대해 예약을 했는지 확인 */
-    @Override
-    @GetMapping("/{restaurantId}/queue-reservations-check")
-    public ResponseEntity<?> checkUserReservation(@PathVariable(name = "restaurantId") Long restaurantId,
-                                                        @AuthenticationPrincipal PrincipalDetails principalDetails) {
-
-        return ResponseEntity.ok(ApiUtil.from(queueReservationService.isUserAlreadyInQueue(principalDetails.getUsername(), restaurantId)));
-    }
-
     /* 예약 순서 미루기 (사용자) */ // restaurant_id 에서 이름을 가져오기. reservation_id에서 booking 가져오기
     @Override
     @PatchMapping("/{restaurantId}/queue-reservations/postponed-guest-booking")
@@ -65,5 +56,18 @@ public class SecureQueueReservationController implements SecureQueueReservationA
         queueReservationService.deleteQueueReservation(restaurantId, principalDetails.getUsername());
         queueReservationService.decreaseBooking(decreaseReservation, restaurantId);
         return ResponseEntity.ok(ApiUtil.from("예약자 삭제 성공."));
+    }
+
+    /* 나의 예약 번호 불러오기 */
+    @Override
+    @GetMapping("/{restaurantId}/queue-reservations/me")
+    public ResponseEntity<?> getMyBookingNum(@PathVariable(name = "restaurantId") Long restaurantId,
+                                             @AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        return ResponseEntity.ok(ApiUtil.from(
+                queueReservationService.getMyBooking(
+                        restaurantId,
+                        principalDetails.getUsername()
+                )));
     }
 }

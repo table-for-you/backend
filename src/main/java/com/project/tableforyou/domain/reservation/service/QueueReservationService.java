@@ -65,7 +65,7 @@ public class QueueReservationService {
     }
 
     /* 예약을 했는지 확인. */
-    public boolean isUserAlreadyInQueue(String username, Long restaurantId) {
+    private boolean isUserAlreadyInQueue(String username, Long restaurantId) {
         String key = RESERVATION_KEY_PREFIX + QUEUE + restaurantId;
         return redisUtil.hashExisted(key, username);
     }
@@ -214,5 +214,13 @@ public class QueueReservationService {
 
         String key = RESERVATION_KEY_PREFIX + QUEUE + restaurantId;
         return redisUtil.hashSize(key); // redis 사이즈를 통해 예약 번호 지정
+    }
+
+    /* 나의 예약 번호 불러오기 */
+    public int getMyBooking(Long restaurantId, String username) {
+        String key = RESERVATION_KEY_PREFIX + QUEUE + restaurantId;
+        QueueReservation storedQueueReservation = redisUtil.hashGetQueue(key, username);
+
+        return storedQueueReservation.getBooking();
     }
 }
