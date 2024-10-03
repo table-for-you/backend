@@ -60,22 +60,6 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "user")
-    @JsonIgnore
-    private List<Restaurant> restaurants;
-
-    @OneToMany(mappedBy = "user")
-    @JsonIgnore
-    private List<Like> likes;
-
-    @OneToMany(mappedBy = "visitor")
-    @JsonIgnore
-    private List<Visit> visits;
-
-    @OneToMany(mappedBy = "user")
-    @JsonIgnore
-    private List<Notification> notifications;
-
     /* 계정 잠금을 위한 필드 */
     private int loginAttempt;
     private LocalDateTime lockTime;

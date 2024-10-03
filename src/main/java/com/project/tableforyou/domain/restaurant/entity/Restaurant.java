@@ -78,18 +78,12 @@ public class Restaurant extends BaseTimeEntity {
     @OneToMany(mappedBy = "restaurant")
     private List<Image> images;
 
-    @OneToMany(mappedBy = "restaurant")
-    private List<Menu> menus;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
     @OneToMany(mappedBy = "restaurant")
     private List<Like> likes;
-
-    @OneToMany(mappedBy = "restaurant")
-    private List<Visit> visits;
 
     public void update(RestaurantUpdateDto dto) {
         this.totalSeats = dto.getTotalSeats();
