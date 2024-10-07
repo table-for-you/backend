@@ -12,6 +12,7 @@ public class RestaurantInfoDto {
     private final double rating;
     private final int ratingNum;
     private final boolean isParking;
+    private final String location;
     private final double latitude;
     private final double longitude;
     private final String mainImage;
@@ -23,6 +24,7 @@ public class RestaurantInfoDto {
         this.rating = restaurant.getRating();
         this.ratingNum = restaurant.getRatingNum();
         this.isParking = restaurant.isParking();
+        this.location = restaurant.getLocation();
         this.latitude = restaurant.getLatitude();
         this.longitude = restaurant.getLongitude();
         this.mainImage = restaurant.getMainImage();
