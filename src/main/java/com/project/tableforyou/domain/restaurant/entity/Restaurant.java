@@ -95,6 +95,8 @@ public class Restaurant extends BaseTimeEntity {
         this.description = dto.getDescription();
         this.foodType = dto.getFoodType();
         this.isParking = dto.isParking();
+        this.latitude = dto.getLatitude();
+        this.longitude = dto.getLongitude();
     }
 
     public void addMainImage(String mainImage) {
