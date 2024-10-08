@@ -51,6 +51,19 @@ public interface PublicRestaurantApi {
     })
     ResponseEntity<?> readRestaurant(@PathVariable(name = "restaurantId") Long restaurantId);
 
+    @Operation(summary = "특정 가게 좌석 불러오기", description = "특정 가게 좌석을 불러오는 API입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "가게 좌석 불러오기 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "response": 4
+                                        }
+                                    """)
+                    }))
+    })
+    ResponseEntity<?> readRestaurantUsedSeats(@PathVariable(name = "restaurantId") Long restaurantId);
+
     @Operation(summary = "전체 가게 불러오기", description = "전체 가게를 불러오는 API입니다." +
           "<br>검색 type으로는 restaurant(가게 이름), region(지역), location(주소), food(음식 타입)가 있습니다." +
             "<br>또한, sortBy는 어떤 것으로 정렬을 할 것인지(name, id, rating 등), direction는 내림차순(DESC), 오름차순(ASC)가 있습니다.")
