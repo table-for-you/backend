@@ -30,6 +30,11 @@ public class RestaurantService {
         return new RestaurantResponseDto(restaurant);
     }
 
+    @Transactional(readOnly = true)
+    public int readRestaurantUsedSeats(Long restaurantId) {
+        return restaurantRepository.getRestaurantUsedSeatsByRestaurantId(restaurantId);
+    }
+
     /* 가게 리스트 페이징. 등록된 가게만 들고오기 */
     @Transactional(readOnly = true)
     public Page<RestaurantInfoDto> readAllRestaurant(Pageable pageable) {
