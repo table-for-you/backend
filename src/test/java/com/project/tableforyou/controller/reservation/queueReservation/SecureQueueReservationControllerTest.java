@@ -140,17 +140,17 @@ public class SecureQueueReservationControllerTest {
     }
 
     @Test
-    @DisplayName("가게 예약 확인 테스트 - 예약 o")
-    void checkUserReservationTrueTest() throws Exception {
+    @DisplayName("가게 예약 순서 불러오기 - 예약 o")
+    void getMyBookingTrueTest() throws Exception {
         // given
         Long restaurantId = 1L;
 
-        given(queueReservationService.isUserAlreadyInQueue(principalDetails.getUsername(), restaurantId))
-                .willReturn(true);
+        given(queueReservationService.getMyBooking(restaurantId, principalDetails.getUsername()))
+                .willReturn(3);
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                get("/restaurants/{restaurantId}/queue-reservations-check", restaurantId)
+                get("/restaurants/{restaurantId}/queue-reservations/me", restaurantId)
                         .with(user(principalDetails))
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -159,21 +159,21 @@ public class SecureQueueReservationControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.response").value("true"));
+                .andExpect(jsonPath("$.response").value("3"));
     }
 
     @Test
-    @DisplayName("가게 예약 확인 테스트 - 예약 x")
-    void checkUserReservationFalseTest() throws Exception {
+    @DisplayName("가게 예약 순서 불러오기 - 예약 x")
+    void getMyBookingFalseTest() throws Exception {
         // given
         Long restaurantId = 1L;
 
-        given(queueReservationService.isUserAlreadyInQueue(principalDetails.getUsername(), restaurantId))
-                .willReturn(false);
+        given(queueReservationService.getMyBooking(restaurantId, principalDetails.getUsername()))
+                .willReturn(0);
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                get("/restaurants/{restaurantId}/queue-reservations-check", restaurantId)
+                get("/restaurants/{restaurantId}/queue-reservations/me", restaurantId)
                         .with(user(principalDetails))
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -182,7 +182,7 @@ public class SecureQueueReservationControllerTest {
         resultActions
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.response").value("false"));
+                .andExpect(jsonPath("$.response").value("0"));
     }
 
     @Test
