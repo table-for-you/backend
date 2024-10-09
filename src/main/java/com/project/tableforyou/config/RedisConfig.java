@@ -6,6 +6,7 @@ import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -50,11 +51,23 @@ public class RedisConfig {
 
         return redisTemplate;
     }
-    @Bean
-    public RedissonClient redissonClient() {
-        Config config = new Config();
-        config.useSingleServer().setAddress(REDISSON_HOST_PREFIX + host + ":" + port);
 
+    @Bean
+    @Profile("local")  // 로컬에서만 적용
+    public RedissonClient redissonClientLocal() {
+        Config config = new Config();
+        config.useSingleServer()
+                .setAddress(REDISSON_HOST_PREFIX + host + ":" + port);
+        return Redisson.create(config);
+    }
+
+    @Bean
+    @Profile("prod")  // 서버에서만 적용
+    public RedissonClient redissonClientProd() {
+        Config config = new Config();
+        config.useSingleServer()
+                .setAddress(REDISSON_HOST_PREFIX + host + ":" + port)
+                .setPassword(pass);
         return Redisson.create(config);
     }
 }

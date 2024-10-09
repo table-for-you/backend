@@ -1,15 +1,14 @@
 spring:
+  profiles:
+    active: local
+
+---
+spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${DATABASE_URL}:${DATABASE_PORT}/${DATABASE_NAME}
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
-
-  data:
-    redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
-      password: ${REDIS_PASS}
 
   jwt:
     secret: ${JWT_KEY}
@@ -67,3 +66,25 @@ firebase:
 logging:
   level:
     org.hibernate.orm.jdbc.bind: debug
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: ""  # 로컬에서는 비밀번호 없이 설정
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASS}
