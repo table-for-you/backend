@@ -12,10 +12,14 @@ import com.project.tableforyou.common.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.common.handler.exceptionHandler.exception.CustomException;
 import com.project.tableforyou.common.utils.redis.RedisUtil;
 import lombok.RequiredArgsConstructor;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.project.tableforyou.common.utils.redis.RedisProperties.RESERVATION_KEY_PREFIX;
@@ -28,40 +32,56 @@ public class QueueReservationService {
     private final UserRepository userRepository;
     private final RestaurantRepository restaurantRepository;
     private final NotificationService notificationService;
+    private final RedissonClient redissonClient;
 
     private static final String QUEUE = "queue:";
+    private static final String LOCK = "lock:";
     private static final long QUEUE_RESERVATION_TTL = 10*60*60;
+    private static final long WAIT_TIME = 5L;
+    private static final long LEASE_TIME = 5L;
 
     /* 가게 번호표 예약자 추가 */
     public void saveQueueReservation(String username, Long restaurantId) {
 
         String key = RESERVATION_KEY_PREFIX + QUEUE + restaurantId;
+        RLock lock = redissonClient.getLock(LOCK + key);
 
-        if (isUserAlreadyInQueue(username, restaurantId))    // 중복 예약 확인.
-            throw new CustomException(ErrorCode.ALREADY_USER_RESERVATION);
+        try {
+            boolean available = lock.tryLock(WAIT_TIME, LEASE_TIME, TimeUnit.SECONDS);
+            if (!available) {
+                throw new CustomException(ErrorCode.LOCK_ACQUISITION_ERROR);
+            }
 
-        int size = getQueueWaitingCount(restaurantId); // redis 사이즈를 통해 예약 번호 지정
+            if (isUserAlreadyInQueue(username, restaurantId))    // 중복 예약 확인.
+                throw new CustomException(ErrorCode.ALREADY_USER_RESERVATION);
 
-        QueueReservation queueReservation = QueueReservation.builder()
-                .username(username)
-                .booking(size+1)
-                .build();
+            int size = getQueueWaitingCount(restaurantId); // redis 사이즈를 통해 예약 번호 지정
 
-        redisUtil.hashPutQueue(key, queueReservation);
-        redisUtil.expire(key, QUEUE_RESERVATION_TTL);
+            QueueReservation queueReservation = QueueReservation.builder()
+                    .username(username)
+                    .booking(size + 1)
+                    .build();
 
-        String restaurantName = restaurantRepository.findRestaurantNameByRestaurantId(restaurantId);
-        User foundUser = userRepository.findByUsername(username).orElseThrow(() ->
-                new CustomException(ErrorCode.USER_NOT_FOUND));
+            redisUtil.hashPutQueue(key, queueReservation);
+            redisUtil.expire(key, QUEUE_RESERVATION_TTL);
 
-        // FCM 알림 및 알림 저장
-        notificationService.createReservationNotification(
-                foundUser.getFcmToken(),
-                FcmProperties.RESERVATION_TITLE,
-                restaurantName + FcmProperties.QUEUE_RESERVATION_CONTENT,
-                restaurantId,
-                foundUser
-        );
+            String restaurantName = restaurantRepository.findRestaurantNameByRestaurantId(restaurantId);
+            User foundUser = userRepository.findByUsername(username).orElseThrow(() ->
+                    new CustomException(ErrorCode.USER_NOT_FOUND));
+
+            // FCM 알림 및 알림 저장
+            notificationService.createReservationNotification(
+                    foundUser.getFcmToken(),
+                    FcmProperties.RESERVATION_TITLE,
+                    restaurantName + FcmProperties.QUEUE_RESERVATION_CONTENT,
+                    restaurantId,
+                    foundUser
+            );
+        } catch (InterruptedException e) {
+            throw new CustomException(ErrorCode.THREAD_INTERRUPTED);
+        } finally {
+            lock.unlock();
+        }
     }
 
     /* 예약을 했는지 확인. */

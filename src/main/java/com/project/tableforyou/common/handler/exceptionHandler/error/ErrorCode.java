@@ -53,7 +53,11 @@ public enum ErrorCode {
     CODE_EXPIRED(410, "유효시간이 지났습니다."),
     INVALID_CODE(400, "인증번호가 일치하지 않습니다."),
 
+
+
     // 서버 에러
+    LOCK_ACQUISITION_ERROR(503, "락 획득 실패"),
+    THREAD_INTERRUPTED(500, "스레드가 중단되었습니다."),
     INTERNAL_SERVER_ERROR(500, "서버 에러입니다. 서버 팀에 연락주세요.");
 
     private final int status;

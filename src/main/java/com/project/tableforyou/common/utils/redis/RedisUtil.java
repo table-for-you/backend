@@ -8,6 +8,7 @@ import com.project.tableforyou.common.handler.exceptionHandler.exception.CustomE
 import com.project.tableforyou.common.handler.exceptionHandler.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
