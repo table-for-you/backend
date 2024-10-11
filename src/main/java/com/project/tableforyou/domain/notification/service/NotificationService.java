@@ -95,4 +95,10 @@ public class NotificationService {
 
         return new NotificationDetailsDto(notification);
     }
+
+    @Transactional(readOnly = true)
+    public Long getUnReadNotificationSize(Long userid) {
+
+        return notificationRepository.countUnreadNotificationsByUserId(userid);
+    }
 }

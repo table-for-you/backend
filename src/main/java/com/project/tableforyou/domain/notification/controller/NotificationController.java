@@ -1,5 +1,6 @@
 package com.project.tableforyou.domain.notification.controller;
 
+import com.project.tableforyou.common.utils.api.ApiUtil;
 import com.project.tableforyou.domain.notification.api.NotificationApi;
 import com.project.tableforyou.domain.notification.service.NotificationService;
 import com.project.tableforyou.security.auth.PrincipalDetails;
@@ -35,6 +36,14 @@ public class NotificationController implements NotificationApi {
                                               @PathVariable Long notificationId) {
 
         return ResponseEntity.ok(notificationService.readNotification(principalDetails.getId(), notificationId));
+    }
+
+    @GetMapping("/size")
+    public ResponseEntity<?> getNotificationSize(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        return ResponseEntity.ok(ApiUtil.from(
+                notificationService.getUnReadNotificationSize(principalDetails.getId()))
+        );
     }
 
 }
