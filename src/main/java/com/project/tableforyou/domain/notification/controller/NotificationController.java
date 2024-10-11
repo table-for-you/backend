@@ -24,10 +24,9 @@ public class NotificationController implements NotificationApi {
 
     @Override
     @GetMapping
-    public ResponseEntity<?> readAllNotification(@PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-                                                 @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<?> readAllNotification(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        return ResponseEntity.ok(notificationService.readAllNotification(principalDetails.getId(), pageable));
+        return ResponseEntity.ok(notificationService.readAllNotification(principalDetails.getId()));
     }
 
     @Override

@@ -16,6 +16,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @Service
 public class NotificationService {
@@ -74,10 +77,10 @@ public class NotificationService {
 
     /* 알림 목록 들고오기 */
     @Transactional(readOnly = true)
-    public Page<NotificationSummaryDto> readAllNotification(Long userId, Pageable pageable) {
+    public List<NotificationSummaryDto> readAllNotification(Long userId) {
 
-        Page<Notification> notifications = notificationRepository.findByUser_Id(userId, pageable);
-        return notifications.map(NotificationSummaryDto::new);
+        List<Notification> notifications = notificationRepository.findByUser_Id(userId);
+        return notifications.stream().map(NotificationSummaryDto::new).collect(Collectors.toList());
     }
 
     /* 특정 알림 불러오기 */

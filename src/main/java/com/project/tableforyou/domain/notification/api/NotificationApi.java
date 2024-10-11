@@ -68,8 +68,7 @@ public interface NotificationApi {
                                     """)
                     }))
     })
-    ResponseEntity<?> readAllNotification(@PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-                                          @AuthenticationPrincipal PrincipalDetails principalDetails);
+    ResponseEntity<?> readAllNotification(@AuthenticationPrincipal PrincipalDetails principalDetails);
 
     @Operation(summary = "특정 알림 불러오기", description = "특정 알림을 불러오는 API입니다.")
     @ApiResponses({
