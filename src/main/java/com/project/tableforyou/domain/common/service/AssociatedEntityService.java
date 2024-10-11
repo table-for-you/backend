@@ -3,6 +3,8 @@ package com.project.tableforyou.domain.common.service;
 import com.project.tableforyou.domain.image.repository.ImageRepository;
 import com.project.tableforyou.domain.like.repository.LikeRepository;
 import com.project.tableforyou.domain.menu.repository.MenuRepository;
+import com.project.tableforyou.domain.notification.repository.NotificationRepository;
+import com.project.tableforyou.domain.notification.service.NotificationService;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
 import com.project.tableforyou.common.s3.service.S3Service;
@@ -21,6 +23,7 @@ public class AssociatedEntityService {
     private final MenuRepository menuRepository;
     private final VisitRepository visitRepository;
     private final ImageRepository imageRepository;
+    private final NotificationRepository notificationRepository;
     private final S3Service s3Service;
 
     /* 회원을 FK로 가지는 데이터 지우기 */
@@ -30,6 +33,7 @@ public class AssociatedEntityService {
         likeRepository.deleteRestaurantLikeByUserId(userId);
         visitRepository.deleteByVisitorId(userId);
         visitRepository.deleteRestaurantVisitorByUserId(userId);
+        notificationRepository.deleteByUserId(userId);
 
         List<Restaurant> restaurants = restaurantRepository.findByUser_Id(userId);
         List<String> imageUrls = menuRepository.findMenuImagesByUserId(userId);
