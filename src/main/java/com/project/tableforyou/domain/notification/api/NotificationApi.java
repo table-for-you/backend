@@ -105,4 +105,17 @@ public interface NotificationApi {
     })
     ResponseEntity<?> readNotification(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                        @PathVariable Long notificationId);
+
+    @Operation(summary = "읽지 않은 알림 개수 불러오기", description = "읽지 않은 알림 개수를 불러오는 API입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "읽지 않은 알림 개수 불러오기 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "response": 43
+                                        }
+                                    """)
+                    }))
+    })
+    ResponseEntity<?> getNotificationSize(@AuthenticationPrincipal PrincipalDetails principalDetails);
 }
