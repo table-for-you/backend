@@ -35,6 +35,9 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
     @Query("SELECT r.user.username FROM Restaurant r WHERE r.id = :restaurantId")
     String findUsernameByRestaurantId(@Param("restaurantId") Long restaurantId);
 
+    @Query("SELECT r.name, r.totalSeats FROM Restaurant r WHERE r.id = :restaurantId")
+    Object[] findRestaurantNameAndSeatsByRestaurantId(@Param("restaurantId") Long restaurantId);
+
     @Query("SELECT r.name FROM Restaurant r WHERE r.id = :restaurantId")
     String findRestaurantNameByRestaurantId(@Param("restaurantId") Long restaurantId);
 

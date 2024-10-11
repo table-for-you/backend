@@ -43,6 +43,7 @@ public enum ErrorCode {
     ALREADY_LIKE_RESTAURANT(409, "이미 해당 가게를 좋아요 하였습니다."),
     ALREADY_USER_RESERVATION(409, "이미 해당 가게에 예약을 하였습니다."),
     ALREADY_EXISTS_MAIL(409, "이미 존재하는 이메일입니다."),
+    NO_AVAILABLE_SEATS(409, "해당 시간대에 예약 가능한 좌석이 없습니다."),
 
     // 계정관련 오류
     USER_LOCKED(404, "계정이 잠겨있습니다. 5분 후 다시 시도해 주세요."),
