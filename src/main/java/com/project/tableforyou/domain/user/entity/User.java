@@ -62,6 +62,8 @@ public class User extends BaseTimeEntity {
 
     /* 계정 잠금을 위한 필드 */
     private int loginAttempt;
+
+    @JsonIgnore
     private LocalDateTime lockTime;
 
 
