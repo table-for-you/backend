@@ -4,6 +4,7 @@ import com.project.tableforyou.domain.like.service.LikeService;
 import com.project.tableforyou.domain.user.apl.SecureUserApi;
 import com.project.tableforyou.domain.user.dto.FcmTokenRequestDto;
 import com.project.tableforyou.domain.user.dto.PasswordDto;
+import com.project.tableforyou.domain.user.dto.UserPasswordDto;
 import com.project.tableforyou.domain.user.dto.UserUpdateDto;
 import com.project.tableforyou.domain.user.service.UserService;
 import com.project.tableforyou.security.auth.PrincipalDetails;
@@ -54,6 +55,16 @@ public class SecureUserController implements SecureUserApi {
         userService.updateUser(principalDetails.getUsername(), userUpdateDto);
         return ResponseEntity.ok(ApiUtil.from("회원 업데이트 성공."));
 
+    }
+
+    /* 비밀번호 업데이트 */
+    @Override
+    @PatchMapping("/password")
+    public ResponseEntity<?> passwordUpdate(@Valid @RequestBody UserPasswordDto userPasswordDto,
+                                            @AuthenticationPrincipal PrincipalDetails principalDetails) {
+
+        userService.passwordUpdate(principalDetails.getUsername(), userPasswordDto);
+        return ResponseEntity.ok(ApiUtil.from("비밀번호 업데이트 성공."));
     }
 
     /* 회원 삭제 */

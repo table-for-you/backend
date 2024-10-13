@@ -1,16 +1,16 @@
 package com.project.tableforyou.domain.user.service;
 
+import com.project.tableforyou.common.handler.exceptionHandler.error.ErrorCode;
+import com.project.tableforyou.common.handler.exceptionHandler.exception.CustomException;
 import com.project.tableforyou.domain.common.service.AssociatedEntityService;
 import com.project.tableforyou.domain.user.dto.FcmTokenRequestDto;
 import com.project.tableforyou.domain.user.dto.PasswordDto;
 import com.project.tableforyou.domain.user.dto.SignUpDto;
+import com.project.tableforyou.domain.user.dto.UserPasswordDto;
 import com.project.tableforyou.domain.user.dto.UserResponseDto;
 import com.project.tableforyou.domain.user.dto.UserUpdateDto;
 import com.project.tableforyou.domain.user.entity.User;
 import com.project.tableforyou.domain.user.repository.UserRepository;
-import com.project.tableforyou.common.handler.exceptionHandler.error.ErrorCode;
-import com.project.tableforyou.common.handler.exceptionHandler.exception.CustomException;
-import com.project.tableforyou.security.auth.PrincipalDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final AssociatedEntityService associatedEntityService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final PrincipalDetailsService principalDetailsService;
 
     private static final String USERNAME_PATTERN = "^[ㄱ-ㅎ가-힣a-z0-9-_]{4,20}$";
     private static final String NICKNAME_PATTERN = "^[ㄱ-ㅎ가-힣a-zA-Z0-9-_]{2,10}$";
@@ -56,10 +55,23 @@ public class UserService {
 
         User user = userRepository.findByUsername(username).orElseThrow(() ->
                 new CustomException(ErrorCode.USER_NOT_FOUND));
-        userUpdateDto.setPassword(bCryptPasswordEncoder.encode(userUpdateDto.getPassword()));
 
-        user.update(userUpdateDto.getNickname(), userUpdateDto.getPassword());
+        user.update(userUpdateDto.getNickname(), userUpdateDto.getAge());
     }
+
+    @Transactional
+    public void passwordUpdate(String username, UserPasswordDto userPasswordDto) {
+
+        User user = userRepository.findByUsername(username).orElseThrow(() ->
+                new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        if (!bCryptPasswordEncoder.matches(userPasswordDto.getCurrentPassword(), userPasswordDto.getNewPassword())) {
+            throw new CustomException(ErrorCode.INVALID_CURRENT_PASSWORD);
+        }
+
+        user.updatePassword(bCryptPasswordEncoder.encode(userPasswordDto.getNewPassword()));
+    }
+
 
     /* 회원 삭제 */
     @Transactional

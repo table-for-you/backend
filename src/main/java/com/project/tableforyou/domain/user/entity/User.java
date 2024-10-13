@@ -2,11 +2,6 @@ package com.project.tableforyou.domain.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.tableforyou.domain.BaseTimeEntity;
-import com.project.tableforyou.domain.notification.entity.Notification;
-import com.project.tableforyou.domain.like.entity.Like;
-import com.project.tableforyou.domain.restaurant.entity.Restaurant;
-import com.project.tableforyou.domain.visit.entity.Visit;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -14,7 +9,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +17,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -67,9 +60,9 @@ public class User extends BaseTimeEntity {
     private LocalDateTime lockTime;
 
 
-    public void update(String nickname, String password) {
+    public void update(String nickname, String age) {
         this.nickname = nickname;
-        this.password = password;
+        this.age = age;
     }
 
     public void updatePassword(String password) {
