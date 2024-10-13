@@ -6,6 +6,7 @@ import com.project.tableforyou.domain.review.dto.ReviewDto;
 import com.project.tableforyou.domain.review.dto.ReviewUpdateDto;
 import com.project.tableforyou.domain.review.service.ReviewService;
 import com.project.tableforyou.security.auth.PrincipalDetails;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,7 +29,7 @@ public class ReviewController implements ReviewApi {
     @Override
     @PostMapping("/restaurants/{restaurantId}/reviews")
     public ResponseEntity<?> createReview(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                          @RequestBody ReviewDto reviewDto,
+                                          @Valid @RequestBody ReviewDto reviewDto,
                                           @PathVariable(name = "restaurantId") Long restaurantId) {
 
         reviewService.createReview(principalDetails.getId(), restaurantId, reviewDto);

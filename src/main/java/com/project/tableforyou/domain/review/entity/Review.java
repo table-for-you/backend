@@ -34,6 +34,8 @@ public class Review extends BaseTimeEntity {
 
     private Long restaurantId;
 
+    private String nickname;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
