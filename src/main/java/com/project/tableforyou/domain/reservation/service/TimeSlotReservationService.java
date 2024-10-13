@@ -2,6 +2,7 @@ package com.project.tableforyou.domain.reservation.service;
 
 import com.project.tableforyou.common.fcm.util.FcmProperties;
 import com.project.tableforyou.domain.notification.service.NotificationService;
+import com.project.tableforyou.domain.reservation.dto.RestaurantNameSeatsDto;
 import com.project.tableforyou.domain.reservation.dto.TimeSlotReservationResDto;
 import com.project.tableforyou.domain.reservation.entity.TimeSlot;
 import com.project.tableforyou.domain.reservation.entity.TimeSlotReservation;
@@ -54,9 +55,9 @@ public class TimeSlotReservationService {
             if (isUserAlreadyInTimeSlot(username, restaurantId, date, timeSlot))
                 throw new CustomException(ErrorCode.ALREADY_USER_RESERVATION);
 
-            Object[] result = restaurantRepository.findRestaurantNameAndSeatsByRestaurantId(restaurantId);
-            String restaurantName = (String) result[0];
-            int totalSeats = (int) result[1];
+            RestaurantNameSeatsDto result = restaurantRepository.findRestaurantNameAndSeatsByRestaurantId(restaurantId);
+            String restaurantName = result.getRestaurantName();
+            int totalSeats = result.getTotalSeats();
 
             int nowReservationSize = getReservationSizeInTimeSlot(key);
 
