@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Tag(name = "[리뷰 API]", description = "리뷰 관련 API")
 public interface ReviewApi {
 
-    @Operation(summary = "리뷰 작성하기", description = "리뷰 작성하는 API입니다.")
+    @Operation(summary = "리뷰 작성하기 *", description = "리뷰 작성하는 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "리뷰 작성하기 성공",
                     content = @Content(mediaType = "application/json", examples = {
@@ -81,7 +81,7 @@ public interface ReviewApi {
     })
     ResponseEntity<?> gerReviewByRestaurantId(@PathVariable(name = "restaurantId") Long restaurantId);
 
-    @Operation(summary = "사용자가 작성한 리뷰 불러오기", description = "사용자 리뷰 불러오는 API입니다.")
+    @Operation(summary = "사용자가 작성한 리뷰 불러오기 *", description = "사용자 리뷰 불러오는 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "리뷰 불러오기 성공",
                     content = @Content(mediaType = "application/json", examples = {
@@ -103,9 +103,9 @@ public interface ReviewApi {
                                     """)
                     }))
     })
-    ResponseEntity<?> gerReviewByUserId(@PathVariable(name = "userId") Long userId);
+    ResponseEntity<?> gerReviewByUserId(@AuthenticationPrincipal PrincipalDetails principalDetails);
 
-    @Operation(summary = "리뷰 업데이트", description = "리뷰 업데이트 API입니다.")
+    @Operation(summary = "리뷰 업데이트 *", description = "리뷰 업데이트 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "리뷰 업데이트 성공",
                     content = @Content(mediaType = "application/json", examples = {
@@ -144,7 +144,7 @@ public interface ReviewApi {
                                    @PathVariable(name = "restaurantId") Long restaurantId,
                                    @PathVariable(name = "reviewId") Long reviewId);
 
-    @Operation(summary = "리뷰 삭제하기", description = "리뷰 삭제하는 API입니다.")
+    @Operation(summary = "리뷰 삭제하기 *", description = "리뷰 삭제하는 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "리뷰 업데이트 성공",
                     content = @Content(mediaType = "application/json", examples = {

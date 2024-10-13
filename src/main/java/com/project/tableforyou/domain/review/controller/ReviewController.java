@@ -1,6 +1,7 @@
 package com.project.tableforyou.domain.review.controller;
 
 import com.project.tableforyou.common.utils.api.ApiUtil;
+import com.project.tableforyou.domain.review.api.ReviewApi;
 import com.project.tableforyou.domain.review.dto.ReviewDto;
 import com.project.tableforyou.domain.review.dto.ReviewUpdateDto;
 import com.project.tableforyou.domain.review.service.ReviewService;
@@ -19,11 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class ReviewController {
+public class ReviewController implements ReviewApi {
 
     private final ReviewService reviewService;
 
     /* 리뷰 생성 */
+    @Override
     @PostMapping("/restaurants/{restaurantId}/reviews")
     public ResponseEntity<?> createReview(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                           @RequestBody ReviewDto reviewDto,
@@ -34,6 +36,7 @@ public class ReviewController {
     }
 
     /* 가게 리뷰 불러오기 */
+    @Override
     @GetMapping("/restaurants/{restaurantId}/reviews")
     public ResponseEntity<?> gerReviewByRestaurantId(@PathVariable(name = "restaurantId") Long restaurantId) {
 
@@ -41,13 +44,15 @@ public class ReviewController {
     }
 
     /* 사용자가 작성한 리뷰 불러오기 */
-    @GetMapping("/users/{userId}/reviews")
-    public ResponseEntity<?> gerReviewByUserId(@PathVariable(name = "userId") Long userId) {
+    @Override
+    @GetMapping("/users/reviews")
+    public ResponseEntity<?> gerReviewByUserId(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 
-        return ResponseEntity.ok(reviewService.getReviewByUserId(userId));
+        return ResponseEntity.ok(reviewService.getReviewByUserId(principalDetails.getId()));
     }
 
     /* 리뷰 업데이트 */
+    @Override
     @PutMapping("/restaurants/{restaurantId}/reviews/{reviewId}")
     public ResponseEntity<?> updateReview(@RequestBody ReviewUpdateDto reviewUpdateDto,
                                           @PathVariable(name = "restaurantId") Long restaurantId,
@@ -58,6 +63,7 @@ public class ReviewController {
     }
 
     /* 리뷰 삭제 */
+    @Override
     @DeleteMapping("/restaurants/{restaurantId}/reviews/{reviewId}")
     public ResponseEntity<?> deleteReview(@RequestParam double rating,
                                           @PathVariable(name = "restaurantId") Long restaurantId,
