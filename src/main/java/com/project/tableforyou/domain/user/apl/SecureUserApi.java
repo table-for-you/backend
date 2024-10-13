@@ -2,6 +2,7 @@ package com.project.tableforyou.domain.user.apl;
 
 import com.project.tableforyou.domain.user.dto.FcmTokenRequestDto;
 import com.project.tableforyou.domain.user.dto.PasswordDto;
+import com.project.tableforyou.domain.user.dto.UserPasswordDto;
 import com.project.tableforyou.domain.user.dto.UserUpdateDto;
 import com.project.tableforyou.security.auth.PrincipalDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -86,6 +87,19 @@ public interface SecureUserApi {
                                         }
                                     """)
                     })),
+            @ApiResponse(responseCode = "400", description = "유효성검사 실패",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(name = "notBlank", value = """
+                                        {
+                                            "nickname": "닉네임은 필수 입력 값입니다."
+                                        }
+                                    """),
+                            @ExampleObject(name = "patternError", value = """
+                                        {
+                                            "nickname": "닉네임은 특수문자를 제외한 2~10자리여야 합니다."
+                                        }
+                                    """)
+                    })),
             @ApiResponse(responseCode = "404", description = "사용자 없음",
                     content = @Content(mediaType = "application/json", examples = {
                             @ExampleObject(value = """
@@ -98,6 +112,49 @@ public interface SecureUserApi {
     })
     ResponseEntity<?> updateUser(@Valid @RequestBody UserUpdateDto userUpdateDto,
                                  @AuthenticationPrincipal PrincipalDetails principalDetails);
+
+    @Operation(summary = "회원 정보 수정하기 *", description = "로그인된 사용자의 정보를 수정하는 API입니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정보 수정 성공",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "response": "회원 업데이트 성공."
+                                        }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "400", description = "유효성검사 실패",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(name = "notBlank", value = """
+                                        {
+                                            "currentPassword": "현재 비밀번호를 입력해주세요.",
+                                            "newPassword": "비밀번호는 필수 입력 값입니다."
+                                        }
+                                    """),
+                            @ExampleObject(name = "patternError", value = """
+                                        {
+                                            "newPassword": "비밀번호는 8~16자 영문자, 숫자, 특수문자를 사용하세요."
+                                        }
+                                    """),
+                            @ExampleObject(name = "notEquals", value = """
+                                        {
+                                            "status": 400,
+                                            "message": "현재 비밀번호를 잘못 입력하였습니다."
+                                        }
+                                    """)
+                    })),
+            @ApiResponse(responseCode = "404", description = "사용자 없음",
+                    content = @Content(mediaType = "application/json", examples = {
+                            @ExampleObject(value = """
+                                        {
+                                            "status": 404,
+                                            "message": "존재하지 않는 회원입니다."
+                                        }
+                                    """)
+                    }))
+    })
+    ResponseEntity<?> passwordUpdate(@Valid @RequestBody UserPasswordDto userPasswordDto,
+                                     @AuthenticationPrincipal PrincipalDetails principalDetails);
 
     @Operation(summary = "회원 정보 삭제하기 *", description = "로그인된 사용자의 정보를 삭제하는 API입니다.")
     @ApiResponses({
