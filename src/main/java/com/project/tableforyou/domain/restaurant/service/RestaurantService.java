@@ -99,18 +99,16 @@ public class RestaurantService {
 
     /* 평점 업데이트 */
     @Transactional
-    public void updateRating(Long restaurantId, double rating) {
+    public void updateRating(Restaurant restaurant, double rating) {
 
-        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
-                new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
-        double before_rating = restaurant.getRating();
+        double beforeRating = restaurant.getRating();
         int nowRatingNum = restaurant.getRatingNum() + 1;
 
         double nowRating = 0.0;
-        if(nowRatingNum == 1)
+        if (nowRatingNum == 1)
             nowRating = rating;
         else
-            nowRating = before_rating + (rating - before_rating) / nowRatingNum;  // 누적 평균 공식.
+            nowRating = beforeRating + (rating - beforeRating) / nowRatingNum;  // 누적 평균 공식.
 
 
         restaurant.updateRating(nowRating, nowRatingNum);

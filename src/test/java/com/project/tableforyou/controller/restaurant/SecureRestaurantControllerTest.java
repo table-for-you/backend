@@ -1,6 +1,5 @@
 package com.project.tableforyou.controller.restaurant;
 
-import com.project.tableforyou.domain.restaurant.controller.SecureRestaurantController;
 import com.project.tableforyou.domain.restaurant.entity.Region;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import com.project.tableforyou.domain.restaurant.entity.RestaurantStatus;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -61,29 +59,6 @@ public class SecureRestaurantControllerTest {
                 .user(user)
                 .status(RestaurantStatus.PENDING)
                 .build();
-    }
-
-    @Test
-    @DisplayName("가게 평점 업데이트 성공 테스트")
-    void updateRatingTest() throws Exception {
-        // given
-        Long restaurantId = restaurant.getId();
-        double rating = 3.5;
-
-        doNothing().when(restaurantService).updateRating(restaurantId, rating);
-
-        // when
-        ResultActions resultActions = mockMvc.perform(
-                patch("/restaurants/{restaurantId}/update-rating", restaurantId)
-                        .param("rating", String.valueOf(rating))
-                        .contentType(MediaType.APPLICATION_JSON)
-        );
-
-        // then
-        resultActions
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.response").value("가게 평점 업데이트 완료."));
     }
 
     @Test

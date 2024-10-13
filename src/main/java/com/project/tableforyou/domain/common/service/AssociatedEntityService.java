@@ -8,6 +8,7 @@ import com.project.tableforyou.domain.notification.service.NotificationService;
 import com.project.tableforyou.domain.restaurant.entity.Restaurant;
 import com.project.tableforyou.domain.restaurant.repository.RestaurantRepository;
 import com.project.tableforyou.common.s3.service.S3Service;
+import com.project.tableforyou.domain.review.repository.ReviewRepository;
 import com.project.tableforyou.domain.visit.repository.VisitRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class AssociatedEntityService {
     private final VisitRepository visitRepository;
     private final ImageRepository imageRepository;
     private final NotificationRepository notificationRepository;
+    private final ReviewRepository reviewRepository;
     private final S3Service s3Service;
 
     /* 회원을 FK로 가지는 데이터 지우기 */
@@ -31,6 +33,7 @@ public class AssociatedEntityService {
 
         likeRepository.deleteByUserId(userId);
         likeRepository.deleteRestaurantLikeByUserId(userId);
+        reviewRepository.deleteByUserId(userId);
         visitRepository.deleteByVisitorId(userId);
         visitRepository.deleteRestaurantVisitorByUserId(userId);
         notificationRepository.deleteByUserId(userId);
@@ -56,6 +59,7 @@ public class AssociatedEntityService {
 
         likeRepository.deleteByRestaurantId(restaurantId);
         visitRepository.deleteByRestaurantId(restaurantId);
+        reviewRepository.deleteByRestaurantId(restaurantId);
 
         List<String> images = imageRepository.findImageUrlsByRestaurantId(restaurantId);
         String mainImage = restaurantRepository.findMainImageById(restaurantId);
