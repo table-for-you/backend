@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@Tag(name = "[리뷰 API]", description = "리뷰 관련 API")
-public interface ReviewApi {
+@Tag(name = "[(권한 o) 리뷰 API]", description = "리뷰 관련 API")
+public interface SecureReviewApi {
 
     @Operation(summary = "리뷰 작성하기 *", description = "리뷰 작성하는 API입니다.")
     @ApiResponses({
@@ -56,34 +56,6 @@ public interface ReviewApi {
     ResponseEntity<?> createReview(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                    @RequestBody ReviewDto reviewDto,
                                    @PathVariable(name = "restaurantId") Long restaurantId);
-
-    @Operation(summary = "가게에 작성된 리뷰 불러오기 *", description = "가게 리뷰 불러오는 API입니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "리뷰 불러오기 성공",
-                    content = @Content(mediaType = "application/json", examples = {
-                            @ExampleObject(value = """
-                                        {
-                                            [
-                                              {
-                                                "reviewId": 1,
-                                                "rating": 4.5,
-                                                "content": "맛있어요",
-                                                "restaurantId": 1,
-                                                "nickname": "테스터1"
-                                              },
-                                              {
-                                                "reviewId": 2,
-                                                "rating": 1.0,
-                                                "content": "맛없어요",
-                                                "restaurantId": 1
-                                                "nickname": "테스터1"
-                                              }
-                                            ]
-                                        }
-                                    """)
-                    }))
-    })
-    ResponseEntity<?> gerReviewByRestaurantId(@PathVariable(name = "restaurantId") Long restaurantId);
 
     @Operation(summary = "사용자가 작성한 리뷰 불러오기 *", description = "사용자 리뷰 불러오는 API입니다.")
     @ApiResponses({

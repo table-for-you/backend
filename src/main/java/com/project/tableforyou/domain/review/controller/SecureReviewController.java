@@ -1,7 +1,7 @@
 package com.project.tableforyou.domain.review.controller;
 
 import com.project.tableforyou.common.utils.api.ApiUtil;
-import com.project.tableforyou.domain.review.api.ReviewApi;
+import com.project.tableforyou.domain.review.api.SecureReviewApi;
 import com.project.tableforyou.domain.review.dto.ReviewDto;
 import com.project.tableforyou.domain.review.dto.ReviewUpdateDto;
 import com.project.tableforyou.domain.review.service.ReviewService;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class ReviewController implements ReviewApi {
+public class SecureReviewController implements SecureReviewApi {
 
     private final ReviewService reviewService;
 
@@ -34,14 +34,6 @@ public class ReviewController implements ReviewApi {
 
         reviewService.createReview(principalDetails.getId(), restaurantId, reviewDto);
         return ResponseEntity.ok(ApiUtil.from("리뷰 작성 완료."));
-    }
-
-    /* 가게 리뷰 불러오기 */
-    @Override
-    @GetMapping("/restaurants/{restaurantId}/reviews")
-    public ResponseEntity<?> gerReviewByRestaurantId(@PathVariable(name = "restaurantId") Long restaurantId) {
-
-        return ResponseEntity.ok(reviewService.getReviewByRestaurantId(restaurantId));
     }
 
     /* 사용자가 작성한 리뷰 불러오기 */
