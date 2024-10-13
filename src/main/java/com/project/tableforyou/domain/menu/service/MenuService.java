@@ -1,5 +1,6 @@
 package com.project.tableforyou.domain.menu.service;
 
+import com.project.tableforyou.common.aop.annotation.RestaurantId;
 import com.project.tableforyou.common.aop.annotation.VerifyAuthentication;
 import com.project.tableforyou.domain.menu.dto.MenuRequestDto;
 import com.project.tableforyou.domain.menu.dto.MenuResponseDto;
@@ -30,7 +31,7 @@ public class MenuService {
     /* 메뉴 추가 */
     @VerifyAuthentication
     @Transactional
-    public Long saveMenu(Long restaurantId, MenuRequestDto menuDto, MultipartFile menuImage) {
+    public Long saveMenu(@RestaurantId Long restaurantId, MenuRequestDto menuDto, MultipartFile menuImage) {
 
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
@@ -66,7 +67,7 @@ public class MenuService {
     /* 메뉴 사진 업데이트 */
     @VerifyAuthentication
     @Transactional
-    public void updateMenuImage(Long restaurantId, Long menuId, MultipartFile menuImage) {
+    public void updateMenuImage(@RestaurantId Long restaurantId, Long menuId, MultipartFile menuImage) {
 
         String currentMenuImage = menuRepository.findMenuImageById(menuId);
         s3Service.deleteImage(currentMenuImage);
@@ -81,7 +82,7 @@ public class MenuService {
     /* 메뉴 업데이트 */
     @VerifyAuthentication
     @Transactional
-    public void updateMenu(Long restaurantId, Long menuId, MenuUpdateDto menuUpdateDto) {
+    public void updateMenu(@RestaurantId Long restaurantId, Long menuId, MenuUpdateDto menuUpdateDto) {
 
         Menu menu = menuRepository.findByRestaurantIdAndId(restaurantId, menuId).orElseThrow(() ->
                 new CustomException(ErrorCode.MENU_NOT_FOUND));
@@ -91,7 +92,7 @@ public class MenuService {
     /* 메뉴 삭제 */
     @VerifyAuthentication
     @Transactional
-    public void deleteMenu(Long restaurantId, Long menuId) {
+    public void deleteMenu(@RestaurantId Long restaurantId, Long menuId) {
 
         Menu menu = menuRepository.findByRestaurantIdAndId(restaurantId, menuId).orElseThrow(() ->
                 new CustomException(ErrorCode.MENU_NOT_FOUND));

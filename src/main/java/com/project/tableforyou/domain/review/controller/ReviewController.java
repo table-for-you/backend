@@ -59,7 +59,7 @@ public class ReviewController implements ReviewApi {
                                           @PathVariable(name = "restaurantId") Long restaurantId,
                                           @PathVariable(name = "reviewId") Long reviewId) {
 
-        reviewService.updateReview(restaurantId, reviewId, reviewUpdateDto);
+        reviewService.updateReview(reviewId, restaurantId, reviewUpdateDto);
         return ResponseEntity.ok(ApiUtil.from("리뷰 업데이트 완료."));
     }
 
@@ -70,7 +70,7 @@ public class ReviewController implements ReviewApi {
                                           @PathVariable(name = "restaurantId") Long restaurantId,
                                           @PathVariable(name = "reviewId") Long reviewId) {
 
-        reviewService.deleteReview(restaurantId, reviewId, rating);
+        reviewService.deleteReview(reviewId, restaurantId, rating);
         return ResponseEntity.ok(ApiUtil.from("리뷰 삭제 완료."));
     }
 }

@@ -1,5 +1,6 @@
 package com.project.tableforyou.domain.restaurant.service;
 
+import com.project.tableforyou.common.aop.annotation.RestaurantId;
 import com.project.tableforyou.common.aop.annotation.VerifyAuthentication;
 import com.project.tableforyou.domain.common.service.AssociatedEntityService;
 import com.project.tableforyou.domain.image.entity.Image;
@@ -87,7 +88,7 @@ public class OwnerRestaurantService {
     /* 가게 수정 */
     @VerifyAuthentication
     @Transactional
-    public void updateRestaurant(Long restaurantId, RestaurantUpdateDto restaurantUpdateDto) {
+    public void updateRestaurant(@RestaurantId Long restaurantId, RestaurantUpdateDto restaurantUpdateDto) {
 
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
@@ -102,7 +103,7 @@ public class OwnerRestaurantService {
     /* 가게 메인 이미지 업데이트 */
     @VerifyAuthentication
     @Transactional
-    public void updateMainImage(Long restaurantId, MultipartFile mainImage) {
+    public void updateMainImage(@RestaurantId Long restaurantId, MultipartFile mainImage) {
 
         String currentMainImage = restaurantRepository.findMainImageById(restaurantId);
         s3Service.deleteImage(currentMainImage);
@@ -117,7 +118,7 @@ public class OwnerRestaurantService {
     /* 가게 서브 이미지 업데이트 */
     @VerifyAuthentication
     @Transactional
-    public void updateSubImages(Long restaurantId,
+    public void updateSubImages(@RestaurantId Long restaurantId,
                                 List<String> deleteImageUrls,
                                 List<MultipartFile> newImages) {
 
@@ -147,7 +148,7 @@ public class OwnerRestaurantService {
     /* 가게 삭제 */
     @VerifyAuthentication
     @Transactional
-    public void deleteRestaurant(Long restaurantId) {         // 다른 사용자가 삭제하는 경우 확인해보기. 만약 그런다면 findByUserIdAndId 사용. 그냥 권한 설정 하면 될듯?
+    public void deleteRestaurant(@RestaurantId Long restaurantId) {         // 다른 사용자가 삭제하는 경우 확인해보기. 만약 그런다면 findByUserIdAndId 사용. 그냥 권한 설정 하면 될듯?
 
         associatedEntityService.deleteAllByRestaurantId(restaurantId);
 

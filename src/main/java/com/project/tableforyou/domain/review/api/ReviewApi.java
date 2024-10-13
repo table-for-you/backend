@@ -57,7 +57,7 @@ public interface ReviewApi {
                                    @RequestBody ReviewDto reviewDto,
                                    @PathVariable(name = "restaurantId") Long restaurantId);
 
-    @Operation(summary = "가게에 작성된 리뷰 불러오기", description = "가게 리뷰 불러오는 API입니다.")
+    @Operation(summary = "가게에 작성된 리뷰 불러오기 *", description = "가게 리뷰 불러오는 API입니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "리뷰 불러오기 성공",
                     content = @Content(mediaType = "application/json", examples = {

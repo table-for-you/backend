@@ -1,5 +1,6 @@
 package com.project.tableforyou.domain.review.service;
 
+import com.project.tableforyou.common.aop.annotation.ReviewId;
 import com.project.tableforyou.common.aop.annotation.VerifyAuthentication;
 import com.project.tableforyou.common.handler.exceptionHandler.error.ErrorCode;
 import com.project.tableforyou.common.handler.exceptionHandler.exception.CustomException;
@@ -66,7 +67,7 @@ public class ReviewService {
     /* 리뷰 업데이트 */
     @VerifyAuthentication
     @Transactional
-    public void updateReview(Long restaurantId, Long reviewId, ReviewUpdateDto reviewUpdateDto) {
+    public void updateReview(@ReviewId Long reviewId, Long restaurantId, ReviewUpdateDto reviewUpdateDto) {
 
         Review review = reviewRepository.findById(reviewId).orElseThrow(() ->
                 new CustomException(ErrorCode.REVIEW_NOT_FOUND));
@@ -75,7 +76,8 @@ public class ReviewService {
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
 
         double preRating = restaurant.getRating() * restaurant.getRatingNum();
-        double newRating = (preRating - reviewUpdateDto.getPreRating()) / restaurant.getRatingNum();
+        double newRating =
+                (preRating - reviewUpdateDto.getPreRating() + reviewUpdateDto.getRating()) / restaurant.getRatingNum();
         restaurant.updateRating(newRating);
 
         review.updateReview(reviewUpdateDto.getRating(), reviewUpdateDto.getContent());
@@ -84,7 +86,7 @@ public class ReviewService {
     /* 리뷰 삭제 */
     @VerifyAuthentication
     @Transactional
-    public void deleteReview(Long restaurantId, Long reviewId, double rating) {
+    public void deleteReview(@ReviewId Long reviewId, Long restaurantId, double rating) {
 
         Restaurant restaurant = restaurantRepository.findById(restaurantId).orElseThrow(() ->
                 new CustomException(ErrorCode.RESTAURANT_NOT_FOUND));
