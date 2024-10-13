@@ -16,10 +16,10 @@ public class PrincipalDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    @Cacheable(value = "users", key = "#username")
-    public PrincipalDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username).orElseThrow(() ->
-                new UsernameNotFoundException("User not found with username: " + username));
+    @Cacheable(value = "users", key = "#userId")
+    public PrincipalDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
+        User user = userRepository.findById(Long.valueOf(userId)).orElseThrow(() ->
+                new UsernameNotFoundException("User not found with userId: " + userId));
         return new PrincipalDetails(user);
     }
 }
