@@ -29,6 +29,7 @@ public class ReviewDto {
                 .nickname(user.getNickname())
                 .user(user)
                 .restaurant(restaurant)
+                .restaurantName(restaurant.getName())
                 .build();
     }
 }

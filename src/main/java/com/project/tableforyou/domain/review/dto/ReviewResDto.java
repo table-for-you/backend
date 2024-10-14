@@ -11,6 +11,7 @@ public class ReviewResDto {
     private final String content;
     private final Long restaurantId;
     private final String nickname;
+    private final String restaurantName;
 
     public ReviewResDto(Review review) {
         this.reviewId = review.getId();
@@ -18,5 +19,6 @@ public class ReviewResDto {
         this.content = review.getContent();
         this.restaurantId = review.getRestaurantId();
         this.nickname = review.getNickname();
+        this.restaurantName = review.getRestaurantName();
     }
 }

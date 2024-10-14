@@ -24,14 +24,16 @@ public interface PublicReviewApi {
                                                 "rating": 4.5,
                                                 "content": "맛있어요",
                                                 "restaurantId": 1,
-                                                "nickname": "테스터1"
+                                                "nickname": "테스터1",
+                                                "restaurantName": "가게1"
                                               },
                                               {
                                                 "reviewId": 2,
                                                 "rating": 1.0,
                                                 "content": "맛없어요",
                                                 "restaurantId": 1
-                                                "nickname": "테스터1"
+                                                "nickname": "테스터1",
+                                                "restaurantName": "가게1"
                                               }
                                             ]
                                         }
