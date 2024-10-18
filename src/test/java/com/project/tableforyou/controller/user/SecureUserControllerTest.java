@@ -134,7 +134,6 @@ public class SecureUserControllerTest {
         UserUpdateDto userUpdateDto = new UserUpdateDto();
 
         userUpdateDto.setNickname(updateNickname);
-        userUpdateDto.setPassword(updatePassword);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -181,7 +180,6 @@ public class SecureUserControllerTest {
 
         UserUpdateDto userUpdateDto = new UserUpdateDto();
         userUpdateDto.setNickname(updateNickname);
-        userUpdateDto.setPassword(updatePassword);
 
         // when
         ResultActions resultActions = mockMvc.perform(

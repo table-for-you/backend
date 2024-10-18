@@ -65,7 +65,7 @@ public class UserService {
         User user = userRepository.findByUsername(username).orElseThrow(() ->
                 new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        if (!bCryptPasswordEncoder.matches(userPasswordDto.getCurrentPassword(), userPasswordDto.getNewPassword())) {
+        if (!bCryptPasswordEncoder.matches(userPasswordDto.getCurrentPassword(), user.getPassword())) {
             throw new CustomException(ErrorCode.INVALID_CURRENT_PASSWORD);
         }
 
