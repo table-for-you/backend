@@ -67,6 +67,10 @@ logging:
   level:
     org.hibernate.orm.jdbc.bind: debug
 
+domain:
+  local: ${LOCAL_DOMAIN}
+  server: ${SERVER_DOMAIN}
+
 ---
 spring:
   config:
