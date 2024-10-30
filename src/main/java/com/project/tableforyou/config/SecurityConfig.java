@@ -33,7 +33,7 @@ public class SecurityConfig {
     private static final String[] PUBLIC_ENDPOINTS = {
             "/", "/index.html", "/css/**", "/js/**", "/public/**",
             "/api/**","/swagger-resources/**", "/swagger-ui/**",
-            "/v3/api-docs/**", "/webjars/**", "/error", "/.well-known/**"
+            "/v3/api-docs/**", "/webjars/**", "/error"
     };
     private static final String[] OWNER_ENDPOINTS = {"/owner/**"};
     private static final String[] ADMIN_ENDPOINTS = {"/admin/**"};
