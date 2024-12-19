@@ -1,18 +1,16 @@
 package com.project.tableforyou.domain.auth.controller;
 
-import api.link.checker.annotation.ApiGroup;
-import api.link.checker.annotation.TrackApi;
+import com.project.tableforyou.common.handler.exceptionHandler.error.ErrorCode;
+import com.project.tableforyou.common.handler.exceptionHandler.exception.CustomException;
+import com.project.tableforyou.common.handler.exceptionHandler.exception.TokenException;
+import com.project.tableforyou.common.utils.api.ApiUtil;
+import com.project.tableforyou.common.utils.cookie.CookieUtil;
+import com.project.tableforyou.common.utils.jwt.JwtUtil;
 import com.project.tableforyou.domain.auth.api.AuthApi;
 import com.project.tableforyou.domain.auth.dto.LoginDto;
 import com.project.tableforyou.domain.auth.service.AuthService;
 import com.project.tableforyou.domain.user.entity.User;
-import com.project.tableforyou.common.handler.exceptionHandler.error.ErrorCode;
-import com.project.tableforyou.common.handler.exceptionHandler.exception.CustomException;
-import com.project.tableforyou.common.handler.exceptionHandler.exception.TokenException;
 import com.project.tableforyou.security.token.service.RefreshTokenService;
-import com.project.tableforyou.common.utils.api.ApiUtil;
-import com.project.tableforyou.common.utils.cookie.CookieUtil;
-import com.project.tableforyou.common.utils.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -38,7 +36,6 @@ import static com.project.tableforyou.common.utils.jwt.JwtProperties.TOKEN_PREFI
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
-@ApiGroup("Test")
 public class AuthController implements AuthApi {
     
     private final JwtUtil jwtUtil;
@@ -49,7 +46,6 @@ public class AuthController implements AuthApi {
     /* 로그인 */
     @Override
     @PostMapping("/login")
-    @TrackApi(description = "test1")
     public ResponseEntity<?> login(@RequestBody @Valid LoginDto loginDto, HttpServletResponse response) {
 
         User user = authService.login(loginDto);
@@ -74,7 +70,6 @@ public class AuthController implements AuthApi {
     /* accessToken 재발급 */
     @Override
     @PostMapping("/reissue")
-    @TrackApi(description = "test2")
     public ResponseEntity<?> accessTokenReissue(HttpServletRequest request, HttpServletResponse response) {
 
         String refreshTokenInCookie = cookieUtil.getCookie(REFRESH_COOKIE_VALUE, request);
@@ -106,7 +101,6 @@ public class AuthController implements AuthApi {
     /* 로그아웃 */
     @Override
     @GetMapping("/logout")
-    @TrackApi(description = "test3")
     public ResponseEntity<?> logout(@RequestHeader(value = ACCESS_HEADER_VALUE, required = false) String accessToken,
                                      @CookieValue(name = REFRESH_COOKIE_VALUE, required = false) String refreshToken,
                                      HttpServletResponse response) {
@@ -124,7 +118,6 @@ public class AuthController implements AuthApi {
     /* 아이디 찾기 */
     @Override
     @GetMapping("/find-id")
-    @TrackApi(description = "test4")
     public ResponseEntity<?> findingId(@RequestParam("email") @Valid @Email String email) {
 
         return ResponseEntity.ok(ApiUtil.from(authService.findingId(email)));
@@ -133,7 +126,6 @@ public class AuthController implements AuthApi {
     /* 비밀번호 찾기 */
     @Override
     @PostMapping("/find-pass")
-    @TrackApi(description = "test5")
     public ResponseEntity<?> findPass(@RequestParam("email") @Valid @Email String email,
                                            @RequestParam("username") String username) {
 
@@ -144,7 +136,6 @@ public class AuthController implements AuthApi {
     /* 사용자 권한 확인 */
     @Override
     @GetMapping("/user-role")
-    @TrackApi(description = "test6")
     public ResponseEntity<?> getUserRole(@RequestHeader("Authorization") String token) {
 
         return ResponseEntity.ok(ApiUtil.from(authService.findUserRoleByToken(token)));
