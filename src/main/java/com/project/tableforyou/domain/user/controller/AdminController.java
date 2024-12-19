@@ -1,5 +1,7 @@
 package com.project.tableforyou.domain.user.controller;
 
+import api.link.checker.annotation.ApiGroup;
+import api.link.checker.annotation.TrackApi;
 import com.project.tableforyou.domain.restaurant.entity.RestaurantStatus;
 import com.project.tableforyou.domain.restaurant.service.AdminRestaurantService;
 import com.project.tableforyou.domain.user.apl.AdminApi;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/admin")
+@ApiGroup(value = "test2")
 public class AdminController implements AdminApi {
 
     private final AdminService adminService;
@@ -28,6 +31,7 @@ public class AdminController implements AdminApi {
     /* 회원 전체 불러오기, 페이징 처리 */
     @Override
     @GetMapping("/users")
+    @TrackApi(description = "test2")
     public ResponseEntity<?> readAllUser(@PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
                                      @RequestParam(required = false, value = "type") String type,
                                      @RequestParam(required = false, value = "search-keyword") String searchKeyword,
@@ -51,6 +55,7 @@ public class AdminController implements AdminApi {
     /* 회원 정보 불러오기 */
     @Override
     @GetMapping("/users/{userId}")
+    @TrackApi(description = "test2")
     public ResponseEntity<?> readUser(@PathVariable(name = "userId") Long userId) {
         return ResponseEntity.ok(adminService.readUserByAdmin(userId));
     }
@@ -58,6 +63,7 @@ public class AdminController implements AdminApi {
     /* 회원 삭제 */
     @Override
     @DeleteMapping("/users/{userId}")
+    @TrackApi(description = "test2")
     public ResponseEntity<?> deleteUser(@PathVariable(name = "userId") Long userId) {
 
         adminService.deleteUserByAdmin(userId);
@@ -67,6 +73,7 @@ public class AdminController implements AdminApi {
     /* 등록 처리 중인 가게 불러오기 */
     @Override
     @GetMapping("/pending-restaurants")
+    @TrackApi(description = "test2")
     public ResponseEntity<?> handlerRestaurant(
             @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
@@ -76,6 +83,7 @@ public class AdminController implements AdminApi {
     /* 등록 처리 중인 가게 자세히 불러오기 */
     @Override
     @GetMapping("/pending-restaurants/{restaurantId}")
+    @TrackApi(description = "test2")
     public ResponseEntity<?> readPendingDetailsRestaurant(@PathVariable(name = "restaurantId") Long restaurantId) {
 
         return ResponseEntity.ok(adminRestaurantService.readPendingDetailsInfo(restaurantId));
@@ -84,6 +92,7 @@ public class AdminController implements AdminApi {
     /* 등록된 가게 불러오기 */
     @Override
     @GetMapping("/approved-restaurants")
+    @TrackApi(description = "test2")
     public ResponseEntity<?> approvedRestaurants(
             @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
             @RequestParam(required = false, value = "type") String type,
@@ -103,6 +112,7 @@ public class AdminController implements AdminApi {
     /* 가게 상태 변경 (승인, 거절) */
     @Override
     @PatchMapping("/restaurants/{restaurantId}")
+    @TrackApi(description = "test2")
     public ResponseEntity<?> updateRestaurantStatus(@PathVariable(name = "restaurantId") Long restaurantId,
                                                     @RequestParam(value = "status") RestaurantStatus status) {
 
@@ -113,6 +123,7 @@ public class AdminController implements AdminApi {
     /* 가게 삭제  */
     @Override
     @DeleteMapping("/restaurants/{restaurantId}")
+    @TrackApi(description = "test2")
     public ResponseEntity<?> deleteRestaurant(@PathVariable(name = "restaurantId") Long restaurantId) {
 
         adminRestaurantService.deleteRestaurant(restaurantId);

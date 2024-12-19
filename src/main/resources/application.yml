@@ -2,6 +2,11 @@ spring:
   profiles:
     active: local
 
+api:
+  checker:
+    storage:
+      filepath: ${user.home}/api-status.json
+
 ---
 spring:
   datasource:
