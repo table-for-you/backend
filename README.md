@@ -25,7 +25,7 @@
 ## 🚀 Tech Stacks
  - Language: Java
  - Build tool: Gradle
- - Frameworks & Libraries: Spring Boot, Spring Data JPA, Spring Security, Lombok, JJWT, QueryDSL, Redis(Redisson), firebase
+ - Frameworks & Libraries: Spring Boot, Spring Data JPA, Spring Security, Lombok, JJWT, Redis(Redisson), firebase
  - Databases & Caching: MySQL, Redis
  - DevOps & Cloud: GitHub Actions, Docker, AWS
 
