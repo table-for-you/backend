@@ -44,7 +44,7 @@ public class TimeSlotReservationService {
     public void saveTimeSlotReservation(String username, Long restaurantId, String date, TimeSlot timeSlot) {
 
         String key = RESERVATION_KEY_PREFIX + restaurantId + TIME_SLOT + date + "_" + timeSlot;
-        RLock lock = redissonClient.getLock(LOCK + key);
+        RLock lock = redissonClient.getFairLock(LOCK + key);
 
         try {
             boolean available = lock.tryLock(WAIT_TIME, LEASE_TIME, TimeUnit.SECONDS);

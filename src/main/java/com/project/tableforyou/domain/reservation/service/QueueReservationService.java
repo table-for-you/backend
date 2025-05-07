@@ -44,7 +44,7 @@ public class QueueReservationService {
     public void saveQueueReservation(String username, Long restaurantId) {
 
         String key = RESERVATION_KEY_PREFIX + QUEUE + restaurantId;
-        RLock lock = redissonClient.getLock(LOCK + key);
+        RLock lock = redissonClient.getFairLock(LOCK + key);
 
         try {
             boolean available = lock.tryLock(WAIT_TIME, LEASE_TIME, TimeUnit.SECONDS);
