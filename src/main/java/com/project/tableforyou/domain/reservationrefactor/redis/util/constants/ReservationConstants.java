@@ -7,11 +7,15 @@ public final class ReservationConstants {
     private ReservationConstants() { }
 
     public static final String RESERVATION_KEY_PREFIX = "reservation:";
+    public static final String RESERVATION_QUEUE_RESTAURANT_SET_KEY = "reservation:restaurants";
 
     private static final String QUEUE_RESERVATION_KEY = "queue:reserved::%d";
+    private static final String QUEUE_RESERVATION_QUEUE_KEY = "reservation:queue::%d";
     private static final String QUEUE_RESERVATION_NUMBER_KEY = "queue:reservation-number::%d";
     private static final String QUEUE_ENTERED_COUNT_KEY = "queue:entered:count::%d";
     private static final String QUEUE_CANCELED_COUNT_KEY = "queue:canceled:count::%d";
+    private static final String QUEUE_SUCCESS_COUNT_KEY = "reservation:success:%d";
+    private static final String QUEUE_ENTRY_COUNT_KEY = "reservation:entry:%d";
     private static final String TIME_SLOT_RESERVATION_KEY = "timeslot:reserved::%d:%s:%s";
     private static final String TIME_SLOT_RESERVATION_NUMBER_KEY = "timeslot:reservation-number:%d:%s:%s";
 
@@ -20,6 +24,13 @@ public final class ReservationConstants {
      */
     public static String getQueueReservationKey(Long restaurantId) {
         return String.format(QUEUE_RESERVATION_KEY, restaurantId);
+    }
+
+    /**
+     * queue 대기열 key
+     */
+    public static String getQueueReservationQueueKey(Long restaurantId) {
+        return String.format(QUEUE_RESERVATION_QUEUE_KEY, restaurantId);
     }
 
     /**
@@ -55,5 +66,19 @@ public final class ReservationConstants {
      */
     public static String getQueueCanceledCountKey(Long restaurantId) {
         return String.format(QUEUE_CANCELED_COUNT_KEY, restaurantId);
+    }
+
+    /**
+     * 예약 성공 카운트 key
+     */
+    public static String getQueueSuccessCountKey(Long restaurantId) {
+        return String.format(QUEUE_SUCCESS_COUNT_KEY, restaurantId);
+    }
+
+    /**
+     * 입장 허용된 인원 수 카운트 key
+     */
+    public static String getQueueEntryCountKey(Long restaurantId) {
+        return String.format(QUEUE_ENTRY_COUNT_KEY, restaurantId);
     }
 }
