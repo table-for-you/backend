@@ -11,6 +11,15 @@ public class ReservationQueueSseService {
     private final EmitterService emitterService;
 
     public SseEmitter createEmitter(Long restaurantId, Long userId) {
-        return emitterService.create(restaurantId, userId);
+        SseEmitter emitter = emitterService.create(restaurantId, userId);
+        emitterService.send(
+                restaurantId,
+                userId,
+                SseEmitter.event()
+                        .name("connect")
+                        .data("connected")
+        );
+
+        return emitter;
     }
 }
