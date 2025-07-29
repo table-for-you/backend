@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class EmitterService {
@@ -22,15 +24,19 @@ public class EmitterService {
         return emitter;
     }
 
-    public void send(Long restaurantId, Long userId, SseEmitter.SseEventBuilder event) {
-        emitterRepository.get(restaurantId, userId).ifPresent(emitter -> {
-            try {
-                emitter.send(event);
-            } catch (Exception e) {
-                emitter.completeWithError(e);
-                emitterRepository.delete(restaurantId, userId);
-            }
-        });
+    public boolean send(Long restaurantId, Long userId, SseEmitter.SseEventBuilder event) {
+        Optional<SseEmitter> emitter = emitterRepository.get(restaurantId, userId);
+
+        if (emitter.isEmpty()) return false;
+
+        try {
+            emitter.get().send(event);
+            return true;
+        } catch (Exception e) {
+            emitter.get().completeWithError(e);
+            emitterRepository.delete(restaurantId, userId);
+            return false;
+        }
     }
 
     public void complete(Long restaurantId, Long userId) {

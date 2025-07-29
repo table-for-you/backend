@@ -85,11 +85,16 @@ public class QueueReservationScheduler {
      * entryCount 증가 및 emitter 종료 처리
      */
     private CompletableFuture<Void> processEntryUser(Long restaurantId, Long userId, int position, int totalQueueSize) {
-        return CompletableFuture.runAsync(() ->
-                        sendQueueStatusEvent(restaurantId, userId, position, totalQueueSize, true), queueNotificationExecutor)
-                .thenRunAsync(() -> {
-                    queueReservationRedisService.incrementEntryCount(restaurantId);
-                    emitterService.complete(restaurantId, userId);
+        return CompletableFuture
+                .supplyAsync(() ->
+                                sendQueueStatusEvent(restaurantId, userId, position, totalQueueSize, true),
+                        queueNotificationExecutor
+                )
+                .thenAcceptAsync(success -> {
+                    if (success) {
+                        queueReservationRedisService.incrementEntryCount(restaurantId);
+                        emitterService.complete(restaurantId, userId);
+                    }
                 }, queueNotificationExecutor);
     }
 
@@ -98,13 +103,14 @@ public class QueueReservationScheduler {
      */
     private CompletableFuture<Void> processWaitingUser(Long restaurantId, Long userId, int position, int totalQueueSize) {
         return CompletableFuture.runAsync(() ->
-                sendQueueStatusEvent(restaurantId, userId, position, totalQueueSize, false), queueNotificationExecutor);
+                        sendQueueStatusEvent(restaurantId, userId, position, totalQueueSize, false),
+                queueNotificationExecutor);
     }
 
     /**
      * 사용자에게 queue-status 이벤트를 전송
      */
-    private void sendQueueStatusEvent(Long restaurantId, Long userId, int position, int total, boolean canEnter) {
+    private boolean sendQueueStatusEvent(Long restaurantId, Long userId, int position, int total, boolean canEnter) {
         Map<String, Object> data = Map.of(
                 "myPosition", position,
                 "totalWaiting", total,
@@ -115,7 +121,7 @@ public class QueueReservationScheduler {
                 .name("queue-status")
                 .data(data);
 
-        emitterService.send(restaurantId, userId, event);
+        return emitterService.send(restaurantId, userId, event);
     }
 
     /**
