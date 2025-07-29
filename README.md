@@ -37,7 +37,7 @@
 <img width="968" alt="table-for-you-erd" src="https://github.com/user-attachments/assets/5c2d8401-b8a0-4b35-9218-1172f8c147ef" />
 
 ## 예약 과정
-해당 코드 위치 - `src.main.java.com.project.tableforyou.domain.reservationrefactor/**`
+해당 코드 위치 - `src/main/java/com/project/tableforyou/domain/reservationrefactor/**`
 
 ### 대기열 처리 ([PR](https://github.com/table-for-you/backend/pull/32))
 
