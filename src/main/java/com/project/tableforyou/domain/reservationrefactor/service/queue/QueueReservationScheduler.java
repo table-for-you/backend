@@ -3,19 +3,25 @@ package com.project.tableforyou.domain.reservationrefactor.service.queue;
 import com.project.tableforyou.domain.reservationrefactor.redis.queue.QueueReservationRedisService;
 import com.project.tableforyou.domain.reservationrefactor.sse.service.EmitterService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 @Component
 @RequiredArgsConstructor
 public class QueueReservationScheduler {
     private final QueueReservationRedisService queueReservationRedisService;
     private final EmitterService emitterService;
+    @Qualifier("queueNotificationExecutor")
+    private final Executor queueNotificationExecutor;
 
     // 한 번에 입장 가능한 최대 인원 수
     private static final int MAX_ACTIVE = 40;
@@ -43,45 +49,73 @@ public class QueueReservationScheduler {
         int remainingCapacity = successCount + MAX_ACTIVE - entryCount;
 
         List<Long> queue = queueReservationRedisService.getQueueForRestaurant(restaurantId, 0, -1);
-        int granted = 0;
+        if (queue.isEmpty()) return;
 
-        for (int i = 0; i < queue.size(); i++) {
-            Long userId = queue.get(i);
+        // 입장 가능한 사용자 수 계산
+        int entryLimit = Math.min(remainingCapacity, queue.size());
+
+        List<Long> entryUsers = queue.subList(0, entryLimit);
+        List<Long> waitingUsers = queue.subList(entryLimit, queue.size());
+
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
+
+        // 입장 가능한 사용자 처리
+        for (int i = 0; i < entryUsers.size(); i++) {
+            Long userId = entryUsers.get(i);
             int position = i + 1;
-            boolean canEnter = (granted < remainingCapacity);
 
-            // 사용자에게 현재 대기열 위치, 대기 인원, 입장 가능 여부 전송
-            sendQueueStatus(restaurantId, userId, position, queue.size(), canEnter);
-
-            if (canEnter) {
-                // 실제 입장 처리 - entryCount 증가 + SSE 연결 종료
-                queueReservationRedisService.incrementEntryCount(restaurantId);
-                emitterService.complete(restaurantId, userId);
-                granted++;
-            }
+            futures.add(processEntryUser(restaurantId, userId, position, queue.size()));
         }
 
-        // 큐 및 레스토랑 세트 정리
-        cleanUpQueue(restaurantId, granted);
+        // 입장 대기 사용자 처리
+        for (int i = 0; i < waitingUsers.size(); i++) {
+            Long userId = waitingUsers.get(i);
+            int position = entryLimit + i + 1;
+
+            futures.add(processWaitingUser(restaurantId, userId, position, queue.size()));
+        }
+
+        // 모든 비동기 작업 완료 후 큐 정리
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+                .thenRun(() -> cleanUpQueue(restaurantId, entryLimit));
     }
 
     /**
-     * 특정 사용자에게 queue-status 이벤트 전송
+     * 입장 가능한 사용자에게 이벤트 전송 후
+     * entryCount 증가 및 emitter 종료 처리
      */
-    private void sendQueueStatus(Long restaurantId, Long userId, int position, int totalWaiting, boolean canEnter) {
+    private CompletableFuture<Void> processEntryUser(Long restaurantId, Long userId, int position, int totalQueueSize) {
+        return CompletableFuture.runAsync(() ->
+                        sendQueueStatusEvent(restaurantId, userId, position, totalQueueSize, true), queueNotificationExecutor)
+                .thenRunAsync(() -> {
+                    queueReservationRedisService.incrementEntryCount(restaurantId);
+                    emitterService.complete(restaurantId, userId);
+                }, queueNotificationExecutor);
+    }
+
+    /**
+     * 입장 대기 사용자에게 현재 상태만 알림 (대기 중)
+     */
+    private CompletableFuture<Void> processWaitingUser(Long restaurantId, Long userId, int position, int totalQueueSize) {
+        return CompletableFuture.runAsync(() ->
+                sendQueueStatusEvent(restaurantId, userId, position, totalQueueSize, false), queueNotificationExecutor);
+    }
+
+    /**
+     * 사용자에게 queue-status 이벤트를 전송
+     */
+    private void sendQueueStatusEvent(Long restaurantId, Long userId, int position, int total, boolean canEnter) {
         Map<String, Object> data = Map.of(
                 "myPosition", position,
-                "totalWaiting", totalWaiting,
+                "totalWaiting", total,
                 "canEnter", canEnter
         );
 
-        emitterService.send(
-                restaurantId,
-                userId,
-                SseEmitter.event()
-                        .name("queue-status")
-                        .data(data)
-        );
+        SseEmitter.SseEventBuilder event = SseEmitter.event()
+                .name("queue-status")
+                .data(data);
+
+        emitterService.send(restaurantId, userId, event);
     }
 
     /**
@@ -91,7 +125,6 @@ public class QueueReservationScheduler {
         if (granted > 0) {
             queueReservationRedisService.removeUsersFromQueue(restaurantId, granted);
         }
-
         if (queueReservationRedisService.isQueueEmpty(restaurantId)) {
             queueReservationRedisService.removeRestaurantFromQueueSet(restaurantId);
         }
