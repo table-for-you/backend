@@ -47,6 +47,11 @@ public class QueueReservation extends BaseTimeEntity {
     @Column(name = "is_entered", nullable = false)
     private boolean isEntered = false;
 
+    // 중복 예약 방지 (유니크 설정에 사용)
+    // 예약 취소 또는 입장 완료 시, null로 변경하여 재예약 가능하도록 처리
+    @Column(name = "active_flag")
+    private Boolean activeFlag = true;
+
     // 취소 시각
     @Column(name = "canceled_at")
     private LocalDateTime canceledAt;
@@ -74,6 +79,7 @@ public class QueueReservation extends BaseTimeEntity {
         }
 
         this.isCanceled = true;
+        this.activeFlag = null;
         this.canceledAt = LocalDateTime.now();
     }
 
@@ -87,6 +93,7 @@ public class QueueReservation extends BaseTimeEntity {
         }
 
         this.isEntered = true;
+        this.activeFlag = null;
         this.enteredAt = LocalDateTime.now();
     }
 }
