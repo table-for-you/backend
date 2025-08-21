@@ -82,6 +82,11 @@ public class QueueReservationRedisService {
         return number != null ? number.intValue() : 1;
     }
 
+    public void compensateReservationNumber(Long restaurantId) {
+        String key = ReservationConstants.getQueueReservationNumberKey(restaurantId);
+         redisRepository.decrease(key);
+    }
+
     public void markAsEntered(Long userId, Long restaurantId) {
         String key = ReservationConstants.getQueueReservationKey(restaurantId);
         String enteredKey = ReservationConstants.getQueueEnteredCountKey(restaurantId);

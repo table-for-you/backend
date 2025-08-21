@@ -47,6 +47,11 @@ public class TimeSlotReservationRedisService {
         return number != null ? number.intValue() : 1;
     }
 
+    public void compensateReservationNumber(Long restaurantId, String date, TimeSlot timeSlot) {
+        String key = ReservationConstants.getTimeSlotReservationNumberKey(restaurantId, date, timeSlot);
+        redisRepository.decrease(key);
+    }
+
     public void cancelReservation(Long userId, Long restaurantId, String date, TimeSlot timeSlot) {
         String key = ReservationConstants.getTimeSlotReservationKey(restaurantId, date, timeSlot);
         redisRepository.hashDel(key, userId);

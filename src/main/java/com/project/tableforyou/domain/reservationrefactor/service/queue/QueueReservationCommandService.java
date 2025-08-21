@@ -7,6 +7,7 @@ import com.project.tableforyou.domain.reservationrefactor.entity.QueueReservatio
 import com.project.tableforyou.domain.reservationrefactor.redis.queue.QueueReservationRedisService;
 import com.project.tableforyou.domain.reservationrefactor.repository.QueueReservationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,14 +32,6 @@ public class QueueReservationCommandService {
      */
     @Transactional
     public int create(Long userId, String username, Long restaurantId) {
-        // Redis에 이미 예약된 사용자라면 예외 발생
-        if (!queueReservationRedisService.isAlreadyReserved(userId, restaurantId)) {
-            // 캐시가 없을 경우 DB에서 확인.
-            queueReservationCacheSyncService.restoreUserReservationToCache(userId, restaurantId);
-        } else {
-            throw new CustomException(ErrorCode.ALREADY_USER_RESERVATION);
-        }
-
         // 예약 번호 계산
         int reservationNumber = getReservationCount(restaurantId);
 
@@ -50,8 +43,14 @@ public class QueueReservationCommandService {
                 .date(LocalDate.now())
                 .build();
 
-        // DB에 예약 저장
-        queueReservationRepository.save(queueReservation);
+        try {
+            // DB에 예약 저장
+            queueReservationRepository.save(queueReservation);
+        } catch (DataIntegrityViolationException ex) {
+            // DB 유니크 제약 위반 (중복 예약)
+            queueReservationRedisService.compensateReservationNumber(restaurantId);
+            throw new CustomException(ErrorCode.ALREADY_USER_RESERVATION);
+        }
 
         // Redis에 캐싱
         queueReservationRedisService.saveReservation(
@@ -86,7 +85,7 @@ public class QueueReservationCommandService {
     @Transactional
     public void cancel(Long userId, Long restaurantId) {
         QueueReservation queueReservation =
-                queueReservationRepository.findByUserIdAndRestaurantIdAndDateAndIsCanceledFalse(
+                queueReservationRepository.findByUserIdAndRestaurantIdAndDateAndIsCanceledFalseAndActiveFlagTrue(
                         userId, restaurantId, LocalDate.now()
                 ).orElseThrow(() -> new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
 
@@ -102,7 +101,7 @@ public class QueueReservationCommandService {
     @Transactional
     public void markAsEntered(Long userId, Long restaurantId) {
         QueueReservation queueReservation =
-                queueReservationRepository.findByUserIdAndRestaurantIdAndDateAndIsCanceledFalse(
+                queueReservationRepository.findByUserIdAndRestaurantIdAndDateAndIsCanceledFalseAndActiveFlagTrue(
                         userId, restaurantId, LocalDate.now()
                 ).orElseThrow(() -> new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
 

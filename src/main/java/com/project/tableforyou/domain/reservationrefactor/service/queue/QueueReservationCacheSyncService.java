@@ -87,7 +87,7 @@ public class QueueReservationCacheSyncService {
      */
     public void restoreUserReservationToCache(Long userId, Long restaurantId) {
         Optional<QueueReservation> queueReservation =
-                queueReservationRepository.findByUserIdAndRestaurantIdAndDateAndIsCanceledFalse(
+                queueReservationRepository.findByUserIdAndRestaurantIdAndDateAndIsCanceledFalseAndActiveFlagTrue(
                         userId, restaurantId, LocalDate.now()
                 );
 
@@ -117,7 +117,7 @@ public class QueueReservationCacheSyncService {
     @Transactional
     public int syncUserReservationToCacheIfAbsent(Long userId, Long restaurantId) {
         QueueReservation queueReservation =
-                queueReservationRepository.findByUserIdAndRestaurantIdAndDateAndIsCanceledFalse(
+                queueReservationRepository.findByUserIdAndRestaurantIdAndDateAndIsCanceledFalseAndActiveFlagTrue(
                         userId, restaurantId, LocalDate.now()
                 ).orElseThrow(() -> new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
 

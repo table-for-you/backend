@@ -37,6 +37,7 @@ public class ReservationLockManager {
      * @return 예약 번호
      */
     public int saveQueueReservation(Long userId, String username, Long restaurantId) {
+        // Lock 범위 : 가게
         String key = ReservationConstants.RESERVATION_KEY_PREFIX + QUEUE + restaurantId;
         RLock lock = redissonClient.getFairLock(LOCK + key);
         try {
@@ -67,7 +68,12 @@ public class ReservationLockManager {
      * @param createReq    예약 요청 정보 (날짜, 시간, 좌석 수 포함)
      */
     public void saveTimeSlotReservation(Long userId, String username, Long restaurantId, TimeSlotReservationDto.Create createReq) {
-        String key = ReservationConstants.RESERVATION_KEY_PREFIX + TIME_SLOT + restaurantId;
+        // Lock 범위 : 가게 + 예약 날짜 + 시간대
+        String key = ReservationConstants.RESERVATION_KEY_PREFIX
+                + TIME_SLOT
+                + restaurantId + ":"
+                + createReq.date() + ":"
+                + createReq.timeSlot();
         RLock lock = redissonClient.getFairLock(LOCK + key);
 
         try {

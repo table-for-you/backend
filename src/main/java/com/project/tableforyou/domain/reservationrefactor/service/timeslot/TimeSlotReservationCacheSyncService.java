@@ -52,7 +52,7 @@ public class TimeSlotReservationCacheSyncService {
      */
     public void restoreUserReservationToCache(Long userId, Long restaurantId, LocalDate date, TimeSlot timeSlot) {
         Optional<TimeSlotReservation> timeSlotReservation =
-                timeSlotReservationRepository.findByUserIdAndRestaurantIdAndDateAndTimeSlotAndIsCanceledFalse(
+                timeSlotReservationRepository.findByUserIdAndRestaurantIdAndDateAndTimeSlotAndIsCanceledFalseAndActiveFlagTrue(
                         userId, restaurantId, date, timeSlot
                 );
 
@@ -82,7 +82,7 @@ public class TimeSlotReservationCacheSyncService {
     @Transactional
     public void syncUserReservationToCacheIfAbsent(Long userId, Long restaurantId, LocalDate date, TimeSlot timeSlot) {
         TimeSlotReservation reservation =
-                timeSlotReservationRepository.findByUserIdAndRestaurantIdAndDateAndTimeSlotAndIsCanceledFalse(
+                timeSlotReservationRepository.findByUserIdAndRestaurantIdAndDateAndTimeSlotAndIsCanceledFalseAndActiveFlagTrue(
                         userId, restaurantId, date, timeSlot
                 ).orElseThrow(() -> new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
 
