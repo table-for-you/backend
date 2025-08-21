@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface QueueReservationRepository extends JpaRepository<QueueReservation, Long> {
     int countByRestaurantIdAndDate(Long restaurantId, LocalDate date);
 
-    Optional<QueueReservation> findByUserIdAndRestaurantIdAndDateAndIsCanceledFalse(
+    Optional<QueueReservation> findByUserIdAndRestaurantIdAndDateAndIsCanceledFalseAndActiveFlagTrue(
             Long userId, Long restaurantId, LocalDate date
     );
 

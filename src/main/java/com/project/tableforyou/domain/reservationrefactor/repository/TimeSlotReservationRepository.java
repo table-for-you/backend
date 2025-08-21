@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface TimeSlotReservationRepository extends JpaRepository<TimeSlotReservation, Long> {
     int countByRestaurantIdAndDateAndTimeSlotAndIsCanceledFalse(Long restaurantId, LocalDate date, TimeSlot timeSlot);
 
-    Optional<TimeSlotReservation> findByUserIdAndRestaurantIdAndDateAndTimeSlotAndIsCanceledFalse(
+    Optional<TimeSlotReservation> findByUserIdAndRestaurantIdAndDateAndTimeSlotAndIsCanceledFalseAndActiveFlagTrue(
             Long userId, Long restaurantId, LocalDate date, TimeSlot timeSlot
     );
 }

@@ -86,7 +86,7 @@ public class QueueReservationCommandService {
     @Transactional
     public void cancel(Long userId, Long restaurantId) {
         QueueReservation queueReservation =
-                queueReservationRepository.findByUserIdAndRestaurantIdAndDateAndIsCanceledFalse(
+                queueReservationRepository.findByUserIdAndRestaurantIdAndDateAndIsCanceledFalseAndActiveFlagTrue(
                         userId, restaurantId, LocalDate.now()
                 ).orElseThrow(() -> new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
 
@@ -102,7 +102,7 @@ public class QueueReservationCommandService {
     @Transactional
     public void markAsEntered(Long userId, Long restaurantId) {
         QueueReservation queueReservation =
-                queueReservationRepository.findByUserIdAndRestaurantIdAndDateAndIsCanceledFalse(
+                queueReservationRepository.findByUserIdAndRestaurantIdAndDateAndIsCanceledFalseAndActiveFlagTrue(
                         userId, restaurantId, LocalDate.now()
                 ).orElseThrow(() -> new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
 

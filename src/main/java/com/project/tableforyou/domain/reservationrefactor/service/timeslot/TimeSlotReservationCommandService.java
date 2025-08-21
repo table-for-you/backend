@@ -93,7 +93,7 @@ public class TimeSlotReservationCommandService {
     @Transactional
     public void cancel(Long userId, Long restaurantId, TimeSlotReservationDto.Request request) {
         TimeSlotReservation timeSlotReservation =
-                timeSlotReservationRepository.findByUserIdAndRestaurantIdAndDateAndTimeSlotAndIsCanceledFalse(
+                timeSlotReservationRepository.findByUserIdAndRestaurantIdAndDateAndTimeSlotAndIsCanceledFalseAndActiveFlagTrue(
                         userId, restaurantId, request.date(), request.timeSlot()
                 ).orElseThrow(() -> new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
 
@@ -114,7 +114,7 @@ public class TimeSlotReservationCommandService {
     @Transactional
     public void markAsEntered(Long userId, Long restaurantId, TimeSlotReservationDto.Request request) {
         TimeSlotReservation timeSlotReservation =
-                timeSlotReservationRepository.findByUserIdAndRestaurantIdAndDateAndTimeSlotAndIsCanceledFalse(
+                timeSlotReservationRepository.findByUserIdAndRestaurantIdAndDateAndTimeSlotAndIsCanceledFalseAndActiveFlagTrue(
                         userId, restaurantId, request.date(), request.timeSlot()
                 ).orElseThrow(() -> new CustomException(ErrorCode.RESERVATION_NOT_FOUND));
 
