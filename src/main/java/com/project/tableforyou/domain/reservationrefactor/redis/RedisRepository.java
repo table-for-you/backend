@@ -112,4 +112,8 @@ public class RedisRepository {
     public Long increase(String key) {
         return stringRedisTemplate.opsForValue().increment(key);
     }
+
+    public Long decrease(String key) {
+        return stringRedisTemplate.opsForValue().decrement(key);
+    }
 }
