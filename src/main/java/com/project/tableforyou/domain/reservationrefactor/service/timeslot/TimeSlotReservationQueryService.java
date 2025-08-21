@@ -26,14 +26,7 @@ public class TimeSlotReservationQueryService {
     public boolean confirmOrCacheMyReservation(Long userId, Long restaurantId, LocalDate date, TimeSlot timeSlot) {
         // Redis에 사용자 예약 정보가 없을 경우, DB에서 동기화 시도
         if (!timeSlotReservationRedisService.isAlreadyReserved(userId, restaurantId, date.toString(), timeSlot)) {
-            timeSlotReservationCacheSyncService./**
-             * Redis에 유저 예약 정보가 없을 때 DB에서 강제로 캐싱하고 예약번호 반환
-             * - 대기 순번 조회 시 사용됨
-             *
-             * @param userId       사용자 ID
-             * @param restaurantId 음식점 ID
-             * @return 해당 유저의 예약번호
-             */syncUserReservationToCacheIfAbsent(userId, restaurantId, date, timeSlot);
+            timeSlotReservationCacheSyncService.syncUserReservationToCacheIfAbsent(userId, restaurantId, date, timeSlot);
         }
 
         // Redis에 예약 정보가 존재하거나, 동기화 성공 시 항상 true 반환
