@@ -9,6 +9,7 @@ import com.project.tableforyou.domain.reservationrefactor.entity.TimeSlotReserva
 import com.project.tableforyou.domain.reservationrefactor.redis.timeslot.TimeSlotReservationRedisService;
 import com.project.tableforyou.domain.reservationrefactor.repository.TimeSlotReservationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,13 +37,6 @@ public class TimeSlotReservationCommandService {
      */
     @Transactional
     public void create(Long userId, String username, Long restaurantId, int availableSeats, LocalDate date, TimeSlot timeSlot) {
-        // Redis에 없을 경우 DB 복원 시도 (있다면 예외 발생)
-        if (!timeSlotReservationRedisService.isAlreadyReserved(userId, restaurantId, date.toString(), timeSlot)) {
-            timeSlotReservationCacheSyncService.restoreUserReservationToCache(userId, restaurantId, date, timeSlot);
-        } else {
-            throw new CustomException(ErrorCode.ALREADY_USER_RESERVATION);
-        }
-
         // 좌석 수 검증 (카운터 증가 후 초과 여부 확인)
         validateAvailableSeats(restaurantId, date, timeSlot, availableSeats);
 
@@ -54,8 +48,14 @@ public class TimeSlotReservationCommandService {
                 .timeSlot(timeSlot)
                 .build();
 
-        // DB에 저장
-        timeSlotReservationRepository.save(timeSlotReservation);
+        try {
+            // DB에 예약 저장
+            timeSlotReservationRepository.save(timeSlotReservation);
+        } catch (DataIntegrityViolationException ex) {
+            // DB 유니크 제약 위반 (중복 예약)
+            timeSlotReservationRedisService.compensateReservationNumber(restaurantId, date.toString(), timeSlot);
+            throw new CustomException(ErrorCode.ALREADY_USER_RESERVATION);
+        }
 
         // Redis에 캐싱
         timeSlotReservationRedisService.saveReservation(
