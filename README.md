@@ -39,13 +39,15 @@
 ## 예약 과정
 해당 코드 위치 - `src/main/java/com/project/tableforyou/domain/reservationrefactor/**`
 
-### 대기열 처리 ([PR](https://github.com/table-for-you/backend/pull/32))
+### 대기열 처리 ([PR](https://github.com/table-for-you/backend/pull/34))
 
  - 사용자 대기열 입장 -> 대기열 순번 부여 -> 입장 시, 예약 페이지 접근 -> 예약 진행
 
 |<img width="421" height="311" alt="대기열" src="https://github.com/user-attachments/assets/a03b46bd-c1cc-4274-8a26-28816c8571b7" />|<img width="391" height="322" alt="기존 예약" src="https://github.com/user-attachments/assets/faf23b55-0cba-4274-a00c-50efbb63a605" />|
 |---|---|
 |대기열 입장 처리|예약 페이지 입장 후|
+
+**현재는 이벤트 기반으로 대기열 입장 처리. 자세한 동작은 ([PR](https://github.com/table-for-you/backend/pull/34))에 플로우차트 존재**
 
 ---
 
