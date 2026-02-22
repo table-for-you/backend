@@ -5,28 +5,38 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
 public class EmitterRepositoryImpl implements EmitterRepository {
-    private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
+    private final Map<Long, Map<Long, SseEmitter>> emitters = new ConcurrentHashMap<>();
 
     @Override
     public void save(Long restaurantId, Long userId, SseEmitter emitter) {
-        emitters.put(getKey(restaurantId, userId), emitter);
+        emitters.computeIfAbsent(restaurantId, id -> new ConcurrentHashMap<>())
+                .put(userId, emitter);
     }
 
     @Override
     public Optional<SseEmitter> get(Long restaurantId, Long userId) {
-        return Optional.ofNullable(emitters.get(getKey(restaurantId, userId)));
+        return Optional.ofNullable(
+                emitters.getOrDefault(restaurantId, Map.of()).get(userId)
+        );
     }
 
     @Override
     public void delete(Long restaurantId, Long userId) {
-        emitters.remove(getKey(restaurantId, userId));
+        Map<Long, SseEmitter> map = emitters.get(restaurantId);
+        if (map != null) {
+            map.remove(userId);
+            if (map.isEmpty()) {
+                emitters.remove(restaurantId);
+            }
+        }
     }
 
-    private String getKey(Long restaurantId, Long userId) {
-        return restaurantId + ":" + userId;
+    public Set<Long> getUserIds(Long restaurantId) {
+        return emitters.getOrDefault(restaurantId, Map.of()).keySet();
     }
 }
