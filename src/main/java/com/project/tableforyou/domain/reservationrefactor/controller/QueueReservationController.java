@@ -30,9 +30,10 @@ public class QueueReservationController {
     private final ReservationQueueSseService reservationQueueSseService;
     private final QueueReservationQueueService queueReservationQueueService;
 
-    @PostMapping("/{restaurantId}/queue-reservations")
+    @PostMapping("/{restaurantId}/queue-reservations/{attemptId}")
     public ResponseEntity<?> createReservation(
             @PathVariable Long restaurantId,
+            @PathVariable String attemptId,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         return ResponseEntity.ok(
@@ -40,7 +41,8 @@ public class QueueReservationController {
                         reservationLockManager.saveQueueReservation(
                                 principalDetails.getId(),
                                 principalDetails.getUsername(),
-                                restaurantId
+                                restaurantId,
+                                attemptId
                         )
                 )
         );

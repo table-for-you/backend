@@ -58,9 +58,6 @@ public class QueueReservationCommandService {
                 QueueReservationCache.of(userId, username, reservationNumber)
         );
 
-        // 예약 성공 카운트
-        queueReservationRedisService.incrementSuccessCount(restaurantId);
-
         return reservationNumber;
     }
 
