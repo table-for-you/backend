@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +45,10 @@ public class EmitterService {
             emitter.complete();
             emitterRepository.delete(restaurantId, userId);
         });
+    }
+
+    public Set<Long> getConnectedUserIds(Long restaurantId) {
+        return emitterRepository.getUserIds(restaurantId);
     }
 
 }
